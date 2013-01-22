@@ -1,0 +1,51 @@
+19-12-2012-16-04-28    starting master
+19-12-2012-16-04-28    loaded configuration = TIME_BETWEEN_CHECKS=1 TERASORT_INPUT_DIRECTORY=/user/terasort_input TERASORT_OUTPUT_DIRECTORY=/user/terasort_output TERASORT_VALIDATION_DIRECTORY=/user/terasort_validation TERASORT_DATA_AMOUNT=1000000 MR_BENCH_RUNS=20 DFSIO_FILE_SIZE=1 DFSIO_NUMBER_OF_FILES=100
+19-12-2012-16-04-28    time between checks = 1
+19-12-2012-16-04-28    terasort input directory = /user/terasort_input
+19-12-2012-16-04-28    terasort output directory = /user/terasort_output
+19-12-2012-16-04-28    terasort validation directory = /user/terasort_validation
+19-12-2012-16-04-28    terasort data amount = 1000000
+19-12-2012-16-04-28    mr bench runs = 20
+19-12-2012-16-04-28    dfsio file size = 1
+19-12-2012-16-04-28    dfsio number of files = 100
+19-12-2012-16-04-28    run dfwrite
+19-12-2012-16-04-28    benchmark command : /local/armstrongmsg/hadoop-1.1.1/bin/hadoop jar /local/armstrongmsg/hadoop-1.1.1/hadoop-test-1.1.1.jar TestDFSIO -write -nrFiles 100 -fileSize 1
+19-12-2012-16-04-28    started pid: 8786
+19-12-2012-16-04-28    starting collector
+19-12-2012-16-04-28    starting systemtap
+19-12-2012-16-04-28    --------------------
+19-12-2012-16-04-28    --------------------
+19-12-2012-16-08-56    starting master
+19-12-2012-16-08-56    loaded configuration = TIME_BETWEEN_CHECKS=1 TERASORT_INPUT_DIRECTORY=/user/terasort_input TERASORT_OUTPUT_DIRECTORY=/user/terasort_output TERASORT_VALIDATION_DIRECTORY=/user/terasort_validation TERASORT_DATA_AMOUNT=1000000 MR_BENCH_RUNS=20 DFSIO_FILE_SIZE=1 DFSIO_NUMBER_OF_FILES=100
+19-12-2012-16-08-56    time between checks = 1
+19-12-2012-16-08-56    terasort input directory = /user/terasort_input
+19-12-2012-16-08-56    terasort output directory = /user/terasort_output
+19-12-2012-16-08-56    terasort validation directory = /user/terasort_validation
+19-12-2012-16-08-56    terasort data amount = 1000000
+19-12-2012-16-08-56    mr bench runs = 20
+19-12-2012-16-08-56    dfsio file size = 1
+19-12-2012-16-08-56    dfsio number of files = 100
+19-12-2012-16-08-56    run dfread
+19-12-2012-16-08-56    benchmark command : /local/armstrongmsg/hadoop-1.1.1/bin/hadoop jar /local/armstrongmsg/hadoop-1.1.1/hadoop-test-1.1.1.jar TestDFSIO -read -nrFiles 100 -fileSize 1
+19-12-2012-16-08-56    started pid: 18755
+19-12-2012-16-08-56    starting collector
+19-12-2012-16-08-56    starting systemtap
+19-12-2012-16-08-56    --------------------
+19-12-2012-16-08-56    --------------------
+19-12-2012-16-13-21    starting master
+19-12-2012-16-13-21    loaded configuration = TIME_BETWEEN_CHECKS=1 TERASORT_INPUT_DIRECTORY=/user/terasort_input TERASORT_OUTPUT_DIRECTORY=/user/terasort_output TERASORT_VALIDATION_DIRECTORY=/user/terasort_validation TERASORT_DATA_AMOUNT=1000000 MR_BENCH_RUNS=20 DFSIO_FILE_SIZE=1 DFSIO_NUMBER_OF_FILES=100
+19-12-2012-16-13-21    time between checks = 1
+19-12-2012-16-13-21    terasort input directory = /user/terasort_input
+19-12-2012-16-13-21    terasort output directory = /user/terasort_output
+19-12-2012-16-13-21    terasort validation directory = /user/terasort_validation
+19-12-2012-16-13-21    terasort data amount = 1000000
+19-12-2012-16-13-21    mr bench runs = 20
+19-12-2012-16-13-21    dfsio file size = 1
+19-12-2012-16-13-21    dfsio number of files = 100
+19-12-2012-16-13-21    run dfclean
+19-12-2012-16-13-21    benchmark command : /local/armstrongmsg/hadoop-1.1.1/bin/hadoop jar /local/armstrongmsg/hadoop-1.1.1/hadoop-test-1.1.1.jar TestDFSIO -clean
+19-12-2012-16-13-21    started pid: 27942
+19-12-2012-16-13-21    starting collector
+19-12-2012-16-13-21    starting systemtap
+19-12-2012-16-13-21    --------------------
+19-12-2012-16-13-21    --------------------

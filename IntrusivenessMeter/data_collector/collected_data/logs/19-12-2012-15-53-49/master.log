@@ -1,0 +1,17 @@
+19-12-2012-15-45-55    starting master
+19-12-2012-15-45-55    loaded configuration = TIME_BETWEEN_CHECKS=1 TERASORT_INPUT_DIRECTORY=/user/terasort_input TERASORT_OUTPUT_DIRECTORY=/user/terasort_output TERASORT_VALIDATION_DIRECTORY=/user/terasort_validation TERASORT_DATA_AMOUNT=1000000 MR_BENCH_RUNS=20 DFSIO_FILE_SIZE=1 DFSIO_NUMBER_OF_FILES=100
+19-12-2012-15-45-55    time between checks = 1
+19-12-2012-15-45-55    terasort input directory = /user/terasort_input
+19-12-2012-15-45-55    terasort output directory = /user/terasort_output
+19-12-2012-15-45-55    terasort validation directory = /user/terasort_validation
+19-12-2012-15-45-55    terasort data amount = 1000000
+19-12-2012-15-45-55    mr bench runs = 20
+19-12-2012-15-45-55    dfsio file size = 1
+19-12-2012-15-45-55    dfsio number of files = 100
+19-12-2012-15-45-55    run mr
+19-12-2012-15-45-55    benchmark command : /local/armstrongmsg/hadoop-1.1.1/bin/hadoop jar /local/armstrongmsg/hadoop-1.1.1/hadoop-test-1.1.1.jar mrbench -numRuns 20
+19-12-2012-15-45-55    started pid: 27695
+19-12-2012-15-45-55    starting collector
+19-12-2012-15-45-55    starting systemtap
+19-12-2012-15-45-55    --------------------
+19-12-2012-15-45-55    --------------------
