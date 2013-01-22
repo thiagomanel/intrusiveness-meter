@@ -8,14 +8,14 @@
 
 #
 # This program generates a PNG image file which represents the 
-# memory usage data stored in the given file whose name is passed
+# cpu usage data stored in the given file whose name is passed
 # as argument.
 #
 # Usage:
-# R --slave --args source_filename image_filename < memory.r
+# R --slave --args source_filename image_filename < cpu.r
 # 
 # Arguments:
-# source_filename: the file that stores the memory usage data
+# source_filename: the file that stores the cpu usage data
 # image_filename: name of the generated image file
 #
 
@@ -38,12 +38,14 @@ generated_image_name <- args[5]
 #
 # Loading data
 #
-memory_usage <- read.csv(source_file)
-time <- seq(1, nrow(memory_usage), by=1)
-frame <- data.frame(time = time, memory_usage = memory_usage$X0)
+cpu_usage <- read.csv(source_file)
+# this line is necessary because the columns can have any name 
+colnames(cpu_usage)<-c('X0')
+time <- seq(1, nrow(cpu_usage), by=1)
+frame <- data.frame(time = time, cpu_usage = cpu_usage$X0)
 
 
-plot <- ggplot(height = height, width = width, res = res, frame, aes(frame$time, frame$memory_usage))
+plot <- ggplot(height = height, width = width, res = res, frame, aes(frame$time, frame$cpu_usage))
 
 # Setting image properties
 png(generated_image_name, height = height, width = width, res = res)
@@ -52,8 +54,8 @@ plot +
 # horizontal axis
 scale_x_continuous("tempo") + 
 # vertical axis
-scale_y_continuous("consumo de memoria") + 
+scale_y_continuous("consumo de cpu (%)") + 
 # use color
-geom_line(aes(colour = frame$memory_usage)) + 
+geom_line(aes(colour = frame$cpu_usage)) + 
 # title
-opts(title = expression("consumo de memoria X tempo"))
+opts(title = expression("consumo de cpu (%) X tempo"))
