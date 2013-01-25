@@ -44,6 +44,10 @@ reads <- read.csv(source_file, sep=" ")
 colnames(reads) <- c('X0', 'X1')
 # the values must be shown in KB
 reads$X1 <- reads$X1/1024
+# treat the time of the first read as the start
+reads$X0 <- reads$X0 - reads$X0[1]
+# time is shown in minutes
+reads$X0 <- reads$X0/(60*1000*1000)
 frame <- data.frame(time = reads$X0, reads = reads$X1)
 
 plot <- ggplot(height = height, width = width, res = res, frame, aes(frame$time, frame$reads))
@@ -53,10 +57,10 @@ png(generated_image_name, height = height, width = width, res = res)
 
 plot + 
 # horizontal axis
-scale_x_continuous("tempo") + 
+scale_x_continuous("tempo (min)") + 
 # vertical axis
 scale_y_continuous("tamanho read (KB)") + 
 # use color
 geom_point(aes(colour = frame$reads)) + 
 # title
-opts(title = expression("tamanho read X tempo"))
+opts(title = expression("tamanho read (KB) X tempo (min)"))

@@ -42,8 +42,12 @@ seeks <- read.csv(source_file, sep=" ")
 
 # this line is necessary because the columns can have any name
 colnames(seeks)<-c('X0', 'X1')
-# the values must be shown in KB 
-seeks$X1 <- seeks$X1/1024
+# the values must be shown in MB 
+seeks$X1 <- seeks$X1/(1024*1024)
+# treat the time of the first seek as the start
+seeks$X0 <- seeks$X0 - seeks$X0[1]
+# time is shown in minutes
+seeks$X0 <- seeks$X0/(60*1000*1000)
 frame <- data.frame(time = seeks$X0, seeks = seeks$X1)
 
 
@@ -54,10 +58,10 @@ png(generated_image_name, height = height, width = width, res = res)
 
 plot + 
 # horizontal axis
-scale_x_continuous("tempo") + 
+scale_x_continuous("tempo (min)") + 
 # vertical axis
-scale_y_continuous("tamanho seek") + 
+scale_y_continuous("tamanho seek (MB)") + 
 # use color
 geom_point(aes(colour = frame$seeks)) + 
 # title
-opts(title = expression("tamanho seek X tempo"))
+opts(title = expression("tamanho seek (MB) X tempo (min)"))
