@@ -42,15 +42,15 @@ time_dfsio_write2 <- seq(1, nrow(test_dfsio_write2_data), by=1)
 time_terasort <- seq(1, nrow(terasort_data), by=1)
 
 # integrating data from all benchmarks
-cpu_usage <- c(mrbench_data$X0, test_dfsio_read1_data$X0, test_dfsio_write1_data$X0, test_dfsio_read2_data$X0, test_dfsio_write2_data$X0, terasort_data$X0);
+memory_usage <- c(mrbench_data$X0, test_dfsio_read1_data$X0, test_dfsio_write1_data$X0, test_dfsio_read2_data$X0, test_dfsio_write2_data$X0, terasort_data$X0);
 time <- c(time_mrbench, time_dfsio_read1, time_dfsio_write1, time_dfsio_read2, time_dfsio_write2, time_terasort)
 benchmark <- c(rep.int(c("MRBench"), nrow(mrbench_data)), rep.int(c("DFSIO Read (I)"), nrow(test_dfsio_read1_data)), 
           rep.int(c("DFSIO Write (I)"), nrow(test_dfsio_write1_data)), rep.int(c("DFSIO Read (II)"), nrow(test_dfsio_read2_data)),
             rep.int(c("DFSIO Write (II)"), nrow(test_dfsio_write2_data)), rep.int(c("Terasort"), nrow(terasort_data)))
 
-data <- data.frame(time, cpu_usage, benchmark)
+data <- data.frame(time, memory_usage, benchmark)
 
-plot <- ggplot(data, aes(time, cpu_usage)) 
+plot <- ggplot(data, aes(time, memory_usage)) 
 
 png(generated_image_name, height = height, width = width, res = res)
 
@@ -59,5 +59,5 @@ geom_line() +
 # horizontal axis
 scale_x_continuous("tempo (segundos)") + 
 # vertical axis
-scale_y_continuous("Consumo de CPU (%)") + 
-facet_grid(. ~ benchmark, scales = "free_x") + opts(title = expression("Consumo de CPU em %"))
+scale_y_continuous("Consumo de memória (%)") + 
+facet_grid(. ~ benchmark, scales = "free_x") + opts(title = expression("Consumo de memória em %"))
