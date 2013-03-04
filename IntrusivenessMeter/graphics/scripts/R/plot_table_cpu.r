@@ -1,3 +1,29 @@
+#
+# Federal University of Campina Grande
+# Distributed Systems Laboratory
+#
+# Author: Armstrong Mardilson da Silva Goes
+# Contact: armstrongmsg@lsd.ufcg.edu.br
+#
+
+#
+# This program generates a PNG image file which represents the 
+# cpu usage data stored in the given files whose names are passed
+# as argument.
+#
+# Usage:
+# R --slave --args mrbench_filename testdfsio_read1_filename testdfsio_write1_filename testdfsio_read2_filename testdfsio_write2_filename image_filename < plot_table_cpu.r
+# 
+# Arguments:
+# TODO explain the arguments
+# image_filename: name of the generated image file
+#
+# Note: this script is very coupled to the benchmarks and configurations I used in the experiment.
+#
+
+#
+# Required libraries
+#
 library("ggplot2")
 
 #
