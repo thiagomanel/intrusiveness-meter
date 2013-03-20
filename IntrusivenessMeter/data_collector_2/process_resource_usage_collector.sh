@@ -9,7 +9,7 @@
 #
 
 #
-# Slave Data Collector
+# Resouces Usage Data Collector
 # 
 # This program collects data about CPU and memory usages by  
 # the given process.
@@ -36,10 +36,6 @@ OUTPUT_MEMORY_FILENAME="$OUTPUT_BASE_FILENAME.mem"
 
 DEBUG=true
 DEBUG_FILE_NAME="collector.log"
-
-# systemtap configuration
-# FIXME fix this
-SYSTEMTAP_SCRIPT="../data_collector/systemtap/syscalls_elapsed.stp"
 
 function debug_startup
 {
@@ -74,7 +70,7 @@ function get_cpu_consumption
 
 function get_memory_consumption
 {
-	echo "`ps -p $PROCESS_PID -o %mem | sed 1d`"
+	awk '/Rss:/{ sum += $2 } END { print sum }' "/proc/13579/smaps"
 }
 
 function write_cpu_consumption
@@ -119,12 +115,7 @@ write_file_header $OUTPUT_MEMORY_FILENAME
 
 debug "wrote header to output files"
 
-debug "starting systemtap"
-start_systemtap
-debug "started systemtap"
-
 while [ $(process_is_running) -eq 1 ]; do
-
 	CPU_CONSUMPTION=$(get_cpu_consumption)
 	MEMORY_CONSUMPTION=$(get_memory_consumption) 
 
