@@ -70,7 +70,7 @@ function get_cpu_consumption
 
 function get_memory_consumption
 {
-	awk '/Rss:/{ sum += $2 } END { print sum }' "/proc/13579/smaps"
+	awk '/Rss:/{ sum += $2 } END { print sum }' "/proc/$PROCESS_PID/smaps"
 }
 
 function write_cpu_consumption

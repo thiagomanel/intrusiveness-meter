@@ -1,3 +1,20 @@
+/*
+	 Federal University of Campina Grande
+	 Distributed Systems Laboratory
+	
+	 Author: Armstrong Mardilson da Silva Goes
+	 Contact: armstrongmsg@lsd.ufcg.edu.br
+*/
+
+/*
+         This program produces a memory bound workload.
+         It allocates TO_ALLOCATE_1 bytes, fills the memory
+         using memset and then sleeps 
+         SLEEP_TIME_1 seconds. After that, it allocates 
+         TO_ALLOCATE_2 bytes, fills the memory using memset and
+         then sleeps SLEEP_TIME_2 seconds.
+*/
+
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
@@ -6,8 +23,8 @@
 /*
     In seconds
 */
-# define SLEEP_TIME_1 20
-# define SLEEP_TIME_2 20
+# define SLEEP_TIME_1 100
+# define SLEEP_TIME_2 100
 
 /*
    100 MB
