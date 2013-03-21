@@ -25,7 +25,6 @@
 # If OUTPUT_BASE_FILENAME is "aaaa", the created files are aaaa.cpu and aaaa.mem
 #  
 
-# TODO Arguments checking
 # TODO Error handling
 
 PROCESS_PID=$1
@@ -47,10 +46,26 @@ function debug_startup
 function debug
 {
 	if [ $DEBUG ]; then
-		echo -n "`date "+%d-%m-%Y-%H-%M-%S"`    " >> $DEBUG_FILE_NAME
+		echo -n "`date "+%d-%m-%Y-%H-%M-%S"`" "`date "+%s%N"` " >> $DEBUG_FILE_NAME
 		# TODO if the log file is too big, it must truncate to 0
 		# or do something so the file does not grow without limit.
 		echo $1	>> $DEBUG_FILE_NAME
+	fi
+}
+
+function check_pid
+{
+	if [ $PROCESS_PID -lt 1 ]; then
+		echo "Invalid PID. PID must be greater or equal to 1"
+		exit
+	fi
+}
+
+function check_base_file_name
+{
+	if [ -z $OUTPUT_BASE_FILENAME ]; then
+		echo "Invalid base filename. It must not be empty."
+		exit
 	fi
 }
 
@@ -75,32 +90,32 @@ function get_memory_consumption
 
 function write_cpu_consumption
 {
-	echo "$1" >> $OUTPUT_CPU_FILENAME
+	echo "`date "+%s%N"` $1" >> $OUTPUT_CPU_FILENAME
 }
 
 function write_memory_consumption
 {
-	echo "$1" >> $OUTPUT_MEMORY_FILENAME
+	echo "`date "+%s%N"` $1" >> $OUTPUT_MEMORY_FILENAME
 }
 
 function write_file_header
 {
 	echo "process=$PROCESS_PID" >> "$1"
-	echo "start time=`date "+%d-%m-%Y-%H-%M-%S"`" >> "$1"
+	echo "start time=`date "+%d-%m-%Y-%H-%M-%S"`" "`date "+%s%N"`" >> "$1"
 	echo "time between checks=$TIME_BETWEEN_CHECKS" >> "$1"
 }
 
 function write_file_ending
 {
-	echo "stop time=`date "+%d-%m-%Y-%H-%M-%S"`" >> "$1"
+	echo "stop time=`date "+%d-%m-%Y-%H-%M-%S"`" "`date "+%s%N"`" >> "$1"
 }
 
-# FIXME test the systemtap part of the script
-function start_systemtap
-{
-	debug "starting systemtap"
-	stap $SYSTEMTAP_SCRIPT -x $PROCESS_PID -o "process.syscall" &
-}
+#
+# Main
+#
+
+check_pid
+check_base_file_name
 
 debug_startup
 
