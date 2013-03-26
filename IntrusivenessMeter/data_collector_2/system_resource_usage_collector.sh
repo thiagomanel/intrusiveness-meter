@@ -26,14 +26,12 @@
 
 #
 # FIXME Error Handling
-# FIXME Arguments Checking
-# TODO  add logs
 #
 
 BASE_OUTPUT_FILENAME=$1
 
-CPU_IDLE_FILENAME=$BASE_OUTPUT_FILENAME"_system.usercpu"
-CPU_USER_FILENAME=$BASE_OUTPUT_FILENAME"_system.idlecpu"
+CPU_IDLE_FILENAME=$BASE_OUTPUT_FILENAME"_system.idlecpu"
+CPU_USER_FILENAME=$BASE_OUTPUT_FILENAME"_system.usercpu"
 MEMORY_USAGE_FILENAME=$BASE_OUTPUT_FILENAME"_system.mem"
 
 CPU_IDLE=0
@@ -51,6 +49,34 @@ MEMORY_USED=0
 #	MPSTAT_INFO="`mpstat -P $c | sed 1,3d`"
 #	echo $MPSTAT_INFO
 #done
+
+DEBUG=true
+DEBUG_FILE_NAME="collector_system.log"
+
+function debug_startup
+{
+        if [ $DEBUG ]; then
+                touch $DEBUG_FILE_NAME
+        fi
+}
+
+function debug
+{
+        if [ $DEBUG ]; then
+                echo -n "`date "+%d-%m-%Y-%H-%M-%S"`" "`date "+%s%N"` " >> $DEBUG_FILE_NAME
+                # TODO if the log file is too big, it must truncate to 0
+                # or do something so the file does not grow without limit.
+                echo $1 >> $DEBUG_FILE_NAME
+        fi
+}
+
+function check_base_file_name
+{
+        if [ -z $BASE_OUTPUT_FILENAME ]; then
+                echo "Invalid base filename. It must not be empty."
+                exit
+        fi
+}
 
 function start_up
 {
@@ -82,10 +108,22 @@ function print_system_memory_usage
 	echo $MEMORY_USED >> $MEMORY_USAGE_FILENAME
 }
 
+#
+# Main
+#
+
+check_base_file_name
+
+debug_startup
+
+debug "Creating results files"
 start_up
+debug "Created results files"
 
 while [ "1" = "1" ]; do
+	debug "Getting data from system"
 	get_system_data
+	debug "Got data from system"
 
 	print_system_cpu_usage
 	print_system_memory_usage
