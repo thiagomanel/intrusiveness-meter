@@ -11,10 +11,10 @@
 #
 # Whole System Resouces Usage Data Collector
 # 
-# This program collects data about CPU and memory usages of the system
+# This program collects data about CPU, memory and disk usages of the system
 # FIXME correct the name of the script
 # usage: 
-# resource_usage_collector OUTPUT_BASE_FILENAME
+# resource_usage_collector OUTPUT_BASE_FILENAME DEVICE_NAME
 #
 # Parameters:
 # OUTPUT_BASE_FILENAME : this radical is used to construct the output file names. 
@@ -22,21 +22,31 @@
 # user CPU information and another for memory information. 
 # If OUTPUT_BASE_FILENAME is "aaaa", the created files are aaaa_system.idlecpu 
 # aaaa_system.usercpu and aaaa.mem
-# 
+# DEVICE_NAME : device to monitor
+#
+
 
 #
 # FIXME Error Handling
 #
 
 BASE_OUTPUT_FILENAME=$1
+DEVICE_TO_MONITOR=$2
 
 CPU_IDLE_FILENAME=$BASE_OUTPUT_FILENAME"_system.idlecpu"
 CPU_USER_FILENAME=$BASE_OUTPUT_FILENAME"_system.usercpu"
 MEMORY_USAGE_FILENAME=$BASE_OUTPUT_FILENAME"_system.mem"
+READ_RATE_FILENAME=$BASE_OUTPUT_FILENAME"_system.read"
+WRITE_RATE_FILENAME=$BASE_OUTPUT_FILENAME"_system.write"
 
 CPU_IDLE=0
 CPU_USER=0
 MEMORY_USED=0
+#  FIXME add doc on these values
+# Read sar command documentation to get information about these values meaning 
+#
+READ_NUMBER=0
+WRITE_NUMBER=0
 
 #
 # TODO code that may be used to get specific cpu data
@@ -87,10 +97,13 @@ function start_up
 
 function get_system_data
 {
-	sar_data=`sar -u -r 1 1 | grep "Average" | sed 1d | sed 2d`
+	sar_data="`sar -u -r -d 1 1 | grep "Average" | sed 1d | sed 2d | sed 3d`"
+	vmstat_data="`vmstat -p $DEVICE_TO_MONITOR | sed 1d`"
 	CPU_IDLE=`echo $sar_data | awk '{ print $8 }'`
 	CPU_USER=`echo $sar_data | awk '{ print $3 }'`
 	MEMORY_USED=`echo $sar_data | awk '{ print $12 }'`
+	READ_NUMBER=`echo $vmstat_data | awk '{ print $1}'`
+	WRITE_NUMBER=`echo $vmstat_data | awk '{ print $3 }'`
 }
 
 function print_system_cpu_usage
@@ -106,6 +119,14 @@ function print_system_memory_usage
 {
 	echo -n "`date "+%d-%m-%Y-%H-%M-%S"`" "`date "+%s%N"` " >> $MEMORY_USAGE_FILENAME
 	echo $MEMORY_USED >> $MEMORY_USAGE_FILENAME
+}
+
+function print_system_device_usage
+{
+	echo -n "`date "+%d-%m-%Y-%H-%M-%S"`" "`date "+%s%N"` " >> $READ_RATE_FILENAME
+	echo -n "`date "+%d-%m-%Y-%H-%M-%S"`" "`date "+%s%N"` " >> $WRITE_RATE_FILENAME
+	echo $READ_NUMBER >> $READ_RATE_FILENAME
+	echo $WRITE_NUMBER >> $WRITE_RATE_FILENAME
 }
 
 #
@@ -127,4 +148,5 @@ while [ "1" = "1" ]; do
 
 	print_system_cpu_usage
 	print_system_memory_usage
+	print_system_device_usage
 done
