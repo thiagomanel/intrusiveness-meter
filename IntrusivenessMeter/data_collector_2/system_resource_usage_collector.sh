@@ -22,6 +22,8 @@
 # user CPU information and another for memory information. 
 # If OUTPUT_BASE_FILENAME is "aaaa", the created files are aaaa_system.idlecpu 
 # aaaa_system.usercpu and aaaa.mem
+# OUTPUT_DIRECTORY : the directory where the result files will be placed.
+# If it does not exist, it will be created.
 # DEVICE_NAME : device to monitor
 #
 
@@ -31,13 +33,14 @@
 #
 
 BASE_OUTPUT_FILENAME=$1
-DEVICE_TO_MONITOR=$2
+OUTPUT_DIRECTORY=$2
+DEVICE_TO_MONITOR=$3
 
-CPU_IDLE_FILENAME=$BASE_OUTPUT_FILENAME"_system.idlecpu"
-CPU_USER_FILENAME=$BASE_OUTPUT_FILENAME"_system.usercpu"
-MEMORY_USAGE_FILENAME=$BASE_OUTPUT_FILENAME"_system.mem"
-READ_RATE_FILENAME=$BASE_OUTPUT_FILENAME"_system.read"
-WRITE_RATE_FILENAME=$BASE_OUTPUT_FILENAME"_system.write"
+CPU_IDLE_FILENAME=$OUTPUT_DIRECTORY/$BASE_OUTPUT_FILENAME"_system.idlecpu"
+CPU_USER_FILENAME=$OUTPUT_DIRECTORY/$BASE_OUTPUT_FILENAME"_system.usercpu"
+MEMORY_USAGE_FILENAME=$OUTPUT_DIRECTORY/$BASE_OUTPUT_FILENAME"_system.mem"
+READ_RATE_FILENAME=$OUTPUT_DIRECTORY/$BASE_OUTPUT_FILENAME"_system.read"
+WRITE_RATE_FILENAME=$OUTPUT_DIRECTORY/$BASE_OUTPUT_FILENAME"_system.write"
 
 CPU_IDLE=0
 CPU_USER=0
@@ -90,9 +93,12 @@ function check_base_file_name
 
 function start_up
 {
+	mkdir -p $OUTPUT_DIRECTORY
 	touch $CPU_IDLE_FILENAME
 	touch $CPU_USER_FILENAME
 	touch $MEMORY_USAGE_FILENAME
+	touch $READ_RATE_FILENAME
+	touch $WRITE_RATE_FILENAME
 }
 
 function get_system_data
