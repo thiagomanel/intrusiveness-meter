@@ -49,7 +49,7 @@ DFSIO_NUMBER_OF_FILES=0
 
 # debug configuration
 DEBUG=true
-DEBUG_FILE_NAME="master.log"
+DEBUG_FILE_NAME="hadoop_interface.log"
 
 HADOOP=$HADOOP_HOME
 
@@ -84,23 +84,19 @@ function read_configuration
  	debug "loaded configuration = $CONFIGURATION_CONTENT"
  	CONTENT=($CONFIGURATION_CONTENT)
  
- 	# collector configuration
- 	TIME_BETWEEN_CHECKS="`echo ${CONTENT[0]} | cut -d = -f2-`"
- 	
  	# tera sort configuration
- 	TERASORT_INPUT_DIRECTORY="`echo ${CONTENT[1]} | cut -d = -f2-`"
- 	TERASORT_OUTPUT_DIRECTORY="`echo ${CONTENT[2]} | cut -d = -f2-`"
- 	TERASORT_VALIDATION_DIRECTORY="`echo ${CONTENT[3]} | cut -d = -f2-`"
- 	TERASORT_DATA_AMOUNT="`echo ${CONTENT[4]} | cut -d = -f2-`"
+ 	TERASORT_INPUT_DIRECTORY="`echo ${CONTENT[0]} | cut -d = -f2-`"
+ 	TERASORT_OUTPUT_DIRECTORY="`echo ${CONTENT[1]} | cut -d = -f2-`"
+ 	TERASORT_VALIDATION_DIRECTORY="`echo ${CONTENT[2]} | cut -d = -f2-`"
+ 	TERASORT_DATA_AMOUNT="`echo ${CONTENT[3]} | cut -d = -f2-`"
  
  	# mr bench configuration
- 	MR_BENCH_RUNS="`echo ${CONTENT[5]} | cut -d = -f2-`"
+ 	MR_BENCH_RUNS="`echo ${CONTENT[4]} | cut -d = -f2-`"
  
  	# dfsio configuration
- 	DFSIO_FILE_SIZE="`echo ${CONTENT[6]} | cut -d = -f2-`"	
- 	DFSIO_NUMBER_OF_FILES="`echo ${CONTENT[7]} | cut -d = -f2-`"
+ 	DFSIO_FILE_SIZE="`echo ${CONTENT[5]} | cut -d = -f2-`"	
+ 	DFSIO_NUMBER_OF_FILES="`echo ${CONTENT[6]} | cut -d = -f2-`"
  	
- 	debug "time between checks = $TIME_BETWEEN_CHECKS"
  	debug "terasort input directory = $TERASORT_INPUT_DIRECTORY"
  	debug "terasort output directory = $TERASORT_OUTPUT_DIRECTORY"
  	debug "terasort validation directory = $TERASORT_VALIDATION_DIRECTORY"
