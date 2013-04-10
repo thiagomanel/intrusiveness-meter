@@ -1,6 +1,3 @@
-# collector configuration
-TIME_BETWEEN_CHECKS=2
-
 # terasort configuration
 TERASORT_INPUT_DIRECTORY=/user/terasort_input
 TERASORT_OUTPUT_DIRECTORY=/user/terasort_output
@@ -8,7 +5,7 @@ TERASORT_VALIDATION_DIRECTORY=/user/terasort_validation
 TERASORT_DATA_AMOUNT=10000000000
 
 # mr bench configuration
-MR_BENCH_RUNS=2
+MR_BENCH_RUNS=1
 
 # dfsio configuration
 DFSIO_FILE_SIZE=10
