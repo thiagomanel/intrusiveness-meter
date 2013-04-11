@@ -137,7 +137,7 @@ function start_benchmark
 			COMMAND="$HADOOP/bin/hadoop fs -rmr $TERASORT_INPUT_DIRECTORY $TERASORT_OUTPUT_DIRECTORY $TERASORT_VALIDATION_DIRECTORY"
 			;;
 		"mr")
-			COMMAND="$HADOOP/bin/hadoop jar $HADOOP/hadoop-*test*.jar mrbench -numRuns $MR_BENCH_RUNS"
+			COMMAND="$HADOOP/bin/hadoop jar $HADOOP/hadoop-*test*.jar mrbench -numRuns $MR_BENCH_RUNS -inputLines 10000000"
 			;;
 		"dfread")
 			COMMAND="$HADOOP/bin/hadoop jar $HADOOP/hadoop-*test*.jar TestDFSIO -read -nrFiles $DFSIO_NUMBER_OF_FILES -fileSize $DFSIO_FILE_SIZE"
