@@ -17,10 +17,12 @@ import time
 from subprocess import *
 from configuration_loader import *
 
-HADOOP_SCRIPT = "hadoop.sh"
-HADOOP_SCRIPT_CONF_FILE = "hadoop_configuration"
+CONF_DIRECTORY = "../conf"
 
-CONTROLLER_CONF_FILE = "controller_configuration"
+HADOOP_SCRIPT = "hadoop.sh"
+HADOOP_SCRIPT_CONF_FILE = CONF_DIRECTORY + "/hadoop_configuration"
+
+CONTROLLER_CONF_FILE = CONF_DIRECTORY + "/controller_configuration"
 PROBABILITY_TO_RUN_PROPERTY = "PROBABILITY_TO_RUN"
 SLEEP_TIME_PROPERTY = "SLEEP_TIME"
 
@@ -77,6 +79,12 @@ class Controller:
                     chosen_benchmark = "dfread"
                 elif chosen_benchmark == "dfread":
                     chosen_benchmark = "dfclean"
+                elif chosen_benchmark == "teragen":
+                    chosen_benchmark = "terasort"
+                elif chosen_benchmark == "terasort":
+                    chosen_benchmark = "teravalidate"
+                elif chosen_benchmark == "teravalidate":
+                    chosen_benchmark = "teraclean"
                 else:
                     # i think i need to finish the running benchmarks
                     chosen_benchmark = self.choose_benchmark(benchmarks)
@@ -95,7 +103,7 @@ class Controller:
 #
 
 def main():
-    benchmarks = ["mr", "dfwrite"]
+    benchmarks = ["mr", "teragen", "dfwrite"]
 
     controller = Controller(CONTROLLER_CONF_FILE, CONTROLLER_LOG_FILE_NAME)
     controller.run(benchmarks, HADOOP_SCRIPT_CONF_FILE)

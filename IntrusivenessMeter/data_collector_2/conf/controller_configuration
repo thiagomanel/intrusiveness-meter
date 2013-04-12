@@ -6,4 +6,4 @@ PROBABILITY_TO_RUN=0.5
 #
 # The sleep time between runs
 #
-SLEEP_TIME=100
+SLEEP_TIME=120

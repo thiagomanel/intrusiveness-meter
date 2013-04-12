@@ -21,6 +21,7 @@
 # PROCESS_PID : the PID of the process to be monitored  
 # TIME_BETWEEN_CHECKS : time between data collects. time is given in seconds.
 # OUTPUT_BASE_FILENAME : this radical is used to construct the output file names. 
+# OUTPUT_DIRECTORY : the directory where the results will be placed
 # The program creates two files, one for CPU information and other for memory information. 
 # If OUTPUT_BASE_FILENAME is "aaaa", the created files are aaaa.cpu and aaaa.mem
 #  
@@ -30,8 +31,9 @@
 PROCESS_PID=$1
 TIME_BETWEEN_CHECKS=$2
 OUTPUT_BASE_FILENAME=$3
-OUTPUT_CPU_FILENAME="$OUTPUT_BASE_FILENAME.cpu"
-OUTPUT_MEMORY_FILENAME="$OUTPUT_BASE_FILENAME.mem"
+OUTPUT_DIRECTORY=$4"/processes"
+OUTPUT_CPU_FILENAME="$OUTPUT_DIRECTORY/$OUTPUT_BASE_FILENAME.cpu"
+OUTPUT_MEMORY_FILENAME="$OUTPUT_DIRECTORY/$OUTPUT_BASE_FILENAME.mem"
 
 DEBUG=true
 DEBUG_FILE_NAME="collector.log"
