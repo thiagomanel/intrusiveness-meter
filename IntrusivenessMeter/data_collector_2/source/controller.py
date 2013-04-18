@@ -103,7 +103,7 @@ class Controller:
 #
 
 def main():
-    benchmarks = ["mr", "teragen", "dfwrite"]
+    benchmarks = ["teragen", "dfwrite"]
 
     controller = Controller(CONTROLLER_CONF_FILE, CONTROLLER_LOG_FILE_NAME)
     controller.run(benchmarks, HADOOP_SCRIPT_CONF_FILE)
