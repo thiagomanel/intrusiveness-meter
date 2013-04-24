@@ -18,6 +18,7 @@ import os
 import time
 from subprocess import *
 from configuration_loader import *
+from Logger import *
 
 CONF_DIRECTORY = "../conf"
 
@@ -29,16 +30,6 @@ PROBABILITY_TO_RUN_PROPERTY = "PROBABILITY_TO_RUN"
 SLEEP_TIME_PROPERTY = "SLEEP_TIME"
 
 CONTROLLER_LOG_FILE_NAME = "controller.log"
-
-
-class Logger:
-    def __init__(this, log_file_name):
-        this.log_file_name = log_file_name
-        this.file = open(log_file_name, "w")
-
-    def log(this, log):
-        this.file.write(str(time.time()) + " " + log + "\n")
-        this.file.flush()
 
 class Controller:
 
