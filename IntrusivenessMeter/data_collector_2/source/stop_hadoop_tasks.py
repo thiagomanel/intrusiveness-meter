@@ -1,9 +1,22 @@
+#
+# Federal University of Campina Grande
+# Distributed Systems Laboratory
+#
+# Author: Armstrong Mardilson da Silva Goes
+# Contact: armstrongmsg@lsd.ufcg.edu.br
+#
+
+#
+# Hadoop Stop Script
+# 
+# This program stops the TaskTracker component and kills 
+# the running tasks
+#
+
 import Logger
 import os
 
 logger = Logger.Logger("stopped.log")
-# FIXME hard coded
-HADOOP_HOME = "/local/armstrongmsg/hadoop-1.1.1"
 
 # FIXME duplicated in hadoop_aware_collector.py
 def get_benchmarks_processes():
@@ -17,9 +30,13 @@ def get_benchmarks_processes():
 def get_tasktracker_process():
     return os.popen("ps xau | grep TaskTracker | awk '{ print $2 }'").read()
 
+def kill_task_tracker():
+    hadoop_home = os.environ['HADOOP_HOME']
+    os.popen("bash " + hadoop_home + "/bin/stop-mapred.sh")
+   
+
 logger.log("killing tasktracker")
-# FIXME it should call hadoop
-os.popen("kill " + get_tasktracker_process())
+kill_task_tracker()
 logger.log("killed tasktracker")
 
 for benchmark_process in get_benchmarks_processes():
