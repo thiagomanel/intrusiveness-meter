@@ -17,6 +17,7 @@ import Logger
 import os
 
 logger = Logger.Logger("stopped.log")
+discomfort_report = Logger.Logger("discomfort.log", "a")
 
 # FIXME duplicated in hadoop_aware_collector.py
 def get_benchmarks_processes():
@@ -35,6 +36,7 @@ def kill_task_tracker():
     os.popen("bash " + hadoop_home + "/bin/stop-mapred.sh")
    
 
+discomfort_report.log("")
 logger.log("killing tasktracker")
 kill_task_tracker()
 logger.log("killed tasktracker")
