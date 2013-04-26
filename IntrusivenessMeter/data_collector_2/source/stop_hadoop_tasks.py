@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 #
 # Federal University of Campina Grande
 # Distributed Systems Laboratory
@@ -33,6 +35,7 @@ def get_tasktracker_process():
 
 def kill_task_tracker():
     hadoop_home = os.environ['HADOOP_HOME']
+    # FIXME should kill only the TaskTracker
     os.popen("bash " + hadoop_home + "/bin/stop-mapred.sh")
    
 
