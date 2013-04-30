@@ -49,7 +49,7 @@ DFSIO_NUMBER_OF_FILES=0
 
 # debug configuration
 DEBUG=true
-DEBUG_FILE_NAME="hadoop_interface.log"
+DEBUG_FILE_NAME="../logs/hadoop_interface.log"
 
 HADOOP=$HADOOP_HOME
 
