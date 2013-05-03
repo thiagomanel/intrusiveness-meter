@@ -22,7 +22,7 @@ def get_benchmarks_processes():
 
 def start_process_monitoring(PID):
     logger.log("PID to monitor:" + PID)
-    Popen(["bash", COLLECTOR_SCRIPT, str(PID), "1", str(PID), RESULTS_DIRECTORY])
+    Popen(["bash", COLLECTOR_SCRIPT, str(PID), "1", str(PID) + "-" + str(time.time()), RESULTS_DIRECTORY])
 
 
 while True:
