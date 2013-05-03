@@ -20,7 +20,7 @@ from subprocess import *
 from configuration_loader import *
 from Logger import *
 
-CONF_DIRECTORY = "../conf"
+CONF_DIRECTORY = "conf"
 
 HADOOP_SCRIPT = "hadoop.sh"
 HADOOP_SCRIPT_CONF_FILE = CONF_DIRECTORY + "/hadoop_configuration"
@@ -49,11 +49,13 @@ class Controller:
         return random.sample(benchmarks, 1)[0]
 
     def run_benchmark(self, benchmark, hadoop_script_conf_file):
-        return os.system("bash hadoop.sh " + benchmark + " " + hadoop_script_conf_file)
+        # FIXME hard coded
+        return os.system("bash source/hadoop.sh " + benchmark + " " + hadoop_script_conf_file)
 
     def thereAreRunningBenchmarks(self):
         running = False
-        input = os.popen("bash hadoop_info.sh -r").read()
+	# FIXME hard coded
+        input = os.popen("bash source/hadoop_info.sh -r").read()
         if input == "true":
             running = True
         return running

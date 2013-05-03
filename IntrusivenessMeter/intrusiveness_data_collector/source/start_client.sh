@@ -15,17 +15,19 @@
 #
 
 # FIXME it should be read from a conf file
-RESULTS_DIRECTORY="../results"
+RESULTS_DIRECTORY="results"
 
-SYSTEM_RESOURCE_COLLECTOR="system_resource_usage_collector.sh"
+# FIXME hard coded
+SYSTEM_RESOURCE_COLLECTOR="source/system_resource_usage_collector.sh"
 # FIXME it should be read from a conf file
 DEVICE_TO_MONITOR="/dev/sda7"
 # FIXME it should be read from a conf file
 SYSTEM_RESOURCE_BASE_OUTPUT_FILENAME="monitoring"
 
-HADOOP_AWARE_COLLECTOR="hadoop_aware_collector.py"
+HADOOP_AWARE_COLLECTOR="source/hadoop_aware_collector.py"
 
-TASK_TRACKER_DAEMON="task_tracker_start_daemon.sh"
+# FIXME hard coded
+TASK_TRACKER_DAEMON="source/task_tracker_start_daemon.sh"
 
 ./$SYSTEM_RESOURCE_COLLECTOR $SYSTEM_RESOURCE_BASE_OUTPUT_FILENAME $RESULTS_DIRECTORY $DEVICE_TO_MONITOR &
 

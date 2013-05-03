@@ -15,8 +15,8 @@ public class UserTrayIcon {
 	private Image iconImage;
 	private TrayIcon trayIcon;
 	
-	private static final String RED_ICON_FILE = "red_icon.png";
-	private static final String RUNNER_ICON_FILE = "runner_icon.jpg";
+	private static final String RED_ICON_FILE = "images/red_icon.png";
+	private static final String RUNNER_ICON_FILE = "images/runner_icon.jpg";
 	
 	public UserTrayIcon(String imagePathName) {
 		iconImage = Toolkit.getDefaultToolkit().getImage(imagePathName);
@@ -68,7 +68,7 @@ public class UserTrayIcon {
 		
 		private void reportDiscomfort() {
 			try {
-				ProcessBuilder pb = new ProcessBuilder("/usr/bin/python", "stop_hadoop_tasks.py");
+				ProcessBuilder pb = new ProcessBuilder("/usr/bin/python", "source/stop_hadoop_tasks.py");
 				pb.directory(new File("."));
 				pb.start();
 			} catch (IOException e) {
@@ -94,7 +94,7 @@ public class UserTrayIcon {
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-		UserTrayIcon icon = new UserTrayIcon(RUNNER_ICON_FILE);
+		UserTrayIcon icon = new UserTrayIcon(RED_ICON_FILE);
 
 		icon.start();
 	}

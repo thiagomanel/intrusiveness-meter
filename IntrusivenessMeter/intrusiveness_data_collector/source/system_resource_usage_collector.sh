@@ -63,7 +63,7 @@ WRITE_NUMBER=0
 #done
 
 DEBUG=true
-DEBUG_FILE_NAME="../logs/collector_system.log"
+DEBUG_FILE_NAME="logs/collector_system.log"
 
 function debug_startup
 {

@@ -26,7 +26,8 @@ from subprocess import *
 import os
 import sys
 
-COLLECTOR_SCRIPT = "process_resource_usage_collector.sh"
+# FIXME hard coded
+COLLECTOR_SCRIPT = "source/process_resource_usage_collector.sh"
 RESULTS_DIRECTORY = sys.argv[1]
 
 monitored_processes = []
