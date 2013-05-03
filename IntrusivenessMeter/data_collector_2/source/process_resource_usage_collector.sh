@@ -15,7 +15,7 @@
 # the given process.
 #
 # usage: 
-# resource_usage_collector PROCESS_PID TIME_BETWEEN_CHECKS OUTPUT_BASE_FILENAME
+# bash process_resource_usage_collector.sh PROCESS_PID TIME_BETWEEN_CHECKS OUTPUT_BASE_FILENAME
 #
 # Parameters:
 # PROCESS_PID : the PID of the process to be monitored  

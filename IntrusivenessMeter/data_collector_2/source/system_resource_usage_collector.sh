@@ -12,9 +12,8 @@
 # Whole System Resouces Usage Data Collector
 # 
 # This program collects data about CPU, memory and disk usages of the system
-# FIXME correct the name of the script
 # usage: 
-# resource_usage_collector OUTPUT_BASE_FILENAME OUTPUT_DIRECTORY DEVICE_NAME
+# bash system_resource_usage_collector.sh OUTPUT_BASE_FILENAME OUTPUT_DIRECTORY DEVICE_NAME
 #
 # Parameters:
 # OUTPUT_BASE_FILENAME : this radical is used to construct the output file names. 

@@ -159,7 +159,6 @@ function start_benchmark
 	$COMMAND &
 }
 
-# TODO maybe write the machine configuration when starting
 debug_startup
 
 read_configuration

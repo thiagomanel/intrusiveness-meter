@@ -13,6 +13,16 @@
 # 
 # This program provides information on the Hadoop installation
 #
+# usage:
+# bash hadoop_info.sh OPTION   
+# 
+# Parameters:
+# OPTION : the requested information type
+#        Available informations:
+#              -r : prints true if there are hadoop jobs running or 
+#		    false otherwise
+#
+
 
 OPTION=$1
 

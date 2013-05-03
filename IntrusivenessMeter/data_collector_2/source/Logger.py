@@ -1,3 +1,17 @@
+#
+# Federal University of Campina Grande
+# Distributed Systems Laboratory
+#
+# Author: Armstrong Mardilson da Silva Goes
+# Contact: armstrongmsg@lsd.ufcg.edu.br
+#
+
+#
+# The Logger class is the logger used by all the python programs of 
+# the intrusiveness meter. It put the logs files in the directory 
+# LOGS_DIRECTORY
+#
+
 import time
 import os
 

@@ -51,14 +51,6 @@ class Controller:
     def run_benchmark(self, benchmark, hadoop_script_conf_file):
         return os.system("bash hadoop.sh " + benchmark + " " + hadoop_script_conf_file)
 
-    def stop_all_benchmarks(self):
-        # TODO add calls to hadoop here
-        # TODO maybe add the benchmarks as parameter 
-        # I think calling hadoop is enough
-        Popen(["killall", "cpu"])
-        Popen(["killall", "memory"])
-        Popen(["killall", "io"])
-    
     def thereAreRunningBenchmarks(self):
         running = False
         input = os.popen("bash hadoop_info.sh -r").read()

@@ -1,9 +1,30 @@
+#
+# Federal University of Campina Grande
+# Distributed Systems Laboratory
+#
+# Author: Armstrong Mardilson da Silva Goes
+# Contact: armstrongmsg@lsd.ufcg.edu.br
+#
+
+#
+# Hadoop Activity Monitor
+#
+# This program checks which Hadoop processes are running
+# and, if there are new processes, calls the process monitor
+# to monitor them.
+#
+# usage:
+# python hadoop_aware_collector.py RESULTS_DIRECTORY
+#
+# Parameters:
+# RESULTS_DIRECTORY : the directory where the results will be placed.
+# 
+
 import Logger
 import time
 from subprocess import *
 import os
 import sys
-
 
 COLLECTOR_SCRIPT = "process_resource_usage_collector.sh"
 RESULTS_DIRECTORY = sys.argv[1]
