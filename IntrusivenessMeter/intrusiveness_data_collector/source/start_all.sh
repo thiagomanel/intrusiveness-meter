@@ -1,4 +1,5 @@
 #!/bin/bash
 
-# FIXME hard coded
-source/start_client.sh
+INTRUSIVENESS_METER_HOME=$INTRUSIVENESS_METER_HOME
+
+$INTRUSIVENESS_METER_HOME/source/start_client.sh

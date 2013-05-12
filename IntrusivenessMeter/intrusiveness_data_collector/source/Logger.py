@@ -12,10 +12,13 @@
 # LOGS_DIRECTORY
 #
 
-import time
 import os
 
-LOGS_DIRECTORY = "logs"
+INTRUSIVENESS_METER_HOME_PROPERTY = "INTRUSIVENESS_METER_HOME"
+INTRUSIVENESS_METER_HOME = os.environ[INTRUSIVENESS_METER_HOME_PROPERTY]
+
+LOGS_DIRECTORY = INTRUSIVENESS_METER_HOME + "/logs"
+TIME_SCRIPT = INTRUSIVENESS_METER_HOME + "/source/time.sh"
 
 class Logger:
     def __init__(this, log_file_name, mode = "w"):
@@ -23,7 +26,7 @@ class Logger:
         this.file = open(this.log_file_name, mode)
 
     def get_time(self):
-        return os.popen("bash source/time.sh").read()
+        return os.popen("bash " + TIME_SCRIPT).read()
 
     def log(this, log):
         this.file.write(this.get_time() + " " + log + "\n")

@@ -35,7 +35,6 @@ function stop_task_tracker_daemon
 function stop_whole_system_process_monitor
 {
 	PID="`ps xau | grep whole_system_processes_monitor.sh | awk '{ print $2}'`"
-	echo $PID
 	kill $PID
 }
 

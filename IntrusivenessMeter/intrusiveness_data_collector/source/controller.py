@@ -20,9 +20,15 @@ from subprocess import *
 from configuration_loader import *
 from Logger import *
 
-CONF_DIRECTORY = "conf"
+INTRUSIVENESS_METER_HOME_PROPERTY = "INTRUSIVENESS_METER_HOME"
+INTRUSIVENESS_METER_HOME = os.environ["INTRUSIVENESS_METER_HOME"] 
 
-HADOOP_SCRIPT = "hadoop.sh"
+CONF_DIRECTORY = INTRUSIVENESS_METER_HOME + "/conf"
+SOURCE_DIRECTORY = INTRUSIVENESS_METER_HOME + "/source"
+
+HADOOP_SCRIPT = SOURCE_DIRECTORY + "/hadoop.sh"
+HADOOP_INFO_SCRIPT = SOURCE_DIRECTORY + "/hadoop_info.sh"
+
 HADOOP_SCRIPT_CONF_FILE = CONF_DIRECTORY + "/hadoop_configuration"
 
 CONTROLLER_CONF_FILE = CONF_DIRECTORY + "/controller_configuration"
@@ -50,12 +56,12 @@ class Controller:
 
     def run_benchmark(self, benchmark, hadoop_script_conf_file):
         # FIXME hard coded
-        return os.system("bash source/hadoop.sh " + benchmark + " " + hadoop_script_conf_file)
+        return os.system("bash " + HADOOP_SCRIPT + " " + benchmark + " " + hadoop_script_conf_file)
 
     def thereAreRunningBenchmarks(self):
         running = False
 	# FIXME hard coded
-        input = os.popen("bash source/hadoop_info.sh -r").read()
+        input = os.popen("bash " + HADOOP_INFO_SCRIPT + " -r").read()
         if input == "true":
             running = True
         return running

@@ -26,8 +26,11 @@ from subprocess import *
 import os
 import sys
 
-# FIXME hard coded
-COLLECTOR_SCRIPT = "source/process_resource_usage_collector.sh"
+
+INTRUSIVENESS_METER_HOME_PROPERTY = "INTRUSIVENESS_METER_HOME"
+INTRUSIVENESS_METER_HOME = os.environ["INTRUSIVENESS_METER_HOME"]
+
+COLLECTOR_SCRIPT = INTRUSIVENESS_METER_HOME + "/source/process_resource_usage_collector.sh"
 RESULTS_DIRECTORY = sys.argv[1]
 
 monitored_processes = []
@@ -46,12 +49,10 @@ def get_benchmarks_processes():
 
 def get_process_cpu_usage(benchmark_process):
     cpu =  float(os.popen("ps -p " + benchmark_process + " -o %cpu | sed 1d").read())
-    print cpu
     return cpu
 
 def get_process_memory_usage(benchmark_process):
     memory = float(os.popen("awk '/Rss:/{ sum += $2 } END { print sum }' /proc/" + benchmark_process + "/smaps").read())
-    print memory
     return memory
 
 def start_process_monitoring(PID):

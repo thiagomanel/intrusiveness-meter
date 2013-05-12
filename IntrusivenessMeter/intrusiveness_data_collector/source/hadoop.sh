@@ -33,6 +33,8 @@
 BENCHMARK=$1
 CONFIGURATION_FILE=$2
 
+INTRUSIVENESS_METER_HOME=$INTRUSIVENESS_METER_HOME
+
 # terasort configuration
 TERASORT_INPUT_DIRECTORY=""
 TERASORT_OUTPUT_DIRECTORY=""
@@ -49,17 +51,17 @@ DFSIO_NUMBER_OF_FILES=0
 
 # debug configuration
 DEBUG=true
-DEBUG_FILE_NAME="logs/hadoop_interface.log"
+DEBUG_FILE_NAME="$INTRUSIVENESS_METER_HOME/logs/hadoop_interface.log"
 
 HADOOP=$HADOOP_HOME
 
-TEST_PROGRAMS_DIRECTORY="src/test"
-CPU_BOUND_TEST_PROGRAM=$TEST_PROGRAMS_DIRECTORY/"cpu"
-MEMORY_BOUND_TEST_PROGRAM=$TEST_PROGRAMS_DIRECTORY/"memory"
+TEST_PROGRAMS_DIRECTORY="$INTRUSIVENESS_METER_HOME/source/test"
+CPU_BOUND_TEST_PROGRAM="$TEST_PROGRAMS_DIRECTORY/cpu"
+MEMORY_BOUND_TEST_PROGRAM="$TEST_PROGRAMS_DIRECTORY/memory"
 #
 # FIXME program to be coded
 #
-IO_BOUND_TEST_PROGRAM=$TEST_PROGRAMS_DIRECTORY/"io"
+IO_BOUND_TEST_PROGRAM="$TEST_PROGRAMS_DIRECTORY/io"
 
 function debug_startup
 {
@@ -159,11 +161,15 @@ function start_benchmark
 	$COMMAND &
 }
 
-debug_startup
+if [ $INTRUSIVENESS_METER_HOME ]; then
+	debug_startup
 
-read_configuration
+	read_configuration
 
-start_benchmark $BENCHMARK
+	start_benchmark $BENCHMARK
 
-debug "--------------------"
-debug "--------------------"
+	debug "--------------------"
+	debug "--------------------"
+else 
+	echo "INTRUSIVENESS_METER_HOME is not defined."
+fi

@@ -35,6 +35,8 @@ BASE_OUTPUT_FILENAME=$1
 OUTPUT_DIRECTORY=$2
 DEVICE_TO_MONITOR=$3
 
+INTRUSIVENESS_METER_HOME=$INTRUSIVENESS_METER_HOME
+
 CPU_IDLE_FILENAME=$OUTPUT_DIRECTORY/$BASE_OUTPUT_FILENAME"_system.idlecpu"
 CPU_USER_FILENAME=$OUTPUT_DIRECTORY/$BASE_OUTPUT_FILENAME"_system.usercpu"
 MEMORY_USAGE_FILENAME=$OUTPUT_DIRECTORY/$BASE_OUTPUT_FILENAME"_system.mem"
@@ -63,7 +65,7 @@ WRITE_NUMBER=0
 #done
 
 DEBUG=true
-DEBUG_FILE_NAME="logs/collector_system.log"
+DEBUG_FILE_NAME="$INTRUSIVENESS_METER_HOME/logs/collector_system.log"
 
 function debug_startup
 {
@@ -211,24 +213,28 @@ function print_system_device_usage
 # Main
 #
 
-check_base_file_name
+if [ $INTRUSIVENESS_METER_HOME ]; then
+	check_base_file_name
 
-debug_startup
+	debug_startup
 
-debug "Creating results files"
-start_up
-debug "Created results files"
+	debug "Creating results files"
+	start_up
+	debug "Created results files"
+	
+	debug "getting system information"
+	print_machine_info
+	debug "got system information"
 
-debug "getting system information"
-print_machine_info
-debug "got system information"
-
-while [ "1" = "1" ]; do
-	debug "Getting data from system"
-	get_system_data
-	debug "Got data from system"
-
-	print_system_cpu_usage
-	print_system_memory_usage
-	print_system_device_usage
-done
+	while [ "1" = "1" ]; do
+		debug "Getting data from system"
+		get_system_data
+		debug "Got data from system"
+	
+		print_system_cpu_usage
+		print_system_memory_usage
+		print_system_device_usage
+	done
+else
+	echo "INTRUSIVENESS_METER_HOME is not defined."
+fi
