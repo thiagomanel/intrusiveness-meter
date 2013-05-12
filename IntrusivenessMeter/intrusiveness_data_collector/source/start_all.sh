@@ -1,3 +1,4 @@
 #!/bin/bash
 
-./start_client.sh
+# FIXME hard coded
+source/start_client.sh
