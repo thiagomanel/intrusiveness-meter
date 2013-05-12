@@ -1,0 +1,15 @@
+# 
+# The partition to monitor
+#
+DEVICE_TO_MONITOR=/dev/sda2
+
+#
+# The base filename for the system resources usage monitor
+#
+SYSTEM_RESOURCE_BASE_OUTPUT_FILENAME=system_monitoring
+
+#
+# This value is used by the whole system process monitor and
+# it's the time between the logging actions (in seconds).
+#
+WHOLE_SYSTEM_PROCESS_DAEMON_WAIT_TIME=1
