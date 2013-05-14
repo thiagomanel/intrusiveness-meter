@@ -13,6 +13,7 @@
 #
 
 import os
+from Configuration import *
 
 INTRUSIVENESS_METER_HOME_PROPERTY = "INTRUSIVENESS_METER_HOME"
 INTRUSIVENESS_METER_HOME = os.environ[INTRUSIVENESS_METER_HOME_PROPERTY]
@@ -29,5 +30,6 @@ class Logger:
         return os.popen("bash " + TIME_SCRIPT).read()
 
     def log(this, log):
-        this.file.write(this.get_time() + " " + log + "\n")
-        this.file.flush()
+        if LOG_ENABLED: 
+            this.file.write(this.get_time() + " " + log + "\n")
+            this.file.flush()
