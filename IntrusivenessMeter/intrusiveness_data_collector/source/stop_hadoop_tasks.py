@@ -18,7 +18,7 @@
 import Logger
 import os
 
-logger = Logger.Logger("stopped.log")
+logger = Logger.Logger("stopped.log", "a")
 discomfort_report = Logger.Logger("discomfort.log", "a")
 
 # FIXME duplicated in hadoop_aware_collector.py
