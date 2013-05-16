@@ -47,10 +47,12 @@ CPU_IDLE=0
 CPU_USER=0
 MEMORY_USED=0
 #  FIXME add doc on these values
-# Read sar command documentation to get information about these values meaning 
+# Read vmstat command documentation to get information about these values meaning 
 #
 READ_NUMBER=0
 WRITE_NUMBER=0
+READ_SECTORS=0
+WRITTEN_SECTORS=0
 
 #
 # TODO code that may be used to get specific cpu data
@@ -179,11 +181,13 @@ function get_system_data
 {
 	sar_data="`sar -u -r -d 1 1 | grep "Average" | sed 1d | sed 2d | sed 3d`"
 	vmstat_data="`vmstat -p $DEVICE_TO_MONITOR | sed 1d`"
-	CPU_IDLE=`echo $sar_data | awk '{ print $8 }'`
-	CPU_USER=`echo $sar_data | awk '{ print $3 }'`
-	MEMORY_USED=`echo $sar_data | awk '{ print $12 }'`
-	READ_NUMBER=`echo $vmstat_data | awk '{ print $1}'`
-	WRITE_NUMBER=`echo $vmstat_data | awk '{ print $3 }'`
+	CPU_IDLE="`echo $sar_data | awk '{ print $8 }'`"
+	CPU_USER="`echo $sar_data | awk '{ print $3 }'`"
+	MEMORY_USED="`echo $sar_data | awk '{ print $12 }'`"
+	READ_NUMBER="`echo $vmstat_data | awk '{ print $1 }'`"
+	READ_SECTORS="`echo $vmstat_data | awk '{ print $2 }'`"
+	WRITE_NUMBER="`echo $vmstat_data | awk '{ print $3 }'`"
+	WRITTEN_SECTORS="`echo $vmstat_data | awk '{ print $4 }'`"
 }
 
 function print_system_cpu_usage
@@ -205,8 +209,10 @@ function print_system_device_usage
 {
 	echo -n "`date "+%d-%m-%Y-%H-%M-%S"`" "`date "+%s%N"` " >> $READ_RATE_FILENAME
 	echo -n "`date "+%d-%m-%Y-%H-%M-%S"`" "`date "+%s%N"` " >> $WRITE_RATE_FILENAME
-	echo $READ_NUMBER >> $READ_RATE_FILENAME
-	echo $WRITE_NUMBER >> $WRITE_RATE_FILENAME
+	echo -n $READ_NUMBER >> $READ_RATE_FILENAME
+	echo " $READ_SECTORS" >> $READ_RATE_FILENAME
+	echo -n $WRITE_NUMBER >> $WRITE_RATE_FILENAME
+	echo " $WRITTEN_SECTORS" >> $WRITE_RATE_FILENAME
 }
 
 #
