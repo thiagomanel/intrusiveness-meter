@@ -15,8 +15,12 @@ public class UserTrayIcon {
 	private Image iconImage;
 	private TrayIcon trayIcon;
 	
-	private static final String RED_ICON_FILE = "images/red_icon.png";
-	private static final String RUNNER_ICON_FILE = "images/runner_icon.jpg";
+	private static final String INTRUSIVENESS_METER_HOME = System.getenv("INTRUSIVENESS_METER_HOME");
+	private static final String RED_ICON_FILE = INTRUSIVENESS_METER_HOME + "/images/red_icon.png";
+	private static final String RUNNER_ICON_FILE = INTRUSIVENESS_METER_HOME + "/images/runner_icon.jpg";
+	
+	private static final String STOP_HADOOP_TASKS_SCRIPT = INTRUSIVENESS_METER_HOME + "/source/stop_hadoop_tasks.py";
+	private static final String PYTHON_INTERPRETER = "/usr/bin/python";
 	
 	public UserTrayIcon(String imagePathName) {
 		iconImage = Toolkit.getDefaultToolkit().getImage(imagePathName);
@@ -68,7 +72,7 @@ public class UserTrayIcon {
 		
 		private void reportDiscomfort() {
 			try {
-				ProcessBuilder pb = new ProcessBuilder("/usr/bin/python", "source/stop_hadoop_tasks.py");
+				ProcessBuilder pb = new ProcessBuilder(PYTHON_INTERPRETER, STOP_HADOOP_TASKS_SCRIPT);
 				pb.directory(new File("."));
 				pb.start();
 			} catch (IOException e) {
