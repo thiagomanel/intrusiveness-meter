@@ -36,6 +36,11 @@ HADOOP_AWARE_COLLECTOR="$INTRUSIVENESS_METER_HOME/source/hadoop_aware_collector.
 TASK_TRACKER_DAEMON="$INTRUSIVENESS_METER_HOME/source/task_tracker_start_daemon.sh"
 WHOLE_SYSTEM_PROCESS_DAEMON="$INTRUSIVENESS_METER_HOME/source/whole_system_processes_monitor.sh"
 
+SYSTEM_RESOURCE_COLLECTOR_ERROR_FILE="$INTRUSIVENESS_METER_HOME/logs/system_resource_usage_collector.error"
+HADOOP_AWARE_COLLECTOR_ERROR_FILE="$INTRUSIVENESS_METER_HOME/logs/hadoop_aware_collector.error"
+TASK_TRACKER_DAEMON_ERROR_FILE="$INTRUSIVENESS_METER_HOME/logs/task_tracker_start_daemon.error"
+WHOLE_SYSTEM_PROCESS_DAEMON_ERROR_FILE="$INTRUSIVENESS_METER_HOME/logs/whole_system_processes_monitor.error"
+
 # debug configuration
 DEBUG=true
 DEBUG_FILE_NAME="$INTRUSIVENESS_METER_HOME/logs/client_starter.log"
@@ -76,19 +81,19 @@ function read_configuration
 function start_client_daemons
 {
 	debug "Starting system resource usage monitor"
-	$SYSTEM_RESOURCE_COLLECTOR $SYSTEM_RESOURCE_BASE_OUTPUT_FILENAME $RESULTS_DIRECTORY $DEVICE_TO_MONITOR &
+	$SYSTEM_RESOURCE_COLLECTOR $SYSTEM_RESOURCE_BASE_OUTPUT_FILENAME $RESULTS_DIRECTORY $DEVICE_TO_MONITOR 2> $SYSTEM_RESOURCE_COLLECTOR_ERROR_FILE &
 	debug "Started system resource usage monitor"
 
 	debug "Starting hadoop aware daemon"
-	python $HADOOP_AWARE_COLLECTOR $RESULTS_DIRECTORY &
+	python $HADOOP_AWARE_COLLECTOR $RESULTS_DIRECTORY 2> $HADOOP_AWARE_COLLECTOR_ERROR_FILE &
 	debug "Started hadoop aware daemon"	
 
 	debug "Starting Task Tracker starter daemon"
-	$TASK_TRACKER_DAEMON &
+	$TASK_TRACKER_DAEMON 2> $TASK_TRACKER_DAEMON_ERROR_FILE &
 	debug "Started Task Tracker starter daemon"	
 
 	debug "Starting whole system process monitor"
-	$WHOLE_SYSTEM_PROCESS_DAEMON $RESULTS_DIRECTORY $WHOLE_SYSTEM_PROCESS_DAEMON_WAIT_TIME &
+	$WHOLE_SYSTEM_PROCESS_DAEMON $RESULTS_DIRECTORY $WHOLE_SYSTEM_PROCESS_DAEMON_WAIT_TIME 2> $WHOLE_SYSTEM_PROCESS_DAEMON_ERROR_FILE &
 	debug "Started whole system process monitor"
 }
 
