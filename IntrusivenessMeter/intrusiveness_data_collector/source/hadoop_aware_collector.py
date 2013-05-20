@@ -48,12 +48,22 @@ def get_benchmarks_processes():
     return hadoop_processes
 
 def get_process_cpu_usage(benchmark_process):
-    cpu =  float(os.popen("ps -p " + benchmark_process + " -o %cpu | sed 1d").read())
-    return cpu
+    os_cpu_data = os.popen("ps -p " + benchmark_process + " -o %cpu | sed 1d").read()
+    logger.log("os_cpu_data:" + str(os_cpu_data))
+    try:
+        cpu =  float(os_cpu_data)
+        return cpu
+    except:
+        return 0
 
 def get_process_memory_usage(benchmark_process):
-    memory = float(os.popen("awk '/Rss:/{ sum += $2 } END { print sum }' /proc/" + benchmark_process + "/smaps").read())
-    return memory
+    os_memory_data = os.popen("awk '/Rss:/{ sum += $2 } END { print sum }' /proc/" + benchmark_process + "/smaps").read()
+    logger.log("os_memory_data:" + str(os_memory_data))
+    try:
+        memory = float(os_memory_data)
+        return memory
+    except:
+        return 0
 
 def start_process_monitoring(PID):
     logger.log("PID to monitor:" + PID)
