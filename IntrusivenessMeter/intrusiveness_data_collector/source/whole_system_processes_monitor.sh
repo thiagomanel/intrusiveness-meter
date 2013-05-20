@@ -23,22 +23,17 @@
 
 RESULTS_DIRECTORY=$1
 RESULTS_FILE="$RESULTS_DIRECTORY/system_processes"
-WAIT_TIME=$2
 
 INTRUSIVENESS_METER_HOME=$INTRUSIVENESS_METER_HOME
 TIME_SCRIPT="$INTRUSIVENESS_METER_HOME/source/time.sh"
 
 touch $RESULTS_FILE
 
-while [ "1" = "1" ]; do
-	TIME="`bash $TIME_SCRIPT`"
-	PROCESSES="`ps xau`"
-	echo "---------------------" >> $RESULTS_FILE
-	echo "---------------------" >> $RESULTS_FILE
-	echo "$TIME" >> $RESULTS_FILE
-	echo "---------------------" >> $RESULTS_FILE
-	echo "$PROCESSES" >> $RESULTS_FILE
-	echo >> $RESULTS_FILE
-
-	sleep $WAIT_TIME
-done
+TIME="`bash $TIME_SCRIPT`"
+PROCESSES="`ps xau`"
+echo "---------------------" >> $RESULTS_FILE
+echo "---------------------" >> $RESULTS_FILE
+echo "$TIME" >> $RESULTS_FILE
+echo "---------------------" >> $RESULTS_FILE
+echo "$PROCESSES" >> $RESULTS_FILE
+echo >> $RESULTS_FILE

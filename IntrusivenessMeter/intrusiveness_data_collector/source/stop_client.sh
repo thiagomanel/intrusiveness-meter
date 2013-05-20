@@ -32,13 +32,6 @@ function stop_task_tracker_daemon
 	kill $PID
 }
 
-function stop_whole_system_process_monitor
-{
-	PID="`ps xau | grep whole_system_processes_monitor.sh | awk '{ print $2}'`"
-	kill $PID
-}
-
 stop_system_resource_collector
 stop_hadoop_aware_collector
 stop_task_tracker_daemon
-stop_whole_system_process_monitor

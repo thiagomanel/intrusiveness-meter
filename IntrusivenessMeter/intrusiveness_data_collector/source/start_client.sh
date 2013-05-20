@@ -18,7 +18,6 @@
 # 
 # DEVICE_TO_MONITOR=[property value]
 # SYSTEM_RESOURCE_BASE_OUTPUT_FILENAME=[property value]
-# WHOLE_SYSTEM_PROCESS_DAEMON_WAIT_TIME=[property value]
 #
 
 INTRUSIVENESS_METER_HOME=$INTRUSIVENESS_METER_HOME
@@ -29,17 +28,14 @@ CONFIGURATION_FILE="$CONF_DIRECTORY/client_configuration"
 
 DEVICE_TO_MONITOR=""
 SYSTEM_RESOURCE_BASE_OUTPUT_FILENAME=""
-WHOLE_SYSTEM_PROCESS_DAEMON_WAIT_TIME=""
 
 SYSTEM_RESOURCE_COLLECTOR="$INTRUSIVENESS_METER_HOME/source/system_resource_usage_collector.sh"
 HADOOP_AWARE_COLLECTOR="$INTRUSIVENESS_METER_HOME/source/hadoop_aware_collector.py"
 TASK_TRACKER_DAEMON="$INTRUSIVENESS_METER_HOME/source/task_tracker_start_daemon.sh"
-WHOLE_SYSTEM_PROCESS_DAEMON="$INTRUSIVENESS_METER_HOME/source/whole_system_processes_monitor.sh"
 
 SYSTEM_RESOURCE_COLLECTOR_ERROR_FILE="$INTRUSIVENESS_METER_HOME/logs/system_resource_usage_collector.error"
 HADOOP_AWARE_COLLECTOR_ERROR_FILE="$INTRUSIVENESS_METER_HOME/logs/hadoop_aware_collector.error"
 TASK_TRACKER_DAEMON_ERROR_FILE="$INTRUSIVENESS_METER_HOME/logs/task_tracker_start_daemon.error"
-WHOLE_SYSTEM_PROCESS_DAEMON_ERROR_FILE="$INTRUSIVENESS_METER_HOME/logs/whole_system_processes_monitor.error"
 
 # debug configuration
 DEBUG=true
@@ -71,11 +67,9 @@ function read_configuration
         # client configuration
 	DEVICE_TO_MONITOR="`echo ${CONTENT[0]} | cut -d = -f2-`"
         SYSTEM_RESOURCE_BASE_OUTPUT_FILENAME="`echo ${CONTENT[1]} | cut -d = -f2-`"
-        WHOLE_SYSTEM_PROCESS_DAEMON_WAIT_TIME="`echo ${CONTENT[2]} | cut -d = -f2-`"
 
 	debug "device to monitor = $DEVICE_TO_MONITOR"
 	debug "system resource base output filename = $SYSTEM_RESOURCE_BASE_OUTPUT_FILENAME"
-	debug "whole system process daemon wait time = $WHOLE_SYSTEM_PROCESS_DAEMON_WAIT_TIME"
 }
 
 function start_client_daemons
@@ -91,10 +85,6 @@ function start_client_daemons
 	debug "Starting Task Tracker starter daemon"
 	$TASK_TRACKER_DAEMON 2> $TASK_TRACKER_DAEMON_ERROR_FILE &
 	debug "Started Task Tracker starter daemon"	
-
-	debug "Starting whole system process monitor"
-	$WHOLE_SYSTEM_PROCESS_DAEMON $RESULTS_DIRECTORY $WHOLE_SYSTEM_PROCESS_DAEMON_WAIT_TIME 2> $WHOLE_SYSTEM_PROCESS_DAEMON_ERROR_FILE &
-	debug "Started whole system process monitor"
 }
 
 #

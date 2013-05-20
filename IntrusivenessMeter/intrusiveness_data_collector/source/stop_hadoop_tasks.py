@@ -21,6 +21,9 @@ import os
 logger = Logger.Logger("stopped.log", "a")
 discomfort_report = Logger.Logger("discomfort.log", "a")
 
+RESULTS_DIRECTORY = os.environ["INTRUSIVENESS_METER_HOME"] + "/logs"
+SYSTEM_PROCESSES_LOGGER = os.environ['INTRUSIVENESS_METER_HOME'] + "/source/whole_system_processes_monitor.sh"
+
 # FIXME duplicated in hadoop_aware_collector.py
 def get_benchmarks_processes():
     hadoop_processes_str = os.popen("ps xau | grep hadoop | grep attempt | grep -v grep | awk '{ print $2 }'").read()
@@ -37,8 +40,15 @@ def kill_task_tracker():
     hadoop_home = os.environ['HADOOP_HOME']
     # FIXME should kill only the TaskTracker
     os.popen("bash " + hadoop_home + "/bin/stop-mapred.sh")
-   
 
+def log_system_processes():
+    logger.log(SYSTEM_PROCESSES_LOGGER)
+    logger.log(RESULTS_DIRECTORY)
+    os.popen("bash " + SYSTEM_PROCESSES_LOGGER + " " + RESULTS_DIRECTORY)  
+
+logger.log("logging the system processes") 
+log_system_processes()
+logger.log("logged system processes")
 discomfort_report.log("")
 logger.log("killing tasktracker")
 kill_task_tracker()
