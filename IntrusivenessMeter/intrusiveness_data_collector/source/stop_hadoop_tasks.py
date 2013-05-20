@@ -46,15 +46,19 @@ def log_system_processes():
     logger.log(RESULTS_DIRECTORY)
     os.popen("bash " + SYSTEM_PROCESSES_LOGGER + " " + RESULTS_DIRECTORY)  
 
-logger.log("logging the system processes") 
-log_system_processes()
-logger.log("logged system processes")
-discomfort_report.log("")
-logger.log("killing tasktracker")
-kill_task_tracker()
-logger.log("killed tasktracker")
+try:
+    logger.log("logging the system processes") 
+    log_system_processes()
+    logger.log("logged system processes")
+    discomfort_report.log("")
+    logger.log("killing tasktracker")
+    kill_task_tracker()
+    logger.log("killed tasktracker")
 
-for benchmark_process in get_benchmarks_processes():
-    logger.log("stopping PID: " + benchmark_process)
-    os.popen("kill " + benchmark_process)
-    logger.log("stopped PID: " + benchmark_process)
+    for benchmark_process in get_benchmarks_processes():
+        logger.log("stopping PID: " + benchmark_process)
+        os.popen("kill " + benchmark_process)
+        logger.log("stopped PID: " + benchmark_process)
+except Exception as error:
+    logger.log("Error: " + str(error))
+    raise

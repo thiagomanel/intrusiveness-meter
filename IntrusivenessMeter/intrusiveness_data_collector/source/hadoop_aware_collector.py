@@ -69,28 +69,32 @@ def start_process_monitoring(PID):
     logger.log("PID to monitor:" + PID)
     Popen(["bash", COLLECTOR_SCRIPT, str(PID), "1", str(PID) + "-" + str(time.time()), RESULTS_DIRECTORY])
 
-while True:
-    total_cpu_usage = 0
-    total_memory_usage = 0
+try:
+    while True:
+        total_cpu_usage = 0
+        total_memory_usage = 0
 
-    benchmarks_processes = get_benchmarks_processes()
-    logger.log("benchmark processes:" + str(benchmarks_processes)) 
-    logger.log("monitored:" + str(monitored_processes))
+        benchmarks_processes = get_benchmarks_processes()
+        logger.log("benchmark processes:" + str(benchmarks_processes)) 
+        logger.log("monitored:" + str(monitored_processes))
 
-    for benchmark_process in benchmarks_processes:
-        process_cpu_usage = get_process_cpu_usage(benchmark_process)
-        process_memory_usage = get_process_memory_usage(benchmark_process)
+        for benchmark_process in benchmarks_processes:
+            process_cpu_usage = get_process_cpu_usage(benchmark_process)
+            process_memory_usage = get_process_memory_usage(benchmark_process)
 
-        total_cpu_usage += process_cpu_usage
-        total_memory_usage += process_memory_usage
+            total_cpu_usage += process_cpu_usage
+            total_memory_usage += process_memory_usage
 
-        logger.log("benchmark process:" + benchmark_process)
-        if not benchmark_process in monitored_processes:
-            logger.log("starting monitoring PID:" + benchmark_process)
-            start_process_monitoring(benchmark_process)
-    monitored_processes = benchmarks_processes
+            logger.log("benchmark process:" + benchmark_process)
+            if not benchmark_process in monitored_processes:
+                logger.log("starting monitoring PID:" + benchmark_process)
+                start_process_monitoring(benchmark_process)
+        monitored_processes = benchmarks_processes
+        
+        hadoop_cpu_usage.log(str(total_cpu_usage))
+        hadoop_memory_usage.log(str(total_memory_usage))
 
-    hadoop_cpu_usage.log(str(total_cpu_usage))
-    hadoop_memory_usage.log(str(total_memory_usage))
-
-    time.sleep(1)
+        time.sleep(1)
+except Exception as error:
+    logger.log("Error: " + str(error))
+    raise

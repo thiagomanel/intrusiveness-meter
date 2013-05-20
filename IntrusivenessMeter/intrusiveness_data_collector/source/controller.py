@@ -55,8 +55,7 @@ class Controller:
         return random.sample(benchmarks, 1)[0]
 
     def run_benchmark(self, benchmark, hadoop_script_conf_file):
-        # FIXME hard coded
-        return os.system("bash " + HADOOP_SCRIPT + " " + benchmark + " " + hadoop_script_conf_file)
+        os.system("bash " + HADOOP_SCRIPT + " " + benchmark + " " + hadoop_script_conf_file)
 
     def thereAreRunningBenchmarks(self):
         running = False
@@ -109,7 +108,11 @@ def main():
     benchmarks = ["teragen", "dfwrite"]
 
     controller = Controller(CONTROLLER_CONF_FILE, CONTROLLER_LOG_FILE_NAME)
-    controller.run(benchmarks, HADOOP_SCRIPT_CONF_FILE)
+    try:
+        controller.run(benchmarks, HADOOP_SCRIPT_CONF_FILE)
+    except Exception as error:
+        controller.l.log("Error: " + str(error))
+        raise
 
 main()
 
