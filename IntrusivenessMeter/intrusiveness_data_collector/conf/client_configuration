@@ -9,7 +9,7 @@ DEVICE_TO_MONITOR=/dev/sda2
 SYSTEM_RESOURCE_BASE_OUTPUT_FILENAME=system_monitoring
 
 #
-# This value is used by the whole system process monitor and
-# it's the time between the logging actions (in seconds).
+# The time between attempts of starting the Hadoop Task Tracker
+# in seconds
 #
-WHOLE_SYSTEM_PROCESS_DAEMON_WAIT_TIME=1
+TASK_TRACKER_STARTER_WAIT_TIME=7200

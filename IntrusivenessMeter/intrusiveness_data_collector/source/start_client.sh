@@ -18,6 +18,7 @@
 # 
 # DEVICE_TO_MONITOR=[property value]
 # SYSTEM_RESOURCE_BASE_OUTPUT_FILENAME=[property value]
+# TASK_TRACKER_STARTER_WAIT_TIME=[property value]
 #
 
 INTRUSIVENESS_METER_HOME=$INTRUSIVENESS_METER_HOME
@@ -28,6 +29,7 @@ CONFIGURATION_FILE="$CONF_DIRECTORY/client_configuration"
 
 DEVICE_TO_MONITOR=""
 SYSTEM_RESOURCE_BASE_OUTPUT_FILENAME=""
+TASK_TRACKER_STARTER_WAIT_TIME=""
 
 SYSTEM_RESOURCE_COLLECTOR="$INTRUSIVENESS_METER_HOME/source/system_resource_usage_collector.sh"
 HADOOP_AWARE_COLLECTOR="$INTRUSIVENESS_METER_HOME/source/hadoop_aware_collector.py"
@@ -67,9 +69,11 @@ function read_configuration
         # client configuration
 	DEVICE_TO_MONITOR="`echo ${CONTENT[0]} | cut -d = -f2-`"
         SYSTEM_RESOURCE_BASE_OUTPUT_FILENAME="`echo ${CONTENT[1]} | cut -d = -f2-`"
+	TASK_TRACKER_STARTER_WAIT_TIME="`echo ${CONTENT[2]} | cut -d = -f2-`"
 
 	debug "device to monitor = $DEVICE_TO_MONITOR"
 	debug "system resource base output filename = $SYSTEM_RESOURCE_BASE_OUTPUT_FILENAME"
+	debug "task tracker starter wait time = $TASK_TRACKER_STARTER_WAIT_TIME"
 }
 
 function start_client_daemons
@@ -83,7 +87,7 @@ function start_client_daemons
 	debug "Started hadoop aware daemon"	
 
 	debug "Starting Task Tracker starter daemon"
-	$TASK_TRACKER_DAEMON 2> $TASK_TRACKER_DAEMON_ERROR_FILE &
+	$TASK_TRACKER_DAEMON $TASK_TRACKER_STARTER_WAIT_TIME 2> $TASK_TRACKER_DAEMON_ERROR_FILE &
 	debug "Started Task Tracker starter daemon"	
 }
 
