@@ -12,3 +12,6 @@ system_processes
 *.read
 *.write
 *.pyc
+*.Rhistory
+*.jar
+*.zip
