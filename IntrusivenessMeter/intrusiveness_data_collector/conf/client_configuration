@@ -1,7 +1,7 @@
 # 
 # The partition to monitor
 #
-DEVICE_TO_MONITOR=/dev/sda2
+DEVICE_TO_MONITOR=/dev/sda7
 
 #
 # The base filename for the system resources usage monitor
@@ -12,4 +12,4 @@ SYSTEM_RESOURCE_BASE_OUTPUT_FILENAME=system_monitoring
 # The time between attempts of starting the Hadoop Task Tracker
 # in seconds
 #
-TASK_TRACKER_STARTER_WAIT_TIME=7200
+TASK_TRACKER_STARTER_WAIT_TIME=1800

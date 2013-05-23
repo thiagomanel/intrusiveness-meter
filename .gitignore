@@ -2,3 +2,13 @@
 .metadata
 .settings
 *.swp
+*.log
+*.mem
+*.cpu
+*.error
+system_processes
+*.idlecpu
+*.usercpu
+*.read
+*.write
+*.pyc
