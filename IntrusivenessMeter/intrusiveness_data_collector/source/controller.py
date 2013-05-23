@@ -88,7 +88,6 @@ class Controller:
                     elif chosen_benchmark == "teravalidate":
                         chosen_benchmark = "teraclean"
                     else:
-                        # i think i need to finish the running benchmarks
                         chosen_benchmark = self.choose_benchmark(benchmarks)
 	
                     self.l.log("chosen benchmark: " + chosen_benchmark)
@@ -105,7 +104,7 @@ class Controller:
 #
 
 def main():
-    benchmarks = ["teragen", "dfwrite"]
+    benchmarks = ["teragen", "dfwrite", "mr"]
 
     controller = Controller(CONTROLLER_CONF_FILE, CONTROLLER_LOG_FILE_NAME)
     try:
