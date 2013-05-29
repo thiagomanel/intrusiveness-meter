@@ -34,7 +34,7 @@ public class UserTrayIcon {
 				trayIcon.addMouseListener(new DiscomfortMouseListener(trayIcon));
 				tray.add(trayIcon);
 			} else {
-				// FIXME WHAT if?
+				System.err.println("SystemTray is not supported.");
 			} 
 		} catch (AWTException e) {
 			System.err.println(e);
