@@ -38,6 +38,7 @@ monitored_processes = []
 logger = Logger.Logger("hadoop_aware.log")
 hadoop_cpu_usage = Logger.Logger("hadoop_resources_usage.cpu")
 hadoop_memory_usage = Logger.Logger("hadoop_resources_usage.mem")
+benchmarks_processes_logger = Logger.Logger("hadoop_processes.proc")
 
 def get_benchmarks_processes():
     hadoop_processes_str = os.popen("ps xau | grep hadoop | grep attempt | grep -v grep | awk '{ print $2 }'").read()
@@ -75,7 +76,7 @@ try:
         total_memory_usage = 0
 
         benchmarks_processes = get_benchmarks_processes()
-        logger.log("benchmark processes:" + str(benchmarks_processes)) 
+        benchmarks_processes_logger.log(str(benchmarks_processes)) 
         logger.log("monitored:" + str(monitored_processes))
 
         for benchmark_process in benchmarks_processes:
