@@ -35,10 +35,10 @@ RESULTS_DIRECTORY = sys.argv[1]
 
 monitored_processes = []
 
-logger = Logger.Logger("hadoop_aware.log")
-hadoop_cpu_usage = Logger.Logger("hadoop_resources_usage.cpu")
-hadoop_memory_usage = Logger.Logger("hadoop_resources_usage.mem")
-benchmarks_processes_logger = Logger.Logger("hadoop_processes.proc")
+logger = Logger.Logger("hadoop_aware.log", "a")
+hadoop_cpu_usage = Logger.Logger("hadoop_resources_usage.cpu", "a")
+hadoop_memory_usage = Logger.Logger("hadoop_resources_usage.mem", "a")
+benchmarks_processes_logger = Logger.Logger("hadoop_processes.proc", "a")
 
 def get_benchmarks_processes():
     hadoop_processes_str = os.popen("ps xau | grep hadoop | grep attempt | grep -v grep | awk '{ print $2 }'").read()
