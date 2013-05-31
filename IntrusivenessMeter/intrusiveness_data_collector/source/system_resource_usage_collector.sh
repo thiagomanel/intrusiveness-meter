@@ -54,6 +54,8 @@ WRITE_NUMBER=0
 READ_SECTORS=0
 WRITTEN_SECTORS=0
 
+INCARNATION_ID=$RANDOM
+
 #
 # TODO code that may be used to get specific cpu data
 #
@@ -220,6 +222,7 @@ function print_system_device_usage
 #
 
 if [ $INTRUSIVENESS_METER_HOME ]; then
+        
 	check_base_file_name
 
 	debug_startup
@@ -228,6 +231,8 @@ if [ $INTRUSIVENESS_METER_HOME ]; then
 	start_up
 	debug "Created results files"
 	
+        debug "Incarnation ID: $INCARNATION_ID"
+
 	debug "getting system information"
 	print_machine_info
 	debug "got system information"

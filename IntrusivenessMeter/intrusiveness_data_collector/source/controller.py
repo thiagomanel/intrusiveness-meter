@@ -19,6 +19,7 @@ import time
 from subprocess import *
 from configuration_loader import *
 from Logger import *
+from IDGenerator import *
 
 INTRUSIVENESS_METER_HOME_PROPERTY = "INTRUSIVENESS_METER_HOME"
 INTRUSIVENESS_METER_HOME = os.environ["INTRUSIVENESS_METER_HOME"] 
@@ -42,6 +43,11 @@ class Controller:
     def __init__(self, configuration_file, log_file):
         configuration_loader = Loader(configuration_file)
         self.l = Logger(log_file, "a")
+
+        self.idgenerator = IDGenerator()
+        self.incarnationid = self.idgenerator.generate()
+
+        self.l.log("Incarnation ID: " + self.incarnationid)
 
         if not configuration_loader.has_property(PROBABILITY_TO_RUN_PROPERTY) or not configuration_loader.has_property(SLEEP_TIME_PROPERTY):
             print "Invalid Configuration File"

@@ -25,7 +25,7 @@ import time
 from subprocess import *
 import os
 import sys
-
+from IDGenerator import *
 
 INTRUSIVENESS_METER_HOME_PROPERTY = "INTRUSIVENESS_METER_HOME"
 INTRUSIVENESS_METER_HOME = os.environ["INTRUSIVENESS_METER_HOME"]
@@ -39,6 +39,14 @@ logger = Logger.Logger("hadoop_aware.log", "a")
 hadoop_cpu_usage = Logger.Logger("hadoop_resources_usage.cpu", "a")
 hadoop_memory_usage = Logger.Logger("hadoop_resources_usage.mem", "a")
 benchmarks_processes_logger = Logger.Logger("hadoop_processes.proc", "a")
+
+idgenerator = IDGenerator()
+incarnationid = idgenerator.generate()
+
+logger.log("Incarnation ID: " + incarnationid)
+hadoop_cpu_usage.log("Incarnation ID: " + incarnationid)
+hadoop_memory_usage.log("Incarnation ID: " + incarnationid)
+benchmarks_processes_logger.log("Incarnation ID: " + incarnationid)
 
 def get_benchmarks_processes():
     hadoop_processes_str = os.popen("ps xau | grep hadoop | grep attempt | grep -v grep | awk '{ print $2 }'").read()

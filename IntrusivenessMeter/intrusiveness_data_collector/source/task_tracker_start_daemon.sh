@@ -28,6 +28,8 @@ WAIT_TIME=$1
 DEBUG=true
 DEBUG_FILE_NAME="$INTRUSIVENESS_METER_HOME/logs/task_tracker_starter.log"
 
+INCARNATION_ID=$RANDOM
+
 function debug_startup
 {
         if [ $DEBUG ]; then
@@ -52,6 +54,7 @@ function start_task_tracker
 
 while [ true ]; do
 	debug "Starting TaskTracker"        
+        debug "Incarnation ID: $INCARNATION_ID"
 	start_task_tracker
         debug "Started TaskTracker. Going sleep."
 	sleep $WAIT_TIME
