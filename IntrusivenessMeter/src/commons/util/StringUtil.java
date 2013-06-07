@@ -25,4 +25,18 @@ public class StringUtil {
 		}
 		return builder.toString();
 	}
+	
+	public static String concat(String separator, String[] strings, int startIndex, int endIndex) {
+		StringBuilder builder = new StringBuilder();
+		
+		int index = startIndex;
+		builder.append(strings[index++]);
+		
+		for (; index <= endIndex; index++) {
+			builder.append(separator);
+			builder.append(strings[index]);
+		}
+		
+		return builder.toString();
+	}
 }
