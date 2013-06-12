@@ -43,7 +43,6 @@ public class Controller {
 				return hadoopProcessesLogFile.getLineTime();
 			}
 		}
-		
 		throw new IOException("No execution end was found");
 	}
 }

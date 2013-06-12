@@ -14,7 +14,7 @@ import org.junit.Test;
 
 public class ControllerTest {
 	private static final String HADOOP_PROCESSES_LOG_FILE_NAME = "hadoop.proc";
-	private static final String CONTROLLER_LOG_FILE_NAME = "controller.log";
+	private static final String CONTROLLER_LOG_FILE_NAME = "controller_test.log";
 	private static final Object STARTED_BENCHMARK_MESSAGE = "started benchmark:";
 	private static final String NO_PROCESSES_STRING = "[]";
 	private static final String SOME_PROCESS_STRING = "[100]";
@@ -82,6 +82,59 @@ public class ControllerTest {
 		assertEquals(time18, executions.get(1).getFinishTime());	
 	}
 	
+	@Test
+	public void testUnsynchronizedFiles() throws IOException {
+		writeUnsynchronizedFiles();
+		controller = new Controller(CONTROLLER_LOG_FILE_NAME, HADOOP_PROCESSES_LOG_FILE_NAME);
+		
+		List<Execution> executions = controller.getExecutions();
+		
+		assertEquals(1, executions.size());
+		assertEquals(time11, executions.get(0).getStartTime());
+		assertEquals(time16, executions.get(0).getFinishTime());
+	}
+	
+	private void writeUnsynchronizedFiles() throws FileNotFoundException {
+		PrintStream controllerStream = new PrintStream(CONTROLLER_LOG_FILE_NAME);
+		PrintStream hadoopProcessesStream = new PrintStream(HADOOP_PROCESSES_LOG_FILE_NAME);
+		
+		controllerStream.printf("<date> %d %s\n", time1, "anything");
+		controllerStream.printf("<date> %d %s\n", time2, "anything");
+		controllerStream.printf("<date> %d %s\n", time3, "anything");
+		controllerStream.printf("<date> %d %s\n", time4, "anything");
+		controllerStream.printf("<date> %d %s\n", time5, "anything");
+		controllerStream.printf("<date> %d %s\n", time6, "anything");
+		controllerStream.printf("<date> %d %s\n", time7, "anything");
+		controllerStream.printf("<date> %d %s\n", time8, "anything");
+		controllerStream.printf("<date> %d %s\n", time9, "anything");
+		controllerStream.printf("<date> %d %s\n", time10, "anything");
+		controllerStream.printf("<date> %d %s\n", time11, STARTED_BENCHMARK_MESSAGE);		
+		controllerStream.printf("<date> %d %s\n", time12, "anything");
+		controllerStream.printf("<date> %d %s\n", time13, "anything");
+		controllerStream.printf("<date> %d %s\n", time14, "anything");
+		controllerStream.printf("<date> %d %s\n", time15, "anything");
+		controllerStream.printf("<date> %d %s\n", time16, "anything");
+		controllerStream.printf("<date> %d %s\n", time17, "anything");
+		controllerStream.printf("<date> %d %s\n", time18, "anything");
+		controllerStream.printf("<date> %d %s\n", time19, "anything");
+		controllerStream.printf("<date> %d %s\n", time20, "anything");
+		
+		hadoopProcessesStream.printf("<date> %d %s\n", time8, NO_PROCESSES_STRING);
+		hadoopProcessesStream.printf("<date> %d %s\n", time9, NO_PROCESSES_STRING);
+		hadoopProcessesStream.printf("<date> %d %s\n", time10, NO_PROCESSES_STRING);
+		hadoopProcessesStream.printf("<date> %d %s\n", time11, NO_PROCESSES_STRING);
+		hadoopProcessesStream.printf("<date> %d %s\n", time12, NO_PROCESSES_STRING);
+		hadoopProcessesStream.printf("<date> %d %s\n", time13, SOME_PROCESS_STRING);
+		hadoopProcessesStream.printf("<date> %d %s\n", time14, SOME_PROCESS_STRING);
+		hadoopProcessesStream.printf("<date> %d %s\n", time15, SOME_PROCESS_STRING);
+		hadoopProcessesStream.printf("<date> %d %s\n", time16, NO_PROCESSES_STRING);
+		hadoopProcessesStream.printf("<date> %d %s\n", time17, NO_PROCESSES_STRING);
+		hadoopProcessesStream.printf("<date> %d %s\n", time18, NO_PROCESSES_STRING);
+		
+		controllerStream.close();
+		hadoopProcessesStream.close();
+	}
+
 	private void writeBasicFiles() throws FileNotFoundException {
 		PrintStream controllerStream = new PrintStream(CONTROLLER_LOG_FILE_NAME);
 		PrintStream hadoopProcessesStream = new PrintStream(HADOOP_PROCESSES_LOG_FILE_NAME);
@@ -162,5 +215,5 @@ public class ControllerTest {
 		
 		controllerStream.close();
 		hadoopProcessesStream.close();
-	}
+	} 
 }

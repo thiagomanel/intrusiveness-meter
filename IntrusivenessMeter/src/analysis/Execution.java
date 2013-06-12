@@ -16,4 +16,15 @@ public class Execution {
 	public long getFinishTime() {
 		return finishTime;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Execution [startTime=");
+		builder.append(startTime);
+		builder.append(", finishTime=");
+		builder.append(finishTime);
+		builder.append("]");
+		return builder.toString();
+	}
 }
