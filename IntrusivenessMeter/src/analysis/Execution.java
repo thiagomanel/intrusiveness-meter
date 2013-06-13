@@ -1,10 +1,13 @@
 package analysis;
 
+import static commons.Preconditions.check;
+
 public class Execution {
 	private long startTime;
 	private long finishTime;
 	
 	public Execution(long startTime, long endTime) {
+		check(endTime >= startTime, "endTime must be greater than or equal to startTime.");
 		this.startTime = startTime;
 		this.finishTime = endTime;
 	}

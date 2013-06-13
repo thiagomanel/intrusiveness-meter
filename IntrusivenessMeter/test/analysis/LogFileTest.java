@@ -1,8 +1,10 @@
 package analysis;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 
@@ -30,9 +32,6 @@ public class LogFileTest {
 	public void setUp() throws IOException {
 		File testFile = new File(testLog);
 		testFile.createNewFile();
-		
-		writeBasicInput();
-		logFile = new LogFile(testLog);
 	}
 	
 	@After
@@ -42,6 +41,9 @@ public class LogFileTest {
 	
 	@Test
 	public void testGetMessage() throws IOException {
+		writeBasicInput();
+		logFile = new LogFile(testLog);
+		
 		assertEquals(message1, logFile.getMessage());
 		assertEquals(message1, logFile.getMessage());
 		
@@ -60,6 +62,9 @@ public class LogFileTest {
 	
 	@Test
 	public void testGetLineTime() throws IOException {
+		writeBasicInput();
+		logFile = new LogFile(testLog);
+		
 		assertEquals(time1, logFile.getLineTime());
 		assertEquals(time1, logFile.getLineTime());
 		
@@ -76,12 +81,46 @@ public class LogFileTest {
 		logFile.close();
 	}
 	
+	@Test
+	public void testNoMessageFiles() throws IOException {
+		writeNoMessageInput();
+		logFile = new LogFile(testLog);
+		
+		assertEquals(time1, logFile.getLineTime());
+		assertEquals(time1, logFile.getLineTime());
+		assertNull(logFile.getMessage());
+		
+		logFile.advance();
+		
+		assertEquals(time2, logFile.getLineTime());
+		assertEquals(time2, logFile.getLineTime());
+		assertEquals(message2, logFile.getMessage());
+		
+		logFile.advance();
+		
+		assertEquals(time3, logFile.getLineTime());
+		assertEquals(time3, logFile.getLineTime());
+		assertNull(logFile.getMessage());
+		
+		logFile.close();
+	}
+	
 	private void writeBasicInput() throws IOException {
 		PrintStream writer = new PrintStream(testLog); 
 		
 		writer.printf("adate %d %s\n", time1, message1);
 		writer.printf("adate %d %s\n", time2, message2);
 		writer.printf("adate %d %s\n", time3, message3 + "    " + message2);
+		
+		writer.close();
+	}
+	
+	private void writeNoMessageInput() throws FileNotFoundException {
+		PrintStream writer = new PrintStream(testLog); 
+		
+		writer.printf("adate %d\n", time1);
+		writer.printf("adate %d %s\n", time2, message2);
+		writer.printf("adate %d\n", time3);
 		
 		writer.close();
 	}

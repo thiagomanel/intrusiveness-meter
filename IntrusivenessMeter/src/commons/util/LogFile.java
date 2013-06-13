@@ -34,7 +34,12 @@ public class LogFile {
 		
 		String[] tokens = line.split("\\s+");
 		lineTime = Long.parseLong(tokens[TIME_INDEX]);
-		currentMessage = concat(" ", tokens, MESSAGE_START_INDEX, tokens.length - 1);
+		
+		if (tokens.length > 2) {
+			currentMessage = concat(" ", tokens, MESSAGE_START_INDEX, tokens.length - 1);			
+		} else {
+			currentMessage = null;
+		}
 		
 		return true;
 	}
