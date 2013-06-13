@@ -13,11 +13,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ControllerTest {
-	private static final String HADOOP_PROCESSES_LOG_FILE_NAME = "hadoop.proc";
-	private static final String CONTROLLER_LOG_FILE_NAME = "controller_test.log";
-	private static final Object STARTED_BENCHMARK_MESSAGE = "started benchmark:";
-	private static final String NO_PROCESSES_STRING = "[]";
-	private static final String SOME_PROCESS_STRING = "[100]";
+	private static final String HADOOP_RUNNING_INFO_FILE_NAME = "hadoop_running_test.log";
+	
+	private static final String RUNNING_MESSAGE = "True";
+	private static final String NOT_RUNNING_MESSAGE = "False";
+	
 	private Controller controller;	
 	
 	private static long time1 = 1000;
@@ -43,177 +43,119 @@ public class ControllerTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		File controllerFile = new File(CONTROLLER_LOG_FILE_NAME);
-		File hadoopProcessesFile = new File(HADOOP_PROCESSES_LOG_FILE_NAME);
-	
-		controllerFile.createNewFile();
-		hadoopProcessesFile.createNewFile();
+		File hadoopRunningFile = new File(HADOOP_RUNNING_INFO_FILE_NAME);
+		hadoopRunningFile.createNewFile();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		new File(CONTROLLER_LOG_FILE_NAME).delete();
-		new File(HADOOP_PROCESSES_LOG_FILE_NAME).delete();
+		new File(HADOOP_RUNNING_INFO_FILE_NAME).delete();
 	}
 	
 	@Test
 	public void testGetExecutionsBasicFiles() throws IOException {
 		writeBasicFiles();
-		controller = new Controller(CONTROLLER_LOG_FILE_NAME, HADOOP_PROCESSES_LOG_FILE_NAME);
-		
-		List<Execution> executions = controller.getExecutions();
-		
-		assertEquals(1, executions.size());
-		assertEquals(time2, executions.get(0).getStartTime());
-		assertEquals(time7, executions.get(0).getFinishTime());
-	}
-	
-	@Test
-	public void testGetExecutionsComplexFiles() throws IOException {
-		writeComplexFiles();
-		controller = new Controller(CONTROLLER_LOG_FILE_NAME, HADOOP_PROCESSES_LOG_FILE_NAME);
+		controller = new Controller(HADOOP_RUNNING_INFO_FILE_NAME);
 		
 		List<Execution> executions = controller.getExecutions();
 		
 		assertEquals(2, executions.size());
-		assertEquals(time2, executions.get(0).getStartTime());
-		assertEquals(time7, executions.get(0).getFinishTime());
-		assertEquals(time11, executions.get(1).getStartTime());
-		assertEquals(time18, executions.get(1).getFinishTime());	
+		assertEquals(time4, executions.get(0).getStartTime());
+		assertEquals(time5, executions.get(0).getFinishTime());
+		assertEquals(time7, executions.get(1).getStartTime());
+		assertEquals(time10, executions.get(1).getFinishTime());		
 	}
 	
 	@Test
-	public void testUnsynchronizedFiles() throws IOException {
-		writeUnsynchronizedFiles();
-		controller = new Controller(CONTROLLER_LOG_FILE_NAME, HADOOP_PROCESSES_LOG_FILE_NAME);
+	public void testGetExecutionsNoExecutionsFiles() throws IOException {
+		writeNoExecutionFiles();
+		
+		controller = new Controller(HADOOP_RUNNING_INFO_FILE_NAME);
 		
 		List<Execution> executions = controller.getExecutions();
 		
-		assertEquals(1, executions.size());
-		assertEquals(time11, executions.get(0).getStartTime());
-		assertEquals(time16, executions.get(0).getFinishTime());
+		assertEquals(0, executions.size());
 	}
 	
-	private void writeUnsynchronizedFiles() throws FileNotFoundException {
-		PrintStream controllerStream = new PrintStream(CONTROLLER_LOG_FILE_NAME);
-		PrintStream hadoopProcessesStream = new PrintStream(HADOOP_PROCESSES_LOG_FILE_NAME);
+	@Test
+	public void testGetExecutionsManyExecutionsFiles() throws IOException {
+		writeManyExecutionsFiles();
 		
-		controllerStream.printf("<date> %d %s\n", time1, "anything");
-		controllerStream.printf("<date> %d %s\n", time2, "anything");
-		controllerStream.printf("<date> %d %s\n", time3, "anything");
-		controllerStream.printf("<date> %d %s\n", time4, "anything");
-		controllerStream.printf("<date> %d %s\n", time5, "anything");
-		controllerStream.printf("<date> %d %s\n", time6, "anything");
-		controllerStream.printf("<date> %d %s\n", time7, "anything");
-		controllerStream.printf("<date> %d %s\n", time8, "anything");
-		controllerStream.printf("<date> %d %s\n", time9, "anything");
-		controllerStream.printf("<date> %d %s\n", time10, "anything");
-		controllerStream.printf("<date> %d %s\n", time11, STARTED_BENCHMARK_MESSAGE);		
-		controllerStream.printf("<date> %d %s\n", time12, "anything");
-		controllerStream.printf("<date> %d %s\n", time13, "anything");
-		controllerStream.printf("<date> %d %s\n", time14, "anything");
-		controllerStream.printf("<date> %d %s\n", time15, "anything");
-		controllerStream.printf("<date> %d %s\n", time16, "anything");
-		controllerStream.printf("<date> %d %s\n", time17, "anything");
-		controllerStream.printf("<date> %d %s\n", time18, "anything");
-		controllerStream.printf("<date> %d %s\n", time19, "anything");
-		controllerStream.printf("<date> %d %s\n", time20, "anything");
+		controller = new Controller(HADOOP_RUNNING_INFO_FILE_NAME);
 		
-		hadoopProcessesStream.printf("<date> %d %s\n", time8, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time9, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time10, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time11, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time12, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time13, SOME_PROCESS_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time14, SOME_PROCESS_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time15, SOME_PROCESS_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time16, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time17, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time18, NO_PROCESSES_STRING);
+		List<Execution> executions = controller.getExecutions();
 		
-		controllerStream.close();
-		hadoopProcessesStream.close();
+		assertEquals(4, executions.size());
+		assertEquals(time1, executions.get(0).getStartTime());
+		assertEquals(time3, executions.get(0).getFinishTime());
+		assertEquals(time5, executions.get(1).getStartTime());
+		assertEquals(time6, executions.get(1).getFinishTime());
+		assertEquals(time8, executions.get(2).getStartTime());
+		assertEquals(time10, executions.get(2).getFinishTime());
+		assertEquals(time12, executions.get(3).getStartTime());
+		assertEquals(time18, executions.get(3).getFinishTime());
+	}
+	
+	private void writeManyExecutionsFiles() throws FileNotFoundException {
+		PrintStream hadoopInfoStream = new PrintStream(HADOOP_RUNNING_INFO_FILE_NAME);	
+		
+		hadoopInfoStream.printf("<date> %d %s\n", time1, RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time2, RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time3, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time4, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time5, RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time6, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time7, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time8, RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time9, RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time10, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time11, NOT_RUNNING_MESSAGE);	
+		hadoopInfoStream.printf("<date> %d %s\n", time12, RUNNING_MESSAGE);	
+		hadoopInfoStream.printf("<date> %d %s\n", time13, RUNNING_MESSAGE);	
+		hadoopInfoStream.printf("<date> %d %s\n", time14, RUNNING_MESSAGE);	
+		hadoopInfoStream.printf("<date> %d %s\n", time15, RUNNING_MESSAGE);	
+		hadoopInfoStream.printf("<date> %d %s\n", time16, RUNNING_MESSAGE);	
+		hadoopInfoStream.printf("<date> %d %s\n", time17, RUNNING_MESSAGE);	
+		hadoopInfoStream.printf("<date> %d %s\n", time18, NOT_RUNNING_MESSAGE);	
+		hadoopInfoStream.printf("<date> %d %s\n", time19, NOT_RUNNING_MESSAGE);	
+		hadoopInfoStream.printf("<date> %d %s\n", time20, NOT_RUNNING_MESSAGE);	
+		
+		hadoopInfoStream.close();
+	}
+
+	private void writeNoExecutionFiles() throws FileNotFoundException {
+		PrintStream hadoopInfoStream = new PrintStream(HADOOP_RUNNING_INFO_FILE_NAME);
+
+		hadoopInfoStream.printf("<date> %d %s\n", time1, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time2, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time3, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time4, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time5, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time6, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time7, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time8, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time9, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time10, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time11, NOT_RUNNING_MESSAGE);	
+		
+		hadoopInfoStream.close();
 	}
 
 	private void writeBasicFiles() throws FileNotFoundException {
-		PrintStream controllerStream = new PrintStream(CONTROLLER_LOG_FILE_NAME);
-		PrintStream hadoopProcessesStream = new PrintStream(HADOOP_PROCESSES_LOG_FILE_NAME);
+		PrintStream hadoopInfoStream = new PrintStream(HADOOP_RUNNING_INFO_FILE_NAME);
 		
-		controllerStream.printf("<date> %d %s\n", time1, "anything");
-		controllerStream.printf("<date> %d %s\n", time2, STARTED_BENCHMARK_MESSAGE);
-		controllerStream.printf("<date> %d %s\n", time3, "anything");
-		controllerStream.printf("<date> %d %s\n", time4, "anything");
-		controllerStream.printf("<date> %d %s\n", time5, "anything");
-		controllerStream.printf("<date> %d %s\n", time6, "anything");
-		controllerStream.printf("<date> %d %s\n", time7, "anything");
-		controllerStream.printf("<date> %d %s\n", time8, "anything");
-		controllerStream.printf("<date> %d %s\n", time9, "anything");
-		controllerStream.printf("<date> %d %s\n", time10, "anything");
-		controllerStream.printf("<date> %d %s\n", time11, "anything");		
-		
-		hadoopProcessesStream.printf("<date> %d %s\n", time1, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time2, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time3, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time4, SOME_PROCESS_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time5, SOME_PROCESS_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time6, SOME_PROCESS_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time7, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time8, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time9, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time10, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time11, NO_PROCESSES_STRING);
-		
-		controllerStream.close();
-		hadoopProcessesStream.close();
+		hadoopInfoStream.printf("<date> %d %s\n", time1, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time2, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time3, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time4, RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time5, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time6, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time7, RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time8, RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time9, RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time10, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time11, NOT_RUNNING_MESSAGE);		
+
+		hadoopInfoStream.close();
 	}
-	
-	private void writeComplexFiles() throws FileNotFoundException {
-		PrintStream controllerStream = new PrintStream(CONTROLLER_LOG_FILE_NAME);
-		PrintStream hadoopProcessesStream = new PrintStream(HADOOP_PROCESSES_LOG_FILE_NAME);
-		
-		controllerStream.printf("<date> %d %s\n", time1, "anything");
-		controllerStream.printf("<date> %d %s\n", time2, STARTED_BENCHMARK_MESSAGE);
-		controllerStream.printf("<date> %d %s\n", time3, "anything");
-		controllerStream.printf("<date> %d %s\n", time4, "anything");
-		controllerStream.printf("<date> %d %s\n", time5, "anything");
-		controllerStream.printf("<date> %d %s\n", time6, "anything");
-		controllerStream.printf("<date> %d %s\n", time7, "anything");
-		controllerStream.printf("<date> %d %s\n", time8, "anything");
-		controllerStream.printf("<date> %d %s\n", time9, "anything");
-		controllerStream.printf("<date> %d %s\n", time10, "anything");
-		controllerStream.printf("<date> %d %s\n", time11, STARTED_BENCHMARK_MESSAGE);		
-		controllerStream.printf("<date> %d %s\n", time12, "anything");
-		controllerStream.printf("<date> %d %s\n", time13, "anything");
-		controllerStream.printf("<date> %d %s\n", time14, "anything");
-		controllerStream.printf("<date> %d %s\n", time15, "anything");
-		controllerStream.printf("<date> %d %s\n", time16, "anything");
-		controllerStream.printf("<date> %d %s\n", time17, "anything");
-		controllerStream.printf("<date> %d %s\n", time18, "anything");
-		controllerStream.printf("<date> %d %s\n", time19, "anything");
-		controllerStream.printf("<date> %d %s\n", time20, "anything");
-		
-		hadoopProcessesStream.printf("<date> %d %s\n", time1, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time2, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time3, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time4, SOME_PROCESS_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time5, SOME_PROCESS_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time6, SOME_PROCESS_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time7, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time8, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time9, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time10, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time11, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time12, SOME_PROCESS_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time13, SOME_PROCESS_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time14, SOME_PROCESS_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time15, SOME_PROCESS_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time16, SOME_PROCESS_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time17, SOME_PROCESS_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time18, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time19, NO_PROCESSES_STRING);
-		hadoopProcessesStream.printf("<date> %d %s\n", time20, NO_PROCESSES_STRING);
-		
-		controllerStream.close();
-		hadoopProcessesStream.close();
-	} 
 }

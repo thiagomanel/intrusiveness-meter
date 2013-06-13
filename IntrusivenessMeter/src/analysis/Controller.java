@@ -7,13 +7,12 @@ import java.util.List;
 import commons.util.LogFile;
 
 public class Controller {
+	private static final String RUNNING_BENCHMARK_MESSAGE = "True";
+	private static final String NOT_RUNNING_BENCHMARK_MESSAGE = "False";
+	private LogFile hadoopRunningFile;
 
-	private LogFile controllerLogFile;
-	private LogFile hadoopProcessesLogFile;
-
-	public Controller(String controllerLogFileName, String hadoopProcessesLogFileName) throws IOException {
-		controllerLogFile = new LogFile(controllerLogFileName);
-		hadoopProcessesLogFile = new LogFile(hadoopProcessesLogFileName);
+	public Controller(String hadoopRunningInfoFileName) throws IOException {
+		hadoopRunningFile = new LogFile(hadoopRunningInfoFileName);
 	}
 
 	public List<Execution> getExecutions() throws IOException {
@@ -21,28 +20,21 @@ public class Controller {
 		
 		do {
 			// find an execution
-			if (controllerLogFile.getMessage().contains("started benchmark")) {
+			if (hadoopRunningFile.getMessage().contains(RUNNING_BENCHMARK_MESSAGE)) {
 				// get the start time
-				long startTime = controllerLogFile.getLineTime();
+				long startTime = hadoopRunningFile.getLineTime();
 				// and find its end time
 				long endTime = getExecutionEndTime(startTime);
 				
 				executions.add(new Execution(startTime, endTime));
 			}			
-		} while (controllerLogFile.advance());
+		} while (hadoopRunningFile.advance());
 		return executions;
 	}
 
 	private long getExecutionEndTime(long startTime) throws IOException {
-		// find next execution
-		while (hadoopProcessesLogFile.advance() && hadoopProcessesLogFile.getMessage().contains("[]"));
-				
-		// find execution end
-		while (hadoopProcessesLogFile.advance()) {
-			if (hadoopProcessesLogFile.getMessage().contains("[]") && hadoopProcessesLogFile.getLineTime() > startTime) {
-				return hadoopProcessesLogFile.getLineTime();
-			}
-		}
-		throw new IOException("No execution end was found");
+		while (hadoopRunningFile.advance() && !hadoopRunningFile.getMessage().contains(NOT_RUNNING_BENCHMARK_MESSAGE));
+		
+		return hadoopRunningFile.getLineTime();
 	}
 }
