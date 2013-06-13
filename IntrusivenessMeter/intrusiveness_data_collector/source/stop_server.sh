@@ -16,3 +16,6 @@
 
 PID="`ps xau | grep controller.py | awk '{ print $2}'`"
 kill $PID
+
+PID="`ps xau | grep hadoop_running_info.py | awk '{ print $2}'`"
+kill $PID

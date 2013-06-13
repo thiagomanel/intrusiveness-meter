@@ -37,10 +37,13 @@ function hadoop_jobs
 if [ $OPTION = "-r" ]; then
 	JOBS="$(hadoop_jobs)"
 
-	# dependant on the hadoop output
-	if [ $JOBS = "JobId" ]; then
-		echo -n "false"
+	if [ $JOBS ]; then
+		# dependant on the hadoop output
+		if [ $JOBS = "JobId" ]; then
+				echo -n "false"
+		else	
+				echo -n "true"
+		fi
 	else
-		echo -n "true"
-	fi
+		echo -n "false" 
 fi
