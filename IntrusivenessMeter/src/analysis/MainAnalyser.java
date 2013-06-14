@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import analysis.data.HadoopInformation;
+import analysis.data.MachineUsage;
 
 public class MainAnalyser {
 	private static String[] machinesNames = new String[] {"abotoado"};
@@ -68,7 +69,7 @@ public class MainAnalyser {
 	
 	public static void main(String[] args) throws IOException {
 		for (String machine : machinesNames) {
-			MainAnalyser analyser = new MainAnalyser(null, null, null, null, new Machine(machine));
+			MainAnalyser analyser = new MainAnalyser(null, null, null, null, null);
 			analyser.writeReport();
 		}
 	}
