@@ -1,5 +1,5 @@
 package analysis;
 
-public class HadoopMachineUsage extends MachineUsage {
+public class HadoopMachineUsage {
 
 }
