@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import analysis.data.Execution;
 import analysis.data.MachineUsage;
 
 import commons.util.LogFile;
@@ -88,6 +89,8 @@ public class Machine {
 		Map<Long, Long> newReadSectors = new HashMap<Long, Long>();
 		Map<Long, Double> newReadMemory = new HashMap<Long, Double>();
 		
+		// FIXME there must be one loop for each data
+		// because some files may have different times
 		for (Long key : usage.getWriteNumber().keySet()) {
 			if (execution.getStartTime() <= key && key <= execution.getFinishTime()) {
 				newWriteNumber.put(key, usage.getWriteNumber().get(key));

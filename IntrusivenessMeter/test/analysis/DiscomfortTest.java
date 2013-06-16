@@ -12,6 +12,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import analysis.data.Execution;
+
 public class DiscomfortTest {
 
 	private static final String DISCOMFORT_LOG_FILE_NAME = "discomfort_test.log";

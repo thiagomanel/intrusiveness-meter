@@ -1,4 +1,4 @@
-package analysis;
+package analysis.data;
 
 import static commons.Preconditions.check;
 

@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import analysis.data.Execution;
+
 import commons.util.LogFile;
 
 public class Discomfort {

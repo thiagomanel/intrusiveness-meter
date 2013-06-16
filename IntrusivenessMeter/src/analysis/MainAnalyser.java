@@ -3,7 +3,9 @@ package analysis;
 import java.io.IOException;
 import java.util.List;
 
+import analysis.data.Execution;
 import analysis.data.HadoopInformation;
+import analysis.data.HadoopMachineUsage;
 import analysis.data.MachineUsage;
 
 public class MainAnalyser {

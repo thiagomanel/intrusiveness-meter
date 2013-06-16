@@ -12,6 +12,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import analysis.data.Execution;
+
 public class ControllerTest {
 	private static final String HADOOP_RUNNING_INFO_FILE_NAME = "hadoop_running_test.log";
 	

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
+import analysis.data.Execution;
+
 import commons.util.LogFile;
 
 public class IdleUser {

@@ -11,6 +11,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import analysis.data.Execution;
+
 public class IdleUserTest {
 
 	private static final String IDLE_TIME_LOG_FILE_NAME = "idle_test.log";
