@@ -14,12 +14,31 @@ import commons.util.LogFile;
 
 public class Hadoop {
 
+	private static final int BENCHMARK_STRING_INDEX = 1;
+	private static final String MESSAGE_TOKENS_SEPARATOR = ":";
+	private static final String STARTED_BENCHMARK_MARK = "started benchmark:";
 	private HadoopMachineUsage usage;
-
-	public Hadoop(String cpuFileName, String memoryFileName) throws IOException {
+	private HadoopInformation info;
+	
+	public Hadoop(String cpuFileName, String memoryFileName, String controllerFileName) throws IOException {
 		checkNotNull(cpuFileName, "cpuFileName must not be null.");
 		checkNotNull(memoryFileName, "memoryFileName must not be null.");
 		usage = new HadoopMachineUsage(getCPUUsage(cpuFileName), getMemoryUsage(memoryFileName));
+		info = new HadoopInformation(readInformation(controllerFileName));
+	}
+
+	private Map<Long, String> readInformation(String controllerFileName) throws IOException {
+		LogFile file = new LogFile(controllerFileName);
+		Map<Long, String> information = new HashMap<Long, String>();
+		
+		do {
+			if (file.getMessage().contains(STARTED_BENCHMARK_MARK)) {
+				String benchmark = file.getMessage().split(MESSAGE_TOKENS_SEPARATOR)[BENCHMARK_STRING_INDEX];
+				information.put(file.getLineTime(), benchmark);
+			}
+		} while (file.advance());
+		
+		return information;
 	}
 
 	private Map<Long, Double> getCPUUsage(String cpuFileName) throws IOException {
@@ -65,8 +84,15 @@ public class Hadoop {
 	}
 
 	public HadoopInformation getInformation(Execution execution) {
-		// TODO Auto-generated method stub
-		return null;
+		checkNotNull(execution, "execution must not be null.");
+		Map<Long, String> newBenchmarks = new HashMap<Long, String>();
+		
+		for (Long time : info.getBenchmarks().keySet()) {
+			if (execution.getStartTime() <= time && time <= execution.getFinishTime()) {
+				newBenchmarks.put(time, info.getBenchmarks().get(time));
+			}
+		}
+		
+		return new HadoopInformation(newBenchmarks);
 	}
-
 }
