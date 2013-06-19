@@ -81,29 +81,56 @@ public class Machine {
 	}
 
 	public MachineUsage getUsage(Execution execution) {
+		checkNotNull(execution, "execution must not be null.");
 		Map<Long, Long> newWriteNumber = new HashMap<Long, Long>();
 		Map<Long, Long> newWriteAttempt = new HashMap<Long, Long>();
-		Map<Long, Long> newReadNumber = new HashMap<Long, Long>();
-		Map<Long, Double> newIdleCPU = new HashMap<Long, Double>();
-		Map<Long, Double> newUserCPU = new HashMap<Long, Double>();
-		Map<Long, Long> newReadSectors = new HashMap<Long, Long>();
-		Map<Long, Double> newReadMemory = new HashMap<Long, Double>();
-		
-		// FIXME there must be one loop for each data
-		// because some files may have different times
-		for (Long key : usage.getWriteNumber().keySet()) {
-			if (execution.getStartTime() <= key && key <= execution.getFinishTime()) {
-				newWriteNumber.put(key, usage.getWriteNumber().get(key));
-				newReadNumber.put(key, usage.getReadNumber().get(key));
-				newIdleCPU.put(key, usage.getIdleCPU().get(key));
-				newUserCPU.put(key, usage.getUserCPU().get(key));
-				newWriteAttempt.put(key, usage.getWriteAttempts().get(key));
-				newReadSectors.put(key, usage.getReadSectors().get(key));
-				newReadMemory.put(key, usage.getMemory().get(key));
+		for (Long time : usage.getWriteNumber().keySet()) {
+			if (execution.getStartTime() <= time && time <= execution.getFinishTime()) {
+				newWriteNumber.put(time, usage.getWriteNumber().get(time));
+				newWriteAttempt.put(time, usage.getWriteAttempts().get(time));
 			}
 		}
 		
-		return new MachineUsage(newIdleCPU, newUserCPU, newReadMemory, newReadNumber, 
-					newReadSectors, newWriteNumber, newWriteAttempt);
+		Map<Long, Long> newReadNumber = new HashMap<Long, Long>();
+		Map<Long, Long> newReadSectors = new HashMap<Long, Long>();
+		for (Long time : usage.getReadNumber().keySet()) {
+			if (execution.getStartTime() <= time && time <= execution.getFinishTime()) {
+				newReadNumber.put(time, usage.getReadNumber().get(time));
+				newReadSectors.put(time, usage.getReadSectors().get(time));
+			}
+		}
+		
+		return new MachineUsage(getNewIdleCPU(execution), getNewUserCPU(execution), getNewMemory(execution), 
+				newReadNumber, newReadSectors, newWriteNumber, newWriteAttempt);
+	}
+
+	private Map<Long, Double> getNewMemory(Execution execution) {
+		Map<Long, Double> newMemory = new HashMap<Long, Double>();
+		for (Long time : usage.getMemory().keySet()) {
+			if (execution.getStartTime() <= time && time <= execution.getFinishTime()) {
+				newMemory.put(time, usage.getMemory().get(time));
+			}
+		}
+		return newMemory;
+	}
+
+	private Map<Long, Double> getNewUserCPU(Execution execution) {
+		Map<Long, Double> newUserCPU = new HashMap<Long, Double>();
+		for (Long time : usage.getUserCPU().keySet()) {
+			if (execution.getStartTime() <= time && time <= execution.getFinishTime()) {
+				newUserCPU.put(time, usage.getUserCPU().get(time));
+			}
+		}
+		return newUserCPU;
+	}
+
+	private Map<Long, Double> getNewIdleCPU(Execution execution) {
+		Map<Long, Double> newIdleCPU = new HashMap<Long, Double>();
+		for (Long time : usage.getIdleCPU().keySet()) {
+			if (execution.getStartTime() <= time && time <= execution.getFinishTime()) {
+				newIdleCPU.put(time, usage.getIdleCPU().get(time));
+			}
+		}
+		return newIdleCPU;
 	}
 }

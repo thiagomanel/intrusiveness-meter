@@ -62,7 +62,7 @@ public class MainAnalyser {
 	}
 
 	private boolean isValid(Execution execution) {
-		return idle.idle(execution);
+		return !idle.idle(execution);
 	}
 
 	private List<Execution> getExecutions() throws IOException {

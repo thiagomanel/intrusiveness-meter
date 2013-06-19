@@ -101,7 +101,7 @@ public class HadoopTest {
 	public void testGetMachineUsage() throws IOException {
 		writeBasicCPUFile();
 		writeBasicMemoryFile();
-		writeBasicHadoopInterfaceFile();
+		writeBasicHadoopBenchmarksFile();
 		
 		hadoop = new Hadoop(CPU_FILE_NAME, MEMORY_FILE_NAME, CONTROLLER_LOG_FILE);
 		
@@ -122,7 +122,7 @@ public class HadoopTest {
 		assertEquals(CPU_4, result2.getCPU().get(time4));
 		assertEquals(CPU_5, result2.getCPU().get(time5));
 		
-		assertEquals(5, result2.getCPU().size());
+		assertEquals(5, result2.getMemory().size());
 		assertEquals(MEMORY_1, result2.getMemory().get(time1));
 		assertEquals(MEMORY_2, result2.getMemory().get(time2));
 		assertEquals(MEMORY_3, result2.getMemory().get(time3));
@@ -136,7 +136,7 @@ public class HadoopTest {
 		assertEquals(CPU_4, result3.getCPU().get(time4));
 		assertEquals(CPU_5, result3.getCPU().get(time5));
 		
-		assertEquals(3, result3.getCPU().size());
+		assertEquals(3, result3.getMemory().size());
 		assertEquals(MEMORY_3, result3.getMemory().get(time3));
 		assertEquals(MEMORY_4, result3.getMemory().get(time4));
 		assertEquals(MEMORY_5, result3.getMemory().get(time5));
@@ -148,7 +148,7 @@ public class HadoopTest {
 		assertEquals(CPU_2, result4.getCPU().get(time2));
 		assertEquals(CPU_3, result4.getCPU().get(time3));
 		
-		assertEquals(3, result4.getCPU().size());
+		assertEquals(3, result4.getMemory().size());
 		assertEquals(MEMORY_1, result4.getMemory().get(time1));
 		assertEquals(MEMORY_2, result4.getMemory().get(time2));
 		assertEquals(MEMORY_3, result4.getMemory().get(time3));
@@ -158,7 +158,7 @@ public class HadoopTest {
 	public void testGetinformation() throws IOException {
 		writeBasicCPUFile();
 		writeBasicMemoryFile();
-		writeBasicHadoopInterfaceFile();
+		writeBasicHadoopBenchmarksFile();
 		
 		hadoop = new Hadoop(CPU_FILE_NAME, MEMORY_FILE_NAME, CONTROLLER_LOG_FILE);
 		
@@ -192,7 +192,88 @@ public class HadoopTest {
 		assertEquals(0, result4.getBenchmarks().size());
 	}
 	
-	private void writeBasicHadoopInterfaceFile() throws FileNotFoundException {
+	@Test
+	public void testGetInformationDifferentTimes() throws IOException {
+		writeDifferentTimesCPUMemoryAndHadoopBenchmarksFiles();
+		
+		hadoop = new Hadoop(CPU_FILE_NAME, MEMORY_FILE_NAME, CONTROLLER_LOG_FILE);
+		
+		HadoopInformation result1 = hadoop.getInformation(new Execution(time1, time20));
+		
+		assertEquals(6, result1.getBenchmarks().size());		
+		assertEquals(DFREAD, result1.getBenchmarks().get(time8));
+		assertEquals(DFCLEAN, result1.getBenchmarks().get(time10));
+		assertEquals(TERAGEN, result1.getBenchmarks().get(time13));
+		assertEquals(TERASORT, result1.getBenchmarks().get(time15));
+		assertEquals(TERAVALIDATE, result1.getBenchmarks().get(time16));
+		assertEquals(TERACLEAN, result1.getBenchmarks().get(time19));
+		
+		HadoopMachineUsage result2 = hadoop.getMachineUsage(new Execution(time1, time5));
+		
+		assertEquals(5, result2.getCPU().size());
+		assertEquals(CPU_1, result2.getCPU().get(time1));
+		assertEquals(CPU_2, result2.getCPU().get(time2));
+		assertEquals(CPU_3, result2.getCPU().get(time3));
+		assertEquals(CPU_4, result2.getCPU().get(time4));
+		assertEquals(CPU_5, result2.getCPU().get(time5));
+		
+		assertEquals(0, result2.getMemory().size());
+		
+		HadoopMachineUsage result3 = hadoop.getMachineUsage(new Execution(time10, time15));
+		
+		assertEquals(0, result3.getCPU().size());
+		
+		assertEquals(5, result3.getMemory().size());
+		assertEquals(MEMORY_1, result3.getMemory().get(time10));
+		assertEquals(MEMORY_2, result3.getMemory().get(time11));
+		assertEquals(MEMORY_3, result3.getMemory().get(time12));
+		assertEquals(MEMORY_4, result3.getMemory().get(time13));
+		assertEquals(MEMORY_5, result3.getMemory().get(time14));
+	}
+	
+	private void writeDifferentTimesCPUMemoryAndHadoopBenchmarksFiles() throws FileNotFoundException {
+		PrintStream controllerLogStream = new PrintStream(CONTROLLER_LOG_FILE);
+		
+		controllerLogStream.printf("<time> %d %s\n", time6, ANYTHING);
+		controllerLogStream.printf("<time> %d %s\n", time7, ANYTHING);
+		controllerLogStream.printf("<time> %d %s\n", time8, DFREAD_MARK);
+		controllerLogStream.printf("<time> %d %s\n", time9, ANYTHING);
+		controllerLogStream.printf("<time> %d %s\n", time10, DFCLEAN_MARK);
+		controllerLogStream.printf("<time> %d %s\n", time11, ANYTHING);
+		controllerLogStream.printf("<time> %d %s\n", time12, ANYTHING);
+		controllerLogStream.printf("<time> %d %s\n", time13, TERAGEN_MARK);
+		controllerLogStream.printf("<time> %d %s\n", time14, ANYTHING);
+		controllerLogStream.printf("<time> %d %s\n", time15, TERASORT_MARK);
+		controllerLogStream.printf("<time> %d %s\n", time16, TERAVALIDATE_MARK);
+		controllerLogStream.printf("<time> %d %s\n", time17, ANYTHING);
+		controllerLogStream.printf("<time> %d %s\n", time18, ANYTHING);
+		controllerLogStream.printf("<time> %d %s\n", time19, TERACLEAN_MARK);
+		controllerLogStream.printf("<time> %d %s\n", time20, ANYTHING);
+		
+		controllerLogStream.close();
+		
+		PrintStream cpuStream = new PrintStream(CPU_FILE_NAME);
+		
+		cpuStream.printf("<time> %d %f\n", time1, CPU_1);
+		cpuStream.printf("<time> %d %f\n", time2, CPU_2);
+		cpuStream.printf("<time> %d %f\n", time3, CPU_3);
+		cpuStream.printf("<time> %d %f\n", time4, CPU_4);
+		cpuStream.printf("<time> %d %f\n", time5, CPU_5);
+		
+		cpuStream.close();
+		
+		PrintStream memoryStream = new PrintStream(MEMORY_FILE_NAME);
+		
+		memoryStream.printf("<time> %d %f\n", time10, MEMORY_1);
+		memoryStream.printf("<time> %d %f\n", time11, MEMORY_2);
+		memoryStream.printf("<time> %d %f\n", time12, MEMORY_3);
+		memoryStream.printf("<time> %d %f\n", time13, MEMORY_4);
+		memoryStream.printf("<time> %d %f\n", time14, MEMORY_5);
+		
+		memoryStream.close();
+	}
+
+	private void writeBasicHadoopBenchmarksFile() throws FileNotFoundException {
 		PrintStream controllerLogStream = new PrintStream(CONTROLLER_LOG_FILE);
 		
 		controllerLogStream.printf("<time> %d %s\n", time1, ANYTHING);

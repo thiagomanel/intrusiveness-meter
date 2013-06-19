@@ -64,11 +64,27 @@ public class MachineTest {
 	private static final Double USER_CPU_4 = USER_CPU_3 + 20;
 	private static final Double USER_CPU_5 = USER_CPU_4 + 20;
 	
-	private static long time1 = 1000;
+	private static long time0 = 999;
+	private static long time1 = time0 + 1;
 	private static long time2 = time1 + 1;
 	private static long time3 = time2 + 1;
 	private static long time4 = time3 + 1;
 	private static long time5 = time4 + 1;
+	private static long time6 = time5 + 1;
+	private static long time7 = time6 + 1;
+	private static long time8 = time7 + 1;
+	private static long time9 = time8 + 1;
+	private static long time10 = time9 + 1;
+	private static long time11 = time10 + 1;
+	private static long time12 = time11 + 1;
+	private static long time13 = time12 + 1;
+	private static long time14 = time13 + 1;
+	private static long time15 = time14 + 1;
+	private static long time16 = time15 + 1;
+	private static long time17 = time16 + 1;
+	private static long time18 = time17 + 1;
+	private static long time19 = time18 + 1;
+	private static long time20 = time19 + 1;
 	
 	private static final String MACHINE_NAME = "localhost";
 	private Machine machine;
@@ -194,6 +210,111 @@ public class MachineTest {
 		assertEquals(MEMORY_USAGE_3, result3.getMemory().get(time3));
 		assertEquals(MEMORY_USAGE_4, result3.getMemory().get(time4));
 		assertEquals(MEMORY_USAGE_5, result3.getMemory().get(time5));
+	}
+
+	@Test
+	public void getGetUsageDifferentTimes() throws IOException {
+		writeDifferentTimesFiles();
+		
+		machine = new Machine(MACHINE_NAME, IDLE_CPU_INFO_FILENAME, USER_CPU_INFO_FILENAME, 
+				MEMORY_INFO_FILENAME, READ_INFO_FILENAME, WRITE_INFO_FILENAME);
+		
+		MachineUsage result1 = machine.getUsage(new Execution(time1, time20));
+		
+		assertEquals(5, result1.getWriteNumber().size());
+		assertEquals(WRITE_NUM_1, result1.getWriteNumber().get(time1));
+		assertEquals(WRITE_NUM_2, result1.getWriteNumber().get(time2));
+		assertEquals(WRITE_NUM_3, result1.getWriteNumber().get(time3));
+		assertEquals(WRITE_NUM_4, result1.getWriteNumber().get(time4));
+		assertEquals(WRITE_NUM_5, result1.getWriteNumber().get(time5));
+		assertEquals(5, result1.getWriteAttempts().size());
+		assertEquals(WRITE_ATTEMPTS_1, result1.getWriteAttempts().get(time1));
+		assertEquals(WRITE_ATTEMPTS_2, result1.getWriteAttempts().get(time2));
+		assertEquals(WRITE_ATTEMPTS_3, result1.getWriteAttempts().get(time3));
+		assertEquals(WRITE_ATTEMPTS_4, result1.getWriteAttempts().get(time4));
+		assertEquals(WRITE_ATTEMPTS_5, result1.getWriteAttempts().get(time5));
+		assertEquals(5, result1.getReadNumber().size());
+		assertEquals(READ_NUM_1, result1.getReadNumber().get(time4));
+		assertEquals(READ_NUM_2, result1.getReadNumber().get(time5));
+		assertEquals(READ_NUM_3, result1.getReadNumber().get(time6));
+		assertEquals(READ_NUM_4, result1.getReadNumber().get(time7));
+		assertEquals(READ_NUM_5, result1.getReadNumber().get(time8));		
+		assertEquals(5, result1.getReadNumber().size());
+		assertEquals(READ_SECTORS_1, result1.getReadSectors().get(time4));
+		assertEquals(READ_SECTORS_2, result1.getReadSectors().get(time5));
+		assertEquals(READ_SECTORS_3, result1.getReadSectors().get(time6));
+		assertEquals(READ_SECTORS_4, result1.getReadSectors().get(time7));
+		assertEquals(READ_SECTORS_5, result1.getReadSectors().get(time8));
+		assertEquals(5, result1.getIdleCPU().size());
+		assertEquals(IDLE_CPU_1, result1.getIdleCPU().get(time16));
+		assertEquals(IDLE_CPU_2, result1.getIdleCPU().get(time17));
+		assertEquals(IDLE_CPU_3, result1.getIdleCPU().get(time18));
+		assertEquals(IDLE_CPU_4, result1.getIdleCPU().get(time19));
+		assertEquals(IDLE_CPU_5, result1.getIdleCPU().get(time20));
+		assertEquals(5, result1.getUserCPU().size());
+		assertEquals(USER_CPU_1, result1.getUserCPU().get(time12));
+		assertEquals(USER_CPU_2, result1.getUserCPU().get(time13));
+		assertEquals(USER_CPU_3, result1.getUserCPU().get(time14));
+		assertEquals(USER_CPU_4, result1.getUserCPU().get(time15));
+		assertEquals(USER_CPU_5, result1.getUserCPU().get(time16));
+		assertEquals(5, result1.getMemory().size());
+		assertEquals(MEMORY_USAGE_1, result1.getMemory().get(time7));
+		assertEquals(MEMORY_USAGE_2, result1.getMemory().get(time8));
+		assertEquals(MEMORY_USAGE_3, result1.getMemory().get(time9));
+		assertEquals(MEMORY_USAGE_4, result1.getMemory().get(time10));
+		assertEquals(MEMORY_USAGE_5, result1.getMemory().get(time11));
+	}
+	
+	private void writeDifferentTimesFiles() throws FileNotFoundException {
+		PrintStream writeInfoStream = new PrintStream(WRITE_INFO_FILENAME);
+		
+		writeInfoStream.printf("<time> %d %d %d\n", time1, WRITE_NUM_1, WRITE_ATTEMPTS_1);
+		writeInfoStream.printf("<time> %d %d %d\n", time2, WRITE_NUM_2, WRITE_ATTEMPTS_2);
+		writeInfoStream.printf("<time> %d %d %d\n", time3, WRITE_NUM_3, WRITE_ATTEMPTS_3);
+		writeInfoStream.printf("<time> %d %d %d\n", time4, WRITE_NUM_4, WRITE_ATTEMPTS_4);
+		writeInfoStream.printf("<time> %d %d %d\n", time5, WRITE_NUM_5, WRITE_ATTEMPTS_5);
+		
+		writeInfoStream.close();
+		
+		PrintStream readInfoStream = new PrintStream(READ_INFO_FILENAME);
+		
+		readInfoStream.printf("<time> %d %d %d\n", time4, READ_NUM_1, READ_SECTORS_1);
+		readInfoStream.printf("<time> %d %d %d\n", time5, READ_NUM_2, READ_SECTORS_2);
+		readInfoStream.printf("<time> %d %d %d\n", time6, READ_NUM_3, READ_SECTORS_3);
+		readInfoStream.printf("<time> %d %d %d\n", time7, READ_NUM_4, READ_SECTORS_4);
+		readInfoStream.printf("<time> %d %d %d\n", time8, READ_NUM_5, READ_SECTORS_5);
+		
+		readInfoStream.close();
+		
+		PrintStream memoryInfoStream = new PrintStream(MEMORY_INFO_FILENAME);
+		
+		memoryInfoStream.printf("<time> %d %.2f\n", time7, MEMORY_USAGE_1);
+		memoryInfoStream.printf("<time> %d %.2f\n", time8, MEMORY_USAGE_2);
+		memoryInfoStream.printf("<time> %d %.2f\n", time9, MEMORY_USAGE_3);
+		memoryInfoStream.printf("<time> %d %.2f\n", time10, MEMORY_USAGE_4);
+		memoryInfoStream.printf("<time> %d %.2f\n", time11, MEMORY_USAGE_5);
+		
+		memoryInfoStream.close();
+		
+		PrintStream userCPUInfoStream = new PrintStream(USER_CPU_INFO_FILENAME);
+		
+		userCPUInfoStream.printf("<time> %d %.2f\n", time12, USER_CPU_1);
+		userCPUInfoStream.printf("<time> %d %.2f\n", time13, USER_CPU_2);
+		userCPUInfoStream.printf("<time> %d %.2f\n", time14, USER_CPU_3);
+		userCPUInfoStream.printf("<time> %d %.2f\n", time15, USER_CPU_4);
+		userCPUInfoStream.printf("<time> %d %.2f\n", time16, USER_CPU_5);
+		
+		userCPUInfoStream.close();
+		
+		PrintStream idleCPUInfoStream = new PrintStream(IDLE_CPU_INFO_FILENAME);
+		
+		idleCPUInfoStream.printf("<time> %d %.2f\n", time16, IDLE_CPU_1);
+		idleCPUInfoStream.printf("<time> %d %.2f\n", time17, IDLE_CPU_2);
+		idleCPUInfoStream.printf("<time> %d %.2f\n", time18, IDLE_CPU_3);
+		idleCPUInfoStream.printf("<time> %d %.2f\n", time19, IDLE_CPU_4);
+		idleCPUInfoStream.printf("<time> %d %.2f\n", time20, IDLE_CPU_5);
+		
+		idleCPUInfoStream.close();	
 	}
 
 	private void writeBasicWriteInfoFile() throws FileNotFoundException {
