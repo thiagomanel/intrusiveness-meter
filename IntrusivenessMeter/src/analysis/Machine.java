@@ -36,7 +36,8 @@ public class Machine {
 		
 		do {
 			map.put(file.getLineTime(), Long.parseLong(file.getMessage().split(" ")[indexFromMessage]));
-		} while (file.advance());
+			file.advance();
+		} while (!file.reachedEnd());
 		
 		return map;	
 	}
@@ -47,7 +48,8 @@ public class Machine {
 		
 		do {
 			map.put(file.getLineTime(), Double.parseDouble(file.getMessage().split(" ")[indexFromMessage]));
-		} while (file.advance());
+			file.advance();
+		} while (!file.reachedEnd());
 		
 		return map;	
 	}

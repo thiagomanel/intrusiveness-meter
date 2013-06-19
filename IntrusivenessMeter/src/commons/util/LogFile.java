@@ -13,35 +13,52 @@ public class LogFile {
 	private RandomAccessFile file;
 	private String currentMessage;
 	private long lineTime;
+	private String currentLine;
 	
 	public LogFile(String logFileName) throws IOException {
 		file = new RandomAccessFile(logFileName, "r");
 		currentMessage = null;
 		lineTime = 0;
-
+		currentLine = null;
+		
 		advance();
 	}
 	
 	public long getLineTime() {
 		return lineTime;
 	}
-	
-	public boolean advance() throws IOException {
-		String line = file.readLine();
-		if (line == null) {
-			return false;
+
+	public void advance() throws IOException {
+		currentLine = file.readLine();
+		
+		if (currentLine != null) {
+			String[] tokens = currentLine.split("\\s+");
+			if (tokens.length < 2) {
+				throw new IOException("Not data file");
+			}
+			
+			try {
+				lineTime = Long.parseLong(tokens[TIME_INDEX]);
+				getMessageFromTokens(tokens);
+			} catch (NumberFormatException e) {
+				// FIXME should change in other lines too.
+				currentMessage = null;
+				lineTime = -1;
+				throw new IOException("Not data line");
+			}
 		}
-		
-		String[] tokens = line.split("\\s+");
-		lineTime = Long.parseLong(tokens[TIME_INDEX]);
-		
+	}
+	
+	public boolean reachedEnd() {
+		return currentLine == null;
+	}
+	
+	private void getMessageFromTokens(String[] tokens) {
 		if (tokens.length > 2) {
 			currentMessage = concat(" ", tokens, MESSAGE_START_INDEX, tokens.length - 1);			
 		} else {
 			currentMessage = null;
 		}
-		
-		return true;
 	}
 
 	public String getMessage() {

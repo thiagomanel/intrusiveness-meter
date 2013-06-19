@@ -17,6 +17,9 @@ import analysis.data.Execution;
 public class DiscomfortTest {
 
 	private static final String DISCOMFORT_LOG_FILE_NAME = "discomfort_test.log";
+
+	private static final String BLANK_LINE = "\n";
+	private static final String ERROR_LINE = "error\n";
 	
 	private static long time1 = 1000;
 	private static long time2 = time1 + 1;
@@ -78,6 +81,31 @@ public class DiscomfortTest {
 		assertFalse(discomfort.reportedDiscomfort(new Execution(time16, time19)));
 	}
 	
+	@Test
+	public void testDiscomfortFileWithErrors() throws IOException {
+		writeDiscomfortFileWithErrors();
+		
+		discomfort = new Discomfort(DISCOMFORT_LOG_FILE_NAME);
+		
+		assertTrue(discomfort.reportedDiscomfort(new Execution(time1, time5)));
+		assertTrue(discomfort.reportedDiscomfort(new Execution(time15, time15)));
+		assertTrue(discomfort.reportedDiscomfort(new Execution(time8, time11)));
+		assertTrue(discomfort.reportedDiscomfort(new Execution(time1, time20)));
+		assertFalse(discomfort.reportedDiscomfort(new Execution(time16, time19)));
+	}
+	
+	private void writeDiscomfortFileWithErrors() throws FileNotFoundException {
+		PrintStream discomfortStream = new PrintStream(DISCOMFORT_LOG_FILE_NAME);
+		
+		discomfortStream.printf("<time> %d\n", time3);
+		discomfortStream.printf(BLANK_LINE);
+		discomfortStream.printf("<time> %d\n", time10);
+		discomfortStream.printf(ERROR_LINE);
+		discomfortStream.printf("<time> %d\n", time15);
+		
+		discomfortStream.close();	
+	}
+
 	private void writeBasicDiscomfortFile() throws FileNotFoundException {
 		PrintStream discomfortStream = new PrintStream(DISCOMFORT_LOG_FILE_NAME);
 		

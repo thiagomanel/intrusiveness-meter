@@ -21,11 +21,18 @@ public class IdleUser {
 		
 		do {
 			long time = idleTimeLogFile.getLineTime();
-			System.out.println(idleTimeLogFile.getLineTime());
-			System.out.println(idleTimeLogFile.getMessage());
 			long idleTime = Long.parseLong(idleTimeLogFile.getMessage());
 			idleTimes.put(time, idleTime);
-		} while (idleTimeLogFile.advance());
+			advanceFile();
+		} while (!idleTimeLogFile.reachedEnd());
+	}
+
+	private void advanceFile() {
+		try {
+			idleTimeLogFile.advance();
+		} catch (IOException e) {
+			
+		}
 	}
 
 	public boolean idle(Execution execution) {

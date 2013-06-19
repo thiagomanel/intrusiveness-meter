@@ -29,14 +29,30 @@ public class Controller {
 				long endTime = getExecutionEndTime(startTime);
 				
 				executions.add(new Execution(startTime, endTime));
-			}			
-		} while (hadoopRunningFile.advance());
+			}
+			/*hadoopRunningFile.advance();*/
+			advanceFile();
+		} while (!hadoopRunningFile.reachedEnd());
+		System.out.println(executions);
 		return executions;
 	}
 
 	private long getExecutionEndTime(long startTime) throws IOException {
-		while (hadoopRunningFile.advance() && !hadoopRunningFile.getMessage().contains(NOT_RUNNING_BENCHMARK_MESSAGE));
+		advanceFile();
+		/*hadoopRunningFile.advance();*/
+		while (!hadoopRunningFile.reachedEnd() && !hadoopRunningFile.getMessage().contains(NOT_RUNNING_BENCHMARK_MESSAGE)) {
+			/*hadoopRunningFile.advance();*/
+			advanceFile();
+		}
 		
 		return hadoopRunningFile.getLineTime();
+	}
+	
+	private void advanceFile() {
+		try {
+			hadoopRunningFile.advance();
+		} catch (IOException e) {
+			
+		}
 	}
 }

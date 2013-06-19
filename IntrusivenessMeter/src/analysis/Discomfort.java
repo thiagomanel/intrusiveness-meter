@@ -23,7 +23,16 @@ public class Discomfort {
 		
 		do {
 			discomfortReportsTimes.add(discomfortFile.getLineTime());
-		} while (discomfortFile.advance());
+			advanceFile();
+		} while (!discomfortFile.reachedEnd());
+	}
+
+	private void advanceFile() {
+		try {
+			discomfortFile.advance();
+		} catch (IOException e) {
+			
+		}
 	}
 
 	public boolean reportedDiscomfort(Execution execution) {

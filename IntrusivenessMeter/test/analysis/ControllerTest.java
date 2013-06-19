@@ -19,6 +19,9 @@ public class ControllerTest {
 	
 	private static final String RUNNING_MESSAGE = "True";
 	private static final String NOT_RUNNING_MESSAGE = "False";
+
+	private static final String ERROR_LINE = "Error\n";
+	private static final String BLANK_LINE = "\n";
 	
 	private Controller controller;	
 	
@@ -98,6 +101,54 @@ public class ControllerTest {
 		assertEquals(time18, executions.get(3).getFinishTime());
 	}
 	
+	@Test
+	public void testGetExecutionsFileWithError() throws IOException {
+		writeFileWithError();
+		
+		controller = new Controller(HADOOP_RUNNING_INFO_FILE_NAME);
+		
+		List<Execution> executions = controller.getExecutions();
+		
+		assertEquals(4, executions.size());
+		assertEquals(time1, executions.get(0).getStartTime());
+		assertEquals(time3, executions.get(0).getFinishTime());
+		assertEquals(time5, executions.get(1).getStartTime());
+		assertEquals(time6, executions.get(1).getFinishTime());
+		assertEquals(time8, executions.get(2).getStartTime());
+		assertEquals(time10, executions.get(2).getFinishTime());
+		assertEquals(time12, executions.get(3).getStartTime());
+		assertEquals(time18, executions.get(3).getFinishTime());
+	}
+	
+	private void writeFileWithError() throws FileNotFoundException {
+		PrintStream hadoopInfoStream = new PrintStream(HADOOP_RUNNING_INFO_FILE_NAME);	
+		
+		hadoopInfoStream.printf("<date> %d %s\n", time1, RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time2, RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time3, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time4, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time5, RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time6, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time7, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time8, RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time9, RUNNING_MESSAGE);
+		hadoopInfoStream.printf(ERROR_LINE);
+		hadoopInfoStream.printf("<date> %d %s\n", time10, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf("<date> %d %s\n", time11, NOT_RUNNING_MESSAGE);
+		hadoopInfoStream.printf(BLANK_LINE);
+		hadoopInfoStream.printf("<date> %d %s\n", time12, RUNNING_MESSAGE);	
+		hadoopInfoStream.printf("<date> %d %s\n", time13, RUNNING_MESSAGE);	
+		hadoopInfoStream.printf("<date> %d %s\n", time14, RUNNING_MESSAGE);	
+		hadoopInfoStream.printf("<date> %d %s\n", time15, RUNNING_MESSAGE);	
+		hadoopInfoStream.printf("<date> %d %s\n", time16, RUNNING_MESSAGE);	
+		hadoopInfoStream.printf("<date> %d %s\n", time17, RUNNING_MESSAGE);	
+		hadoopInfoStream.printf("<date> %d %s\n", time18, NOT_RUNNING_MESSAGE);	
+		hadoopInfoStream.printf("<date> %d %s\n", time19, NOT_RUNNING_MESSAGE);	
+		hadoopInfoStream.printf("<date> %d %s\n", time20, NOT_RUNNING_MESSAGE);	
+		
+		hadoopInfoStream.close();
+	}
+
 	private void writeManyExecutionsFiles() throws FileNotFoundException {
 		PrintStream hadoopInfoStream = new PrintStream(HADOOP_RUNNING_INFO_FILE_NAME);	
 		

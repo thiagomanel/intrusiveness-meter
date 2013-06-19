@@ -20,7 +20,9 @@ public class IdleUserTest {
 	private static final long ACTIVITY_THRESHOLD_2 = 6;
 	private static final long ACTIVITY_THRESHOLD_3 = 10;
 	private static final long ACTIVITY_THRESHOLD_4 = 0;
-	
+	private static final String BLANK_LINE = "\n";
+	private static final String ERROR_LINE = "error\n";
+
 	private static long time1 = 1000;
 	private static long time2 = time1 + 1;
 	private static long time3 = time2 + 1;
@@ -84,6 +86,66 @@ public class IdleUserTest {
 		assertTrue(idle.idle(new Execution(time6, time6)));
 		assertTrue(idle.idle(new Execution(time1, time10)));
 		assertTrue(idle.idle(new Execution(time7, time7)));
+	}
+
+	@Test
+	public void testIdleFileWithErrors() throws IOException {
+		writeIdleFileWithErrors();
+		
+		idle = new IdleUser(IDLE_TIME_LOG_FILE_NAME, ACTIVITY_THRESHOLD_1);
+		
+		assertFalse(idle.idle(new Execution(time1, time4)));
+		assertFalse(idle.idle(new Execution(time1, time3)));
+		assertFalse(idle.idle(new Execution(time8, time8)));
+		assertTrue(idle.idle(new Execution(time6, time6)));
+		assertFalse(idle.idle(new Execution(time1, time10)));
+		assertTrue(idle.idle(new Execution(time4, time6)));
+		
+		idle = new IdleUser(IDLE_TIME_LOG_FILE_NAME, ACTIVITY_THRESHOLD_2);
+		
+		assertFalse(idle.idle(new Execution(time1, time4)));
+		assertFalse(idle.idle(new Execution(time1, time3)));
+		assertFalse(idle.idle(new Execution(time8, time8)));
+		assertFalse(idle.idle(new Execution(time6, time6)));
+		assertFalse(idle.idle(new Execution(time1, time10)));
+		assertTrue(idle.idle(new Execution(time7, time7)));
+		
+		idle = new IdleUser(IDLE_TIME_LOG_FILE_NAME, ACTIVITY_THRESHOLD_3);
+		
+		assertFalse(idle.idle(new Execution(time1, time4)));
+		assertFalse(idle.idle(new Execution(time1, time3)));
+		assertFalse(idle.idle(new Execution(time8, time8)));
+		assertFalse(idle.idle(new Execution(time6, time6)));
+		assertFalse(idle.idle(new Execution(time1, time10)));
+		assertFalse(idle.idle(new Execution(time7, time7)));
+		
+		idle = new IdleUser(IDLE_TIME_LOG_FILE_NAME, ACTIVITY_THRESHOLD_4);
+		
+		assertTrue(idle.idle(new Execution(time1, time4)));
+		assertTrue(idle.idle(new Execution(time1, time3)));
+		assertTrue(idle.idle(new Execution(time8, time8)));
+		assertTrue(idle.idle(new Execution(time6, time6)));
+		assertTrue(idle.idle(new Execution(time1, time10)));
+		assertTrue(idle.idle(new Execution(time7, time7)));
+	}
+	
+	private void writeIdleFileWithErrors() throws FileNotFoundException {
+		PrintStream idleTimeStream = new PrintStream(IDLE_TIME_LOG_FILE_NAME);	
+		
+		idleTimeStream.printf("<date> %d %d\n", time1, 0);
+		idleTimeStream.printf("<date> %d %d\n", time2, 1);
+		idleTimeStream.printf(BLANK_LINE);
+		idleTimeStream.printf("<date> %d %d\n", time3, 2);
+		idleTimeStream.printf("<date> %d %d\n", time4, 3);
+		idleTimeStream.printf("<date> %d %d\n", time5, 4);
+		idleTimeStream.printf("<date> %d %d\n", time6, 5);
+		idleTimeStream.printf(ERROR_LINE);
+		idleTimeStream.printf("<date> %d %d\n", time7, 6);
+		idleTimeStream.printf("<date> %d %d\n", time8, 0);
+		idleTimeStream.printf("<date> %d %d\n", time9, 1);
+		idleTimeStream.printf("<date> %d %d\n", time10, 2);
+		
+		idleTimeStream.close();	
 	}
 
 	private void writeBasicIdleFile() throws FileNotFoundException {

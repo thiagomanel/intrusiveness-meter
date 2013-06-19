@@ -36,7 +36,8 @@ public class Hadoop {
 				String benchmark = file.getMessage().split(MESSAGE_TOKENS_SEPARATOR)[BENCHMARK_STRING_INDEX];
 				information.put(file.getLineTime(), benchmark);
 			}
-		} while (file.advance());
+			file.advance();
+		} while (!file.reachedEnd());
 		
 		return information;
 	}
@@ -47,7 +48,8 @@ public class Hadoop {
 		
 		do {
 			cpu.put(file.getLineTime(), Double.parseDouble(file.getMessage()));
-		} while (file.advance());
+			file.advance();
+		} while (!file.reachedEnd());
 		
 		return cpu;
 	}
@@ -58,7 +60,8 @@ public class Hadoop {
 		
 		do {
 			memory.put(file.getLineTime(), Double.parseDouble(file.getMessage()));
-		} while (file.advance());
+			file.advance();
+		} while (!file.reachedEnd());
 		
 		return memory;
 	}

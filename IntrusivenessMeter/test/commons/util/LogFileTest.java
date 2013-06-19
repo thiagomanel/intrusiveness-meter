@@ -1,4 +1,4 @@
-package analysis;
+package commons.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -25,6 +25,9 @@ public class LogFileTest {
 	private static final String message1 = "message1";
 	private static final String message2 = "message2";
 	private static final String message3 = "message3";
+
+	private static final String NO_DATA_LINE = "no data\n";
+	private static final String BLANK_LINE = "\n";
 	
 	private LogFile logFile;
 	
@@ -105,6 +108,30 @@ public class LogFileTest {
 		logFile.close();
 	}
 	
+	@Test(expected = IOException.class)
+	public void testNoDataLines() throws IOException {
+		writeNoDataLinesFile();
+		logFile = new LogFile(testLog);
+		
+		assertEquals(time1, logFile.getLineTime());
+		assertEquals(time1, logFile.getLineTime());
+		assertEquals(message1, logFile.getMessage());
+		
+		logFile.advance();
+	}
+	
+	private void writeNoDataLinesFile() throws FileNotFoundException {
+		PrintStream writer = new PrintStream(testLog); 
+		
+		writer.printf("adate %d %s\n", time1, message1);
+		writer.printf(BLANK_LINE);
+		writer.printf("adate %d %s\n", time2, message2);
+		writer.printf(NO_DATA_LINE);
+		writer.printf("adate %d %s\n", time3, message3 + "    " + message2);
+		
+		writer.close();
+	}
+
 	private void writeBasicInput() throws IOException {
 		PrintStream writer = new PrintStream(testLog); 
 		
