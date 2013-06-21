@@ -1,11 +1,17 @@
 package analysis;
 
-import static commons.Preconditions.checkNotNull;
 import static commons.Preconditions.checkFileExists;
+import static commons.Preconditions.checkNotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeSet;
+
+import analysis.data.MachineUsage;
 
 public class RawDataProcessing {
 	
@@ -25,7 +31,7 @@ public class RawDataProcessing {
 	 * the input file or there is other type of error while reading or writing to the files
 	 * @throws IllegalArgumentException If inputFileName or outputFileName is null.
 	 */
-	public void variationDegree(String inputFileName, String outputFileName, double ratio) throws IOException {
+	public static void variationDegree(String inputFileName, String outputFileName, double ratio) throws IOException {
 		checkNotNull(inputFileName, "inputFileName must not be null.");
 		checkNotNull(outputFileName, "outputFileName must not be null.");
 		
@@ -52,18 +58,20 @@ public class RawDataProcessing {
 		outputFileWriter.close();
 	}
 
-	private void writeToFile(double variationDegree,
+	private static void writeToFile(double variationDegree,
 			RandomAccessFile outputFileWriter) throws IOException {	
 		outputFileWriter.writeBytes(String.valueOf(variationDegree));
 		outputFileWriter.writeChar('\n');
 	}
 
-	private double calculateVariationDegree(double number1, double number2,
+	private static double calculateVariationDegree(double number1, double number2,
 			double ratio) {
 		return ratio == 0 ? 0 : (number2 - number1)/ratio;
 	}
 
-	private double getDouble(String firstLine) throws IOException {
+	
+	
+	private static double getDouble(String firstLine) throws IOException {
 		double result;
 		
 		try {
@@ -73,5 +81,42 @@ public class RawDataProcessing {
 		}
 		
 		return result;
+	}
+	
+	// FIXME Improve this code
+	public static MachineUsage getVariationDegree(MachineUsage usage) {
+		Map<Long, Double> newReadNumber = new HashMap<Long, Double>();
+		Map<Long, Double> newReadSectors = new HashMap<Long, Double>();
+		Map<Long, Double> newWriteNumber = new HashMap<Long, Double>();
+		Map<Long, Double> newWriteAttemptNumber = new HashMap<Long, Double>();
+		
+		TreeSet<Long> readNumberTimes = new TreeSet<Long>(usage.getReadNumber().keySet());
+		
+		Iterator<Long> iteratorReadNumberTimes = readNumberTimes.iterator();
+		Long timeReadNumber = iteratorReadNumberTimes.next();
+		newReadNumber.put(timeReadNumber, 0.0);
+		newReadSectors.put(timeReadNumber, 0.0);
+		while (iteratorReadNumberTimes.hasNext()) {
+			Long next = iteratorReadNumberTimes.next();
+			newReadNumber.put(next, (usage.getReadNumber().get(next) - usage.getReadNumber().get(timeReadNumber))/(next - timeReadNumber));
+			newReadSectors.put(next, (usage.getReadSectors().get(next) - usage.getReadSectors().get(timeReadNumber))/(next - timeReadNumber));
+			timeReadNumber = next;			
+		}
+		
+		TreeSet<Long> writeNumberTimes = new TreeSet<Long>(usage.getWriteNumber().keySet());
+		
+		Iterator<Long> iteratorWriteNumberTimes = writeNumberTimes.iterator();
+		Long timeWriteNumber = iteratorWriteNumberTimes.next();
+		newWriteNumber.put(timeWriteNumber, 0.0);
+		newWriteAttemptNumber.put(timeWriteNumber, 0.0);
+		while (iteratorWriteNumberTimes.hasNext()) {
+			Long next = iteratorWriteNumberTimes.next();
+			newWriteNumber.put(next, (usage.getWriteNumber().get(next) - usage.getWriteNumber().get(timeWriteNumber))/(next - timeWriteNumber));
+			newWriteAttemptNumber.put(next, (usage.getWriteAttempts().get(next) - usage.getWriteAttempts().get(timeWriteNumber))/(next - timeWriteNumber));
+			timeWriteNumber = next;			
+		}
+		
+		return new MachineUsage(usage.getIdleCPU(), usage.getUserCPU(), usage.getMemory(), 
+					newReadNumber, newReadSectors, newWriteNumber, newWriteAttemptNumber);
 	}
 }

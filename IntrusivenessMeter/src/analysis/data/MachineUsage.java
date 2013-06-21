@@ -6,28 +6,28 @@ public class MachineUsage {
 	private Map<Long, Double> idleCPU;
 	private Map<Long, Double> userCPU;
 	private Map<Long, Double> memoryUsage;
-	private Map<Long, Long> readNumber;
-	private Map<Long, Long> readSectors;
-	private Map<Long, Long> writeNumber;
-	private Map<Long, Long> writeAttemptNumber;
+	private Map<Long, Double> readNumber;
+	private Map<Long, Double> readSectors;
+	private Map<Long, Double> writeNumber;
+	private Map<Long, Double> writeAttemptNumber;
 	
 	public MachineUsage(Map<Long, Double> idleCPU, Map<Long, Double> userCPU, Map<Long, Double> memoryUsage,
-			Map<Long, Long> readNumber, Map<Long, Long> readSectors,
-			Map<Long, Long> map, Map<Long, Long> writeAttemptNumber) {
+			Map<Long, Double> readNumber, Map<Long, Double> readSectors,
+			Map<Long, Double> writeNumber, Map<Long, Double> writeAttemptNumber) {
 		this.idleCPU = idleCPU;
 		this.userCPU = userCPU;
 		this.memoryUsage = memoryUsage;
 		this.readNumber = readNumber;
 		this.readSectors = readSectors;
-		this.writeNumber = map;
+		this.writeNumber = writeNumber;
 		this.writeAttemptNumber = writeAttemptNumber;
 	}
 	
-	public Map<Long, Long> getWriteNumber() {
+	public Map<Long, Double> getWriteNumber() {
 		return writeNumber;
 	}
 
-	public Map<Long, Long> getReadNumber() {
+	public Map<Long, Double> getReadNumber() {
 		return readNumber;
 	}
 
@@ -39,11 +39,11 @@ public class MachineUsage {
 		return userCPU;
 	}
 
-	public Map<Long, Long> getWriteAttempts() {
+	public Map<Long, Double> getWriteAttempts() {
 		return writeAttemptNumber;
 	}
 
-	public Map<Long, Long> getReadSectors() {
+	public Map<Long, Double> getReadSectors() {
 		return readSectors;
 	}
 

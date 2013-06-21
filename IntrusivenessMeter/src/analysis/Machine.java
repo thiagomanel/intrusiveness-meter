@@ -30,12 +30,12 @@ public class Machine {
 				getWriteAttemptNumber(writeInfoFilename));
 	}
 
-	private Map<Long, Long> getLongLongMapFromFile(String filename, int indexFromMessage) throws IOException {
+	private Map<Long, Double> getLongLongMapFromFile(String filename, int indexFromMessage) throws IOException {
 		LogFile file = new LogFile(filename);
-		Map<Long, Long> map = new HashMap<Long, Long>();
+		Map<Long, Double> map = new HashMap<Long, Double>();
 		
 		do {
-			map.put(file.getLineTime(), Long.parseLong(file.getMessage().split(" ")[indexFromMessage]));
+			map.put(file.getLineTime(), Double.parseDouble(file.getMessage().split(" ")[indexFromMessage]));
 			file.advance();
 		} while (!file.reachedEnd());
 		
@@ -54,19 +54,19 @@ public class Machine {
 		return map;	
 	}
 	
-	private Map<Long, Long> getWriteAttemptNumber(String writeInfoFilename) throws IOException {
+	private Map<Long, Double> getWriteAttemptNumber(String writeInfoFilename) throws IOException {
 		return getLongLongMapFromFile(writeInfoFilename, 1);
 	}
 
-	private Map<Long, Long> getWriteNumber(String writeInfoFilename) throws IOException {
+	private Map<Long, Double> getWriteNumber(String writeInfoFilename) throws IOException {
 		return getLongLongMapFromFile(writeInfoFilename, 0);
 	}
 
-	private Map<Long, Long> getReadSectors(String readInfoFilename) throws NumberFormatException, IOException {
+	private Map<Long, Double> getReadSectors(String readInfoFilename) throws NumberFormatException, IOException {
 		return getLongLongMapFromFile(readInfoFilename, 1);
 	}
 
-	private Map<Long, Long> getReadNumber(String readInfoFilename) throws IOException {
+	private Map<Long, Double> getReadNumber(String readInfoFilename) throws IOException {
 		return getLongLongMapFromFile(readInfoFilename, 0);
 	}
 
@@ -84,8 +84,8 @@ public class Machine {
 
 	public MachineUsage getUsage(Execution execution) {
 		checkNotNull(execution, "execution must not be null.");
-		Map<Long, Long> newWriteNumber = new HashMap<Long, Long>();
-		Map<Long, Long> newWriteAttempt = new HashMap<Long, Long>();
+		Map<Long, Double> newWriteNumber = new HashMap<Long, Double>();
+		Map<Long, Double> newWriteAttempt = new HashMap<Long, Double>();
 		for (Long time : usage.getWriteNumber().keySet()) {
 			if (execution.getStartTime() <= time && time <= execution.getFinishTime()) {
 				newWriteNumber.put(time, usage.getWriteNumber().get(time));
@@ -93,8 +93,8 @@ public class Machine {
 			}
 		}
 		
-		Map<Long, Long> newReadNumber = new HashMap<Long, Long>();
-		Map<Long, Long> newReadSectors = new HashMap<Long, Long>();
+		Map<Long, Double> newReadNumber = new HashMap<Long, Double>();
+		Map<Long, Double> newReadSectors = new HashMap<Long, Double>();
 		for (Long time : usage.getReadNumber().keySet()) {
 			if (execution.getStartTime() <= time && time <= execution.getFinishTime()) {
 				newReadNumber.put(time, usage.getReadNumber().get(time));

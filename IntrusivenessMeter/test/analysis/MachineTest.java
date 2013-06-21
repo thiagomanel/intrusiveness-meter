@@ -22,29 +22,29 @@ public class MachineTest {
 	private static final String READ_INFO_FILENAME = "read_test.log";
 	private static final String WRITE_INFO_FILENAME = "write_test.log";
 		
-	private static final Long WRITE_ATTEMPTS_1 = 500L;
-	private static final Long WRITE_ATTEMPTS_2 = WRITE_ATTEMPTS_1 + 100;
-	private static final Long WRITE_ATTEMPTS_3 = WRITE_ATTEMPTS_2 + 100;
-	private static final Long WRITE_ATTEMPTS_4 = WRITE_ATTEMPTS_3 + 100;
-	private static final Long WRITE_ATTEMPTS_5 = WRITE_ATTEMPTS_4 + 100;
+	private static final Double WRITE_ATTEMPTS_1 = 500.0;
+	private static final Double WRITE_ATTEMPTS_2 = WRITE_ATTEMPTS_1 + 100;
+	private static final Double WRITE_ATTEMPTS_3 = WRITE_ATTEMPTS_2 + 100;
+	private static final Double WRITE_ATTEMPTS_4 = WRITE_ATTEMPTS_3 + 100;
+	private static final Double WRITE_ATTEMPTS_5 = WRITE_ATTEMPTS_4 + 100;
 	
-	private static final Long WRITE_NUM_1 = 300L;
-	private static final Long WRITE_NUM_2 = WRITE_NUM_1 + 100L;
-	private static final Long WRITE_NUM_3 = WRITE_NUM_2 + 100L;
-	private static final Long WRITE_NUM_4 = WRITE_NUM_3 + 100L;
-	private static final Long WRITE_NUM_5 = WRITE_NUM_4 + 100L;
+	private static final Double WRITE_NUM_1 = 300.0;
+	private static final Double WRITE_NUM_2 = WRITE_NUM_1 + 100L;
+	private static final Double WRITE_NUM_3 = WRITE_NUM_2 + 100L;
+	private static final Double WRITE_NUM_4 = WRITE_NUM_3 + 100L;
+	private static final Double WRITE_NUM_5 = WRITE_NUM_4 + 100L;
 	
-	private static final Long READ_NUM_1 = 900L;
-	private static final Long READ_NUM_2 = READ_NUM_1 + 100;
-	private static final Long READ_NUM_3 = READ_NUM_2 + 100;
-	private static final Long READ_NUM_4 = READ_NUM_3 + 100;
-	private static final Long READ_NUM_5 = READ_NUM_4 + 100;
+	private static final Double READ_NUM_1 = 900.0;
+	private static final Double READ_NUM_2 = READ_NUM_1 + 100;
+	private static final Double READ_NUM_3 = READ_NUM_2 + 100;
+	private static final Double READ_NUM_4 = READ_NUM_3 + 100;
+	private static final Double READ_NUM_5 = READ_NUM_4 + 100;
 	
-	private static final Long READ_SECTORS_1 = 900L;
-	private static final Long READ_SECTORS_2 = READ_SECTORS_1 + 100;
-	private static final Long READ_SECTORS_3 = READ_SECTORS_2 + 100;
-	private static final Long READ_SECTORS_4 = READ_SECTORS_3 + 100;
-	private static final Long READ_SECTORS_5 = READ_SECTORS_4 + 100;
+	private static final Double READ_SECTORS_1 = 900.0;
+	private static final Double READ_SECTORS_2 = READ_SECTORS_1 + 100;
+	private static final Double READ_SECTORS_3 = READ_SECTORS_2 + 100;
+	private static final Double READ_SECTORS_4 = READ_SECTORS_3 + 100;
+	private static final Double READ_SECTORS_5 = READ_SECTORS_4 + 100;
 	
 	private static final Double MEMORY_USAGE_1 = 1300.0;
 	private static final Double MEMORY_USAGE_2 = MEMORY_USAGE_1 + 100;
@@ -268,21 +268,21 @@ public class MachineTest {
 	private void writeDifferentTimesFiles() throws FileNotFoundException {
 		PrintStream writeInfoStream = new PrintStream(WRITE_INFO_FILENAME);
 		
-		writeInfoStream.printf("<time> %d %d %d\n", time1, WRITE_NUM_1, WRITE_ATTEMPTS_1);
-		writeInfoStream.printf("<time> %d %d %d\n", time2, WRITE_NUM_2, WRITE_ATTEMPTS_2);
-		writeInfoStream.printf("<time> %d %d %d\n", time3, WRITE_NUM_3, WRITE_ATTEMPTS_3);
-		writeInfoStream.printf("<time> %d %d %d\n", time4, WRITE_NUM_4, WRITE_ATTEMPTS_4);
-		writeInfoStream.printf("<time> %d %d %d\n", time5, WRITE_NUM_5, WRITE_ATTEMPTS_5);
+		writeInfoStream.printf("<time> %d %f %f\n", time1, WRITE_NUM_1, WRITE_ATTEMPTS_1);
+		writeInfoStream.printf("<time> %d %f %f\n", time2, WRITE_NUM_2, WRITE_ATTEMPTS_2);
+		writeInfoStream.printf("<time> %d %f %f\n", time3, WRITE_NUM_3, WRITE_ATTEMPTS_3);
+		writeInfoStream.printf("<time> %d %f %f\n", time4, WRITE_NUM_4, WRITE_ATTEMPTS_4);
+		writeInfoStream.printf("<time> %d %f %f\n", time5, WRITE_NUM_5, WRITE_ATTEMPTS_5);
 		
 		writeInfoStream.close();
 		
 		PrintStream readInfoStream = new PrintStream(READ_INFO_FILENAME);
 		
-		readInfoStream.printf("<time> %d %d %d\n", time4, READ_NUM_1, READ_SECTORS_1);
-		readInfoStream.printf("<time> %d %d %d\n", time5, READ_NUM_2, READ_SECTORS_2);
-		readInfoStream.printf("<time> %d %d %d\n", time6, READ_NUM_3, READ_SECTORS_3);
-		readInfoStream.printf("<time> %d %d %d\n", time7, READ_NUM_4, READ_SECTORS_4);
-		readInfoStream.printf("<time> %d %d %d\n", time8, READ_NUM_5, READ_SECTORS_5);
+		readInfoStream.printf("<time> %d %f %f\n", time4, READ_NUM_1, READ_SECTORS_1);
+		readInfoStream.printf("<time> %d %f %f\n", time5, READ_NUM_2, READ_SECTORS_2);
+		readInfoStream.printf("<time> %d %f %f\n", time6, READ_NUM_3, READ_SECTORS_3);
+		readInfoStream.printf("<time> %d %f %f\n", time7, READ_NUM_4, READ_SECTORS_4);
+		readInfoStream.printf("<time> %d %f %f\n", time8, READ_NUM_5, READ_SECTORS_5);
 		
 		readInfoStream.close();
 		
@@ -320,11 +320,11 @@ public class MachineTest {
 	private void writeBasicWriteInfoFile() throws FileNotFoundException {
 		PrintStream writeInfoStream = new PrintStream(WRITE_INFO_FILENAME);
 		
-		writeInfoStream.printf("<time> %d %d %d\n", time1, WRITE_NUM_1, WRITE_ATTEMPTS_1);
-		writeInfoStream.printf("<time> %d %d %d\n", time2, WRITE_NUM_2, WRITE_ATTEMPTS_2);
-		writeInfoStream.printf("<time> %d %d %d\n", time3, WRITE_NUM_3, WRITE_ATTEMPTS_3);
-		writeInfoStream.printf("<time> %d %d %d\n", time4, WRITE_NUM_4, WRITE_ATTEMPTS_4);
-		writeInfoStream.printf("<time> %d %d %d\n", time5, WRITE_NUM_5, WRITE_ATTEMPTS_5);
+		writeInfoStream.printf("<time> %d %f %f\n", time1, WRITE_NUM_1, WRITE_ATTEMPTS_1);
+		writeInfoStream.printf("<time> %d %f %f\n", time2, WRITE_NUM_2, WRITE_ATTEMPTS_2);
+		writeInfoStream.printf("<time> %d %f %f\n", time3, WRITE_NUM_3, WRITE_ATTEMPTS_3);
+		writeInfoStream.printf("<time> %d %f %f\n", time4, WRITE_NUM_4, WRITE_ATTEMPTS_4);
+		writeInfoStream.printf("<time> %d %f %f\n", time5, WRITE_NUM_5, WRITE_ATTEMPTS_5);
 		
 		writeInfoStream.close();
 	}
@@ -332,11 +332,11 @@ public class MachineTest {
 	private void writeBasicReadInfoFile() throws FileNotFoundException {
 		PrintStream readInfoStream = new PrintStream(READ_INFO_FILENAME);
 		
-		readInfoStream.printf("<time> %d %d %d\n", time1, READ_NUM_1, READ_SECTORS_1);
-		readInfoStream.printf("<time> %d %d %d\n", time2, READ_NUM_2, READ_SECTORS_2);
-		readInfoStream.printf("<time> %d %d %d\n", time3, READ_NUM_3, READ_SECTORS_3);
-		readInfoStream.printf("<time> %d %d %d\n", time4, READ_NUM_4, READ_SECTORS_4);
-		readInfoStream.printf("<time> %d %d %d\n", time5, READ_NUM_5, READ_SECTORS_5);
+		readInfoStream.printf("<time> %d %f %f\n", time1, READ_NUM_1, READ_SECTORS_1);
+		readInfoStream.printf("<time> %d %f %f\n", time2, READ_NUM_2, READ_SECTORS_2);
+		readInfoStream.printf("<time> %d %f %f\n", time3, READ_NUM_3, READ_SECTORS_3);
+		readInfoStream.printf("<time> %d %f %f\n", time4, READ_NUM_4, READ_SECTORS_4);
+		readInfoStream.printf("<time> %d %f %f\n", time5, READ_NUM_5, READ_SECTORS_5);
 		
 		readInfoStream.close();
 	}
