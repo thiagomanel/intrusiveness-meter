@@ -16,14 +16,16 @@ public class MainAnalyser {
 	private Hadoop hadoop;
 	private Controller controller;
 	private Machine machine;
+	private ReportWriter reportWriter;
 	
 	public MainAnalyser(Discomfort discomfort, IdleUser idle, Hadoop hadoop,
-			Controller controller, Machine machine) {
+			Controller controller, Machine machine, ReportWriter reportWriter) {
 		this.discomfort = discomfort;
 		this.idle = idle;
 		this.hadoop = hadoop;
 		this.controller = controller;
 		this.machine = machine;
+		this.reportWriter = reportWriter;
 	}
 
 	public void writeReport() throws IOException {
@@ -46,7 +48,7 @@ public class MainAnalyser {
 
 	private void writeExecutionReport(Execution execution, boolean relatedDiscomfort,
 			MachineUsage machineUsage, HadoopMachineUsage hadoopMachineUsage, HadoopInformation hadoopInfo) {
-		// TODO Auto-generated method stub
+		reportWriter.write(execution, relatedDiscomfort, machineUsage, hadoopMachineUsage, hadoopInfo);
 	}
 
 	private HadoopInformation getHadoopInformation(Execution execution) {
@@ -71,7 +73,7 @@ public class MainAnalyser {
 	
 	public static void main(String[] args) throws IOException {
 		for (String machine : machinesNames) {
-			MainAnalyser analyser = new MainAnalyser(null, null, null, null, null);
+			MainAnalyser analyser = new MainAnalyser(null, null, null, null, null, null);
 			analyser.writeReport();
 		}
 	}
