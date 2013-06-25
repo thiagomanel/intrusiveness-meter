@@ -17,6 +17,7 @@ import analysis.data.HadoopMachineUsage;
 
 public class HadoopTest {
 
+	private static final String INCARNATION_ID_INFO = "Incarnation ID: 490678415";
 	private static final String CPU_FILE_NAME = "cpu_test.txt";
 	private static final String MEMORY_FILE_NAME = "memory_test.txt";
 	private static final String CONTROLLER_LOG_FILE = "controller_test.txt";
@@ -231,6 +232,89 @@ public class HadoopTest {
 		assertEquals(MEMORY_5, result3.getMemory().get(time14));
 	}
 	
+	@Test
+	public void testHandleIncarnationIDLog() throws IOException {
+		writeFilesWithIncarnationIDLog();
+		
+		hadoop = new Hadoop(CPU_FILE_NAME, MEMORY_FILE_NAME, CONTROLLER_LOG_FILE);
+		
+		HadoopInformation result1 = hadoop.getInformation(new Execution(time1, time20));
+		
+		assertEquals(6, result1.getBenchmarks().size());		
+		assertEquals(DFREAD, result1.getBenchmarks().get(time8));
+		assertEquals(DFCLEAN, result1.getBenchmarks().get(time10));
+		assertEquals(TERAGEN, result1.getBenchmarks().get(time14));
+		assertEquals(TERASORT, result1.getBenchmarks().get(time16));
+		assertEquals(TERAVALIDATE, result1.getBenchmarks().get(time17));
+		assertEquals(TERACLEAN, result1.getBenchmarks().get(time20));
+		
+		HadoopMachineUsage result2 = hadoop.getMachineUsage(new Execution(time1, time6));
+		
+		assertEquals(5, result2.getCPU().size());
+		assertEquals(CPU_1, result2.getCPU().get(time1));
+		assertEquals(CPU_2, result2.getCPU().get(time2));
+		assertEquals(CPU_3, result2.getCPU().get(time3));
+		assertEquals(CPU_4, result2.getCPU().get(time5));
+		assertEquals(CPU_5, result2.getCPU().get(time6));
+		
+		assertEquals(0, result2.getMemory().size());
+		
+		HadoopMachineUsage result3 = hadoop.getMachineUsage(new Execution(time10, time15));
+		
+		assertEquals(0, result3.getCPU().size());
+		
+		assertEquals(5, result3.getMemory().size());
+		assertEquals(MEMORY_1, result3.getMemory().get(time10));
+		assertEquals(MEMORY_2, result3.getMemory().get(time11));
+		assertEquals(MEMORY_3, result3.getMemory().get(time13));
+		assertEquals(MEMORY_4, result3.getMemory().get(time14));
+		assertEquals(MEMORY_5, result3.getMemory().get(time15));
+	}
+	
+	private void writeFilesWithIncarnationIDLog() throws FileNotFoundException {
+		PrintStream controllerLogStream = new PrintStream(CONTROLLER_LOG_FILE);
+		
+		controllerLogStream.printf("<time> %d %s\n", time6, ANYTHING);
+		controllerLogStream.printf("<time> %d %s\n", time7, ANYTHING);
+		controllerLogStream.printf("<time> %d %s\n", time8, DFREAD_MARK);
+		controllerLogStream.printf("<time> %d %s\n", time9, ANYTHING);
+		controllerLogStream.printf("<time> %d %s\n", time10, DFCLEAN_MARK);
+		controllerLogStream.printf("<time> %d %s\n", time11, INCARNATION_ID_INFO);
+		controllerLogStream.printf("<time> %d %s\n", time12, ANYTHING);
+		controllerLogStream.printf("<time> %d %s\n", time13, ANYTHING);
+		controllerLogStream.printf("<time> %d %s\n", time14, TERAGEN_MARK);
+		controllerLogStream.printf("<time> %d %s\n", time15, ANYTHING);
+		controllerLogStream.printf("<time> %d %s\n", time16, TERASORT_MARK);
+		controllerLogStream.printf("<time> %d %s\n", time17, TERAVALIDATE_MARK);
+		controllerLogStream.printf("<time> %d %s\n", time18, ANYTHING);
+		controllerLogStream.printf("<time> %d %s\n", time19, ANYTHING);
+		controllerLogStream.printf("<time> %d %s\n", time20, TERACLEAN_MARK);
+		
+		controllerLogStream.close();
+		
+		PrintStream cpuStream = new PrintStream(CPU_FILE_NAME);
+		
+		cpuStream.printf("<time> %d %f\n", time1, CPU_1);
+		cpuStream.printf("<time> %d %f\n", time2, CPU_2);
+		cpuStream.printf("<time> %d %f\n", time3, CPU_3);
+		cpuStream.printf("<time> %d %s\n", time4, INCARNATION_ID_INFO);
+		cpuStream.printf("<time> %d %f\n", time5, CPU_4);
+		cpuStream.printf("<time> %d %f\n", time6, CPU_5);
+		
+		cpuStream.close();
+		
+		PrintStream memoryStream = new PrintStream(MEMORY_FILE_NAME);
+		
+		memoryStream.printf("<time> %d %f\n", time10, MEMORY_1);
+		memoryStream.printf("<time> %d %f\n", time11, MEMORY_2);
+		memoryStream.printf("<time> %d %s\n", time12, INCARNATION_ID_INFO);
+		memoryStream.printf("<time> %d %f\n", time13, MEMORY_3);
+		memoryStream.printf("<time> %d %f\n", time14, MEMORY_4);
+		memoryStream.printf("<time> %d %f\n", time15, MEMORY_5);
+		
+		memoryStream.close();
+	}
+
 	private void writeDifferentTimesCPUMemoryAndHadoopBenchmarksFiles() throws FileNotFoundException {
 		PrintStream controllerLogStream = new PrintStream(CONTROLLER_LOG_FILE);
 		

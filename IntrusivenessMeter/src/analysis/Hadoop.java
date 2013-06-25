@@ -14,6 +14,7 @@ import commons.util.LogFile;
 
 public class Hadoop {
 
+	private static final String INCARNATION_ID_LOG = "Incarnation ID";
 	private static final int BENCHMARK_STRING_INDEX = 1;
 	private static final String MESSAGE_TOKENS_SEPARATOR = ":";
 	private static final String STARTED_BENCHMARK_MARK = "started benchmark:";
@@ -47,11 +48,23 @@ public class Hadoop {
 		Map<Long, Double> cpu = new HashMap<Long, Double>();
 		
 		do {
-			cpu.put(file.getLineTime(), Double.parseDouble(file.getMessage()));
+			String message = file.getMessage();
+			getCPULineInfo(file, cpu, message);
 			file.advance();
 		} while (!file.reachedEnd());
 		
 		return cpu;
+	}
+
+	private void getCPULineInfo(LogFile file, Map<Long, Double> cpu,
+			String message) {
+		if (checkNotIncarnationIDLog(message)) {
+			cpu.put(file.getLineTime(), Double.parseDouble(message));								
+		}
+	}
+
+	private boolean checkNotIncarnationIDLog(String message) {
+		return !message.contains(INCARNATION_ID_LOG);
 	}
 
 	private Map<Long, Double> getMemoryUsage(String memoryFileName) throws NumberFormatException, IOException {
@@ -59,11 +72,19 @@ public class Hadoop {
 		Map<Long, Double> memory = new HashMap<Long, Double>();
 		
 		do {
-			memory.put(file.getLineTime(), Double.parseDouble(file.getMessage()));
+			String message = file.getMessage();
+			getMemoryLineInfo(file, memory, message);
 			file.advance();
 		} while (!file.reachedEnd());
 		
 		return memory;
+	}
+
+	private void getMemoryLineInfo(LogFile file, Map<Long, Double> memory,
+			String message) {
+		if (checkNotIncarnationIDLog(message)) {
+			memory.put(file.getLineTime(), Double.parseDouble(message));
+		}
 	}
 
 	public HadoopMachineUsage getMachineUsage(Execution execution) {
