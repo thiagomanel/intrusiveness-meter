@@ -45,5 +45,6 @@ if [ $OPTION = "-r" ]; then
 				echo -n "true"
 		fi
 	else
-		echo -n "false" 
+		echo -n "false"
+	fi
 fi

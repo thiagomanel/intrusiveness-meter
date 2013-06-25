@@ -46,7 +46,7 @@ function debug_startup
 function debug
 {
         if [ $DEBUG ]; then
-                echo -n "`date "+%d-%m-%Y-%H-%M-%S"`    " >> $DEBUG_FILE_NAME
+                echo -n "`date "+%d-%m-%Y-%H-%M-%S"`" "`date "+%s%N"` " >> $DEBUG_FILE_NAME
                 # TODO if the log file is too big, it must truncate to 0
                 # or do something so the file does not grow without limit.
                 echo $1 >> $DEBUG_FILE_NAME
@@ -55,7 +55,7 @@ function debug
 
 while [ true ]; do
 	debug "Collecting user activity data"
-	echo -n "`date "+%d-%m-%Y-%H-%M-%S"`    " >> $ACTIVITY_LOG_FILE
+	echo -n "`date "+%d-%m-%Y-%H-%M-%S"`" "`date "+%s%N"` " >> $ACTIVITY_LOG_FILE
 	xprintidle >> $ACTIVITY_LOG_FILE
 	debug "Collected user activity data"
 	
