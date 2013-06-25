@@ -35,8 +35,11 @@ public class Machine {
 		Map<Long, Double> map = new HashMap<Long, Double>();
 		
 		do {
-			map.put(file.getLineTime(), Double.parseDouble(file.getMessage().split(" ")[indexFromMessage]));
-			file.advance();
+			String message = file.getMessage();
+			if (message != null) {
+				map.put(file.getLineTime(), Double.parseDouble(message.split("\\s+")[indexFromMessage]));
+			}
+			file.advance();				
 		} while (!file.reachedEnd());
 		
 		return map;	
@@ -47,8 +50,11 @@ public class Machine {
 		Map<Long, Double> map = new HashMap<Long, Double>();
 		
 		do {
-			map.put(file.getLineTime(), Double.parseDouble(file.getMessage().split(" ")[indexFromMessage]));
-			file.advance();
+			String message = file.getMessage();
+			if (message != null) {
+				map.put(file.getLineTime(), Double.parseDouble(message.split("\\s+")[indexFromMessage]));				
+			}
+			file.advance();				
 		} while (!file.reachedEnd());
 		
 		return map;	
