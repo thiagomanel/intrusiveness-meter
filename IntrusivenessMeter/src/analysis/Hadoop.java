@@ -112,7 +112,7 @@ public class Hadoop {
 		Map<Long, String> newBenchmarks = new HashMap<Long, String>();
 		
 		for (Long time : info.getBenchmarks().keySet()) {
-			if (execution.getStartTime() <= time && time <= execution.getFinishTime()) {
+			if (execution.getStartTime() - 10000000000L <= time && time <= execution.getFinishTime() + 10000000000L) {
 				newBenchmarks.put(time, info.getBenchmarks().get(time));
 			}
 		}

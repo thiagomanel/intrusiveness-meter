@@ -19,6 +19,7 @@ public class ReportWriter {
 	public void write(Execution execution, boolean relatedDiscomfort,
 			MachineUsage machineUsage, HadoopMachineUsage hadoopMachineUsage,
 			HadoopInformation hadoopInfo) {
-		
+		resultFileStream.printf("%d, %d, %b, %s\n", execution.getStartTime(), execution.getFinishTime(),
+						relatedDiscomfort, hadoopInfo.getBenchmarks().toString());	
 	}
 }
