@@ -106,78 +106,81 @@ function start_up
 	touch $WRITE_RATE_FILENAME
 }
 
-function print_machine_info
-{
-	GENERAL_INFO="`uname -a`"
-	C_INF0="`cat /proc/cpuinfo`"
-	MEM_INFO="`cat /proc/meminfo`"
+#function print_machine_info
+#{
+	# TODO commented this because it's very difficult to process
+	# this log but I think it will be useful in another script.
+	# So I didn't delete it.
+	#GENERAL_INFO="`uname -a`"
+	#C_INF0="`cat /proc/cpuinfo`"
+	#MEM_INFO="`cat /proc/meminfo`"
 
-	echo "Machine general information" >> $CPU_IDLE_FILENAME
-	echo "Machine general information" >> $CPU_USER_FILENAME
-	echo "Machine general information" >> $MEMORY_USAGE_FILENAME
-	echo "Machine general information" >> $READ_RATE_FILENAME
-	echo "Machine general information" >> $WRITE_RATE_FILENAME
+	#echo "Machine general information" >> $CPU_IDLE_FILENAME
+	#echo "Machine general information" >> $CPU_USER_FILENAME
+	#echo "Machine general information" >> $MEMORY_USAGE_FILENAME
+	#echo "Machine general information" >> $READ_RATE_FILENAME
+	#echo "Machine general information" >> $WRITE_RATE_FILENAME
 
-	echo "$GENERAL_INFO" >> $CPU_IDLE_FILENAME
-	echo "$GENERAL_INFO" >> $CPU_USER_FILENAME
-	echo "$GENERAL_INFO" >> $MEMORY_USAGE_FILENAME
-	echo "$GENERAL_INFO" >> $READ_RATE_FILENAME
-	echo "$GENERAL_INFO" >> $WRITE_RATE_FILENAME
+	#echo "$GENERAL_INFO" >> $CPU_IDLE_FILENAME
+	#echo "$GENERAL_INFO" >> $CPU_USER_FILENAME
+	#echo "$GENERAL_INFO" >> $MEMORY_USAGE_FILENAME
+	#echo "$GENERAL_INFO" >> $READ_RATE_FILENAME
+	#echo "$GENERAL_INFO" >> $WRITE_RATE_FILENAME
 	
-	echo >> $CPU_IDLE_FILENAME
-	echo >> $CPU_USER_FILENAME
-	echo >> $MEMORY_USAGE_FILENAME
-	echo >> $READ_RATE_FILENAME
-	echo >> $WRITE_RATE_FILENAME
+	#echo >> $CPU_IDLE_FILENAME
+	#echo >> $CPU_USER_FILENAME
+	#echo >> $MEMORY_USAGE_FILENAME
+	#echo >> $READ_RATE_FILENAME
+	#echo >> $WRITE_RATE_FILENAME
 	
-	echo "Machine CPU information" >> $CPU_IDLE_FILENAME
-	echo "Machine CPU information" >> $CPU_USER_FILENAME
-	echo "Machine CPU information" >> $MEMORY_USAGE_FILENAME
-	echo "Machine CPU information" >> $READ_RATE_FILENAME
-	echo "Machine CPU information" >> $WRITE_RATE_FILENAME
+	#echo "Machine CPU information" >> $CPU_IDLE_FILENAME
+	#echo "Machine CPU information" >> $CPU_USER_FILENAME
+	#echo "Machine CPU information" >> $MEMORY_USAGE_FILENAME
+	#echo "Machine CPU information" >> $READ_RATE_FILENAME
+	#echo "Machine CPU information" >> $WRITE_RATE_FILENAME
 	
-	echo >> $CPU_IDLE_FILENAME
-	echo >> $CPU_USER_FILENAME
-	echo >> $MEMORY_USAGE_FILENAME
-	echo >> $READ_RATE_FILENAME
-	echo >> $WRITE_RATE_FILENAME
+	#echo >> $CPU_IDLE_FILENAME
+	#echo >> $CPU_USER_FILENAME
+	#echo >> $MEMORY_USAGE_FILENAME
+	#echo >> $READ_RATE_FILENAME
+	#echo >> $WRITE_RATE_FILENAME
 	
-	echo "`cat /proc/cpuinfo`" >> $CPU_IDLE_FILENAME
-	echo "`cat /proc/cpuinfo`" >> $CPU_USER_FILENAME
-	echo "`cat /proc/cpuinfo`" >> $MEMORY_USAGE_FILENAME
-	echo "`cat /proc/cpuinfo`" >> $READ_RATE_FILENAME
-	echo "`cat /proc/cpuinfo`" >> $WRITE_RATE_FILENAME
+	#echo "`cat /proc/cpuinfo`" >> $CPU_IDLE_FILENAME
+	#echo "`cat /proc/cpuinfo`" >> $CPU_USER_FILENAME
+	#echo "`cat /proc/cpuinfo`" >> $MEMORY_USAGE_FILENAME
+	#echo "`cat /proc/cpuinfo`" >> $READ_RATE_FILENAME
+	#echo "`cat /proc/cpuinfo`" >> $WRITE_RATE_FILENAME
 
-	echo >> $CPU_IDLE_FILENAME
-	echo >> $CPU_USER_FILENAME
-	echo >> $MEMORY_USAGE_FILENAME
-	echo >> $READ_RATE_FILENAME
-	echo >> $WRITE_RATE_FILENAME
+	#echo >> $CPU_IDLE_FILENAME
+	#echo >> $CPU_USER_FILENAME
+	#echo >> $MEMORY_USAGE_FILENAME
+	#echo >> $READ_RATE_FILENAME
+	#echo >> $WRITE_RATE_FILENAME
 	
-	echo "Machine memory information" >> $CPU_IDLE_FILENAME
-	echo "Machine memory information" >> $CPU_USER_FILENAME
-	echo "Machine memory information" >> $MEMORY_USAGE_FILENAME
-	echo "Machine memory information" >> $READ_RATE_FILENAME
-	echo "Machine memory information" >> $WRITE_RATE_FILENAME
+	#echo "Machine memory information" >> $CPU_IDLE_FILENAME
+	#echo "Machine memory information" >> $CPU_USER_FILENAME
+	#echo "Machine memory information" >> $MEMORY_USAGE_FILENAME
+	#echo "Machine memory information" >> $READ_RATE_FILENAME
+	#echo "Machine memory information" >> $WRITE_RATE_FILENAME
 
-	echo >> $CPU_IDLE_FILENAME
-	echo >> $CPU_USER_FILENAME
-	echo >> $MEMORY_USAGE_FILENAME
-	echo >> $READ_RATE_FILENAME
-	echo >> $WRITE_RATE_FILENAME
+	#echo >> $CPU_IDLE_FILENAME
+	#echo >> $CPU_USER_FILENAME
+	#echo >> $MEMORY_USAGE_FILENAME
+	#echo >> $READ_RATE_FILENAME
+	#echo >> $WRITE_RATE_FILENAME
 
-	echo "$MEM_INFO" >> $CPU_IDLE_FILENAME
-	echo "$MEM_INFO" >> $CPU_USER_FILENAME
-	echo "$MEM_INFO" >> $MEMORY_USAGE_FILENAME
-	echo "$MEM_INFO" >> $READ_RATE_FILENAME
-	echo "$MEM_INFO" >> $WRITE_RATE_FILENAME
+	#echo "$MEM_INFO" >> $CPU_IDLE_FILENAME
+	#echo "$MEM_INFO" >> $CPU_USER_FILENAME
+	#echo "$MEM_INFO" >> $MEMORY_USAGE_FILENAME
+	#echo "$MEM_INFO" >> $READ_RATE_FILENAME
+	#echo "$MEM_INFO" >> $WRITE_RATE_FILENAME
 
-	echo >> $CPU_IDLE_FILENAME
-	echo >> $CPU_USER_FILENAME
-	echo >> $MEMORY_USAGE_FILENAME
-	echo >> $READ_RATE_FILENAME
-	echo >> $WRITE_RATE_FILENAME
-}
+	#echo >> $CPU_IDLE_FILENAME
+	#echo >> $CPU_USER_FILENAME
+	#echo >> $MEMORY_USAGE_FILENAME
+	#echo >> $READ_RATE_FILENAME
+	#echo >> $WRITE_RATE_FILENAME
+#}
 
 function get_system_data
 {
@@ -233,9 +236,9 @@ if [ $INTRUSIVENESS_METER_HOME ]; then
 	
         debug "Incarnation ID: $INCARNATION_ID"
 
-	debug "getting system information"
-	print_machine_info
-	debug "got system information"
+	#debug "getting system information"
+	#print_machine_info
+	#debug "got system information"
 
 	while [ "1" = "1" ]; do
 		debug "Getting data from system"

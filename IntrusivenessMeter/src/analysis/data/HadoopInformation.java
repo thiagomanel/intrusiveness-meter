@@ -16,4 +16,15 @@ public class HadoopInformation {
 	public Map<Long, String> getBenchmarks() {
 		return benchmark;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("HadoopInformation [benchmark=");
+		builder.append(benchmark);
+		builder.append(", conf=");
+		builder.append(conf);
+		builder.append("]");
+		return builder.toString();
+	}
 }

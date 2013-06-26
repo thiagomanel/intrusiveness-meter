@@ -22,4 +22,15 @@ public class HadoopMachineUsage {
 	public Map<Long, Double> getMemory() {
 		return memoryUsage;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("HadoopMachineUsage [cpuUsage=");
+		builder.append(cpuUsage);
+		builder.append(", memoryUsage=");
+		builder.append(memoryUsage);
+		builder.append("]");
+		return builder.toString();
+	}
 }

@@ -50,4 +50,25 @@ public class MachineUsage {
 	public Map<Long, Double> getMemory() {
 		return memoryUsage;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("MachineUsage [idleCPU=");
+		builder.append(idleCPU);
+		builder.append(", userCPU=");
+		builder.append(userCPU);
+		builder.append(", memoryUsage=");
+		builder.append(memoryUsage);
+		builder.append(", readNumber=");
+		builder.append(readNumber);
+		builder.append(", readSectors=");
+		builder.append(readSectors);
+		builder.append(", writeNumber=");
+		builder.append(writeNumber);
+		builder.append(", writeAttemptNumber=");
+		builder.append(writeAttemptNumber);
+		builder.append("]");
+		return builder.toString();
+	}
 }
