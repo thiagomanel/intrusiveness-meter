@@ -30,18 +30,14 @@ public class Controller {
 				
 				executions.add(new Execution(startTime, endTime));
 			}
-			/*hadoopRunningFile.advance();*/
 			advanceFile();
 		} while (!hadoopRunningFile.reachedEnd());
-		System.out.println(executions);
 		return executions;
 	}
 
 	private long getExecutionEndTime(long startTime) throws IOException {
 		advanceFile();
-		/*hadoopRunningFile.advance();*/
 		while (!hadoopRunningFile.reachedEnd() && !hadoopRunningFile.getMessage().contains(NOT_RUNNING_BENCHMARK_MESSAGE)) {
-			/*hadoopRunningFile.advance();*/
 			advanceFile();
 		}
 		

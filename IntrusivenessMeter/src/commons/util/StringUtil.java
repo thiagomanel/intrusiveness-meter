@@ -1,5 +1,8 @@
 package commons.util;
 
+import java.util.Iterator;
+import java.util.List;
+
 public class StringUtil {
 	/**
 	 * Checks if all the characters of the given string are numeric or equal to 
@@ -35,6 +38,22 @@ public class StringUtil {
 		for (; index <= endIndex; index++) {
 			builder.append(separator);
 			builder.append(strings[index]);
+		}
+		
+		return builder.toString();
+	}
+
+	public static String concat(String separator, List<Object> values) {
+		StringBuilder builder = new StringBuilder();
+		boolean first = true;
+		Iterator<Object> iterator = values.iterator();
+		
+		while (iterator.hasNext()) {
+			if (!first) {
+				builder.append(separator);
+			}
+			builder.append(iterator.next().toString());
+			first = false;
 		}
 		
 		return builder.toString();

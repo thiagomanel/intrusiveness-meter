@@ -9,8 +9,6 @@ import analysis.data.HadoopMachineUsage;
 import analysis.data.MachineUsage;
 
 public class MainAnalyser {
-	private static String[] machinesNames = new String[] {"abotoado"};
-	
 	private Discomfort discomfort;
 	private IdleUser idle;
 	private Hadoop hadoop;
@@ -83,7 +81,7 @@ public class MainAnalyser {
 		System.out.println("machine");
 		Hadoop hadoop = new Hadoop("client_logs/logs/hadoop_resources_usage.cpu", "client_logs/logs/hadoop_resources_usage.mem", "server_logs/logs/controller.log");
 		System.out.println("hadoop");
-		ReportWriter reportWriter = new ReportWriter("result.txt");
+		ReportWriter reportWriter = new ReportWriter("result.csv");
 		System.out.println("writer");
 		
 		MainAnalyser analyser = new MainAnalyser(discomfort, idle, hadoop, controller, machine, reportWriter);

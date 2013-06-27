@@ -163,34 +163,15 @@ public class HadoopTest {
 		
 		hadoop = new Hadoop(CPU_FILE_NAME, MEMORY_FILE_NAME, CONTROLLER_LOG_FILE);
 		
-		HadoopInformation result1 = hadoop.getInformation(new Execution(time1, time20));
+		HadoopInformation result1 = hadoop.getInformation(new Execution(time3, time4));
 		
-		assertEquals(8, result1.getBenchmarks().size());		
+		assertEquals(1, result1.getBenchmarks().size());		
 		assertEquals(MR, result1.getBenchmarks().get(time3));
-		assertEquals(DFWRITE, result1.getBenchmarks().get(time5));
-		assertEquals(DFREAD, result1.getBenchmarks().get(time8));
-		assertEquals(DFCLEAN, result1.getBenchmarks().get(time10));
-		assertEquals(TERAGEN, result1.getBenchmarks().get(time13));
-		assertEquals(TERASORT, result1.getBenchmarks().get(time15));
-		assertEquals(TERAVALIDATE, result1.getBenchmarks().get(time16));
-		assertEquals(TERACLEAN, result1.getBenchmarks().get(time19));
 		
-		HadoopInformation result2 = hadoop.getInformation(new Execution(time7, time15));
+		HadoopInformation result2 = hadoop.getInformation(new Execution(time16, time16));
 		
-		assertEquals(4, result2.getBenchmarks().size());	
-		assertEquals(DFREAD, result2.getBenchmarks().get(time8));
-		assertEquals(DFCLEAN, result2.getBenchmarks().get(time10));
-		assertEquals(TERAGEN, result2.getBenchmarks().get(time13));
+		assertEquals(1, result2.getBenchmarks().size());		
 		assertEquals(TERASORT, result2.getBenchmarks().get(time15));
-		
-		HadoopInformation result3 = hadoop.getInformation(new Execution(time13, time13));
-		
-		assertEquals(1, result3.getBenchmarks().size());
-		assertEquals(TERAGEN, result3.getBenchmarks().get(time13));
-		
-		HadoopInformation result4 = hadoop.getInformation(new Execution(time6, time7));
-		
-		assertEquals(0, result4.getBenchmarks().size());
 	}
 	
 	@Test
@@ -199,15 +180,10 @@ public class HadoopTest {
 		
 		hadoop = new Hadoop(CPU_FILE_NAME, MEMORY_FILE_NAME, CONTROLLER_LOG_FILE);
 		
-		HadoopInformation result1 = hadoop.getInformation(new Execution(time1, time20));
+		HadoopInformation result1 = hadoop.getInformation(new Execution(time9, time9));
 		
-		assertEquals(6, result1.getBenchmarks().size());		
+		assertEquals(1, result1.getBenchmarks().size());		
 		assertEquals(DFREAD, result1.getBenchmarks().get(time8));
-		assertEquals(DFCLEAN, result1.getBenchmarks().get(time10));
-		assertEquals(TERAGEN, result1.getBenchmarks().get(time13));
-		assertEquals(TERASORT, result1.getBenchmarks().get(time15));
-		assertEquals(TERAVALIDATE, result1.getBenchmarks().get(time16));
-		assertEquals(TERACLEAN, result1.getBenchmarks().get(time19));
 		
 		HadoopMachineUsage result2 = hadoop.getMachineUsage(new Execution(time1, time5));
 		
@@ -238,15 +214,10 @@ public class HadoopTest {
 		
 		hadoop = new Hadoop(CPU_FILE_NAME, MEMORY_FILE_NAME, CONTROLLER_LOG_FILE);
 		
-		HadoopInformation result1 = hadoop.getInformation(new Execution(time1, time20));
+		HadoopInformation result1 = hadoop.getInformation(new Execution(time9, time9));
 		
-		assertEquals(6, result1.getBenchmarks().size());		
+		assertEquals(1, result1.getBenchmarks().size());		
 		assertEquals(DFREAD, result1.getBenchmarks().get(time8));
-		assertEquals(DFCLEAN, result1.getBenchmarks().get(time10));
-		assertEquals(TERAGEN, result1.getBenchmarks().get(time14));
-		assertEquals(TERASORT, result1.getBenchmarks().get(time16));
-		assertEquals(TERAVALIDATE, result1.getBenchmarks().get(time17));
-		assertEquals(TERACLEAN, result1.getBenchmarks().get(time20));
 		
 		HadoopMachineUsage result2 = hadoop.getMachineUsage(new Execution(time1, time6));
 		

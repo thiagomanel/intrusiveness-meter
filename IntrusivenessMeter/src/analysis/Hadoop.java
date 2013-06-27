@@ -4,7 +4,9 @@ import static commons.Preconditions.checkNotNull;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeSet;
 
 import analysis.data.Execution;
 import analysis.data.HadoopInformation;
@@ -13,7 +15,6 @@ import analysis.data.HadoopMachineUsage;
 import commons.util.LogFile;
 
 public class Hadoop {
-
 	private static final String INCARNATION_ID_LOG = "Incarnation ID";
 	private static final int BENCHMARK_STRING_INDEX = 1;
 	private static final String MESSAGE_TOKENS_SEPARATOR = ":";
@@ -111,12 +112,19 @@ public class Hadoop {
 		checkNotNull(execution, "execution must not be null.");
 		Map<Long, String> newBenchmarks = new HashMap<Long, String>();
 		
-		for (Long time : info.getBenchmarks().keySet()) {
-			if (execution.getStartTime() - 10000000000L <= time && time <= execution.getFinishTime() + 10000000000L) {
-				newBenchmarks.put(time, info.getBenchmarks().get(time));
+		TreeSet<Long> times = new TreeSet<Long>(info.getBenchmarks().keySet());
+		Iterator<Long> timesIterator = times.descendingIterator();
+		
+		long time = 0;
+		while (timesIterator.hasNext()) {
+			time = timesIterator.next();
+			// finds the first benchmark before the execution time
+			if (time < execution.getStartTime()) {
+				break;
 			}
 		}
 		
+		newBenchmarks.put(time, info.getBenchmarks().get(time));
 		return new HadoopInformation(newBenchmarks);
 	}
 }
