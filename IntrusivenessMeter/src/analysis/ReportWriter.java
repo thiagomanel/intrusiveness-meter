@@ -1,6 +1,7 @@
 package analysis;
 
 import static commons.Preconditions.checkNotNull;
+import static commons.util.StringUtil.concat;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
@@ -11,8 +12,6 @@ import analysis.data.HadoopInformation;
 import analysis.data.HadoopMachineUsage;
 import analysis.data.MachineUsage;
 
-import commons.util.StringUtil;
-
 public class ReportWriter {
 
 	private PrintStream resultFileStream;
@@ -21,7 +20,7 @@ public class ReportWriter {
 		checkNotNull(resultFileName, "resultFileName must not be null.");
 		resultFileStream = new PrintStream(resultFileName);
 		
-		resultFileStream.printf("start time, finish time, related discomfort, benchmark, hadoop cpu usage, hadoop memory usage\n");
+		resultFileStream.printf("start_time, finish_time, related_discomfort, benchmark, hadoop_cpu_usage, hadoop_memory_usage\n");
 	}
 	
 	public void write(Execution execution, boolean relatedDiscomfort,
@@ -33,11 +32,11 @@ public class ReportWriter {
 	}
 
 	private String getCPUUsageString(HadoopMachineUsage hadoopMachineUsage) {
-		return StringUtil.concat("-", new ArrayList<Object>(hadoopMachineUsage.getCPU().values()));
+		return concat(" ", new ArrayList<Object>(hadoopMachineUsage.getCPU().values()));
 	}
 
 	private String getMemoryUsageString(HadoopMachineUsage hadoopMachineUsage) {
-		return StringUtil.concat("-", new ArrayList<Object>(hadoopMachineUsage.getMemory().values()));
+		return concat(" ", new ArrayList<Object>(hadoopMachineUsage.getMemory().values()));
 	}
 	
 	private String getBenchmark(HadoopInformation hadoopInfo) {
