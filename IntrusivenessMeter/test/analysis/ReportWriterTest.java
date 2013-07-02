@@ -22,6 +22,8 @@ import commons.util.StringUtil;
 
 public class ReportWriterTest {
 
+	private static final String CSV_FIELDS_SEPARATOR = ",";
+	private static final String HADOOP_RESOURCES_USAGE_SEPARATOR = " ";
 	private static final String TEST_FILE_NAME = "result_test.csv";
 	private static final Long START_TIME_1 = 0L;
 	private static final Long END_TIME_1 = 0L;
@@ -187,14 +189,14 @@ public class ReportWriterTest {
 		getLineFromFile(TEST_FILE_NAME);
 		String line = getLineFromFile(TEST_FILE_NAME);
 		
-		assertEquals(START_TIME_1, new Long(line.split(",")[0].trim()));
-		assertEquals(END_TIME_1, new Long(line.split(",")[1].trim()));
-		assertEquals(DISCOMFORT_1, new Boolean(line.split(",")[2].trim()));
-		assertEquals(BENCHMARK_1, line.split(",")[3].trim());
-		assertEquals(StringUtil.concat("-", new ArrayList<Object>(hadoopCPUUsage.values())), 
-									line.split(",")[4].trim());
-		assertEquals(StringUtil.concat("-", new ArrayList<Object>(hadoopMemoryUsage.values())), 
-									line.split(",")[5].trim());
+		assertEquals(START_TIME_1, new Long(line.split(CSV_FIELDS_SEPARATOR)[0].trim()));
+		assertEquals(END_TIME_1, new Long(line.split(CSV_FIELDS_SEPARATOR)[1].trim()));
+		assertEquals(DISCOMFORT_1, new Boolean(line.split(CSV_FIELDS_SEPARATOR)[2].trim()));
+		assertEquals(BENCHMARK_1, line.split(CSV_FIELDS_SEPARATOR)[3].trim());
+		assertEquals(StringUtil.concat(HADOOP_RESOURCES_USAGE_SEPARATOR, new ArrayList<Object>(hadoopCPUUsage.values())), 
+									line.split(CSV_FIELDS_SEPARATOR)[4].trim());
+		assertEquals(StringUtil.concat(HADOOP_RESOURCES_USAGE_SEPARATOR, new ArrayList<Object>(hadoopMemoryUsage.values())), 
+									line.split(CSV_FIELDS_SEPARATOR)[5].trim());
 	}
 
 	private void rewindFile(String testFileName) throws IOException {
