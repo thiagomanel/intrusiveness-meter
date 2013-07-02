@@ -20,15 +20,50 @@ public class ReportWriter {
 		checkNotNull(resultFileName, "resultFileName must not be null.");
 		resultFileStream = new PrintStream(resultFileName);
 		
-		resultFileStream.printf("start_time, finish_time, related_discomfort, benchmark, hadoop_cpu_usage, hadoop_memory_usage\n");
+		String header = "start_time, finish_time, related_discomfort, benchmark, hadoop_cpu_usage, hadoop_memory_usage";
+		header += ", system_idle_cpu, system_user_cpu, system_memory, system_read_number, system_read_sectors";
+		header += ", system_write_number\n";
+		
+		resultFileStream.printf(header);
 	}
 	
 	public void write(Execution execution, boolean relatedDiscomfort,
 			MachineUsage machineUsage, HadoopMachineUsage hadoopMachineUsage,
 			HadoopInformation hadoopInfo) {
-		resultFileStream.printf("%d, %d, %b, %s, %s, %s\n", execution.getStartTime(), execution.getFinishTime(),
+		resultFileStream.printf("%d, %d, %b, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s\n", execution.getStartTime(), execution.getFinishTime(),
 					relatedDiscomfort, getBenchmark(hadoopInfo), getCPUUsageString(hadoopMachineUsage), 
-					getMemoryUsageString(hadoopMachineUsage));
+					getMemoryUsageString(hadoopMachineUsage), getSystemIdleCPUString(machineUsage), 
+					getSystemUserCPUString(machineUsage), getSystemMemory(machineUsage), 
+					getSystemReadNumberString(machineUsage), getSystemReadSectorsString(machineUsage), 
+					getSystemWriteNumberString(machineUsage), getSystemWriteAttemptsString(machineUsage));
+	}
+
+	private String getSystemWriteAttemptsString(MachineUsage machineUsage) {
+		return concat(" ", new ArrayList<Object>(machineUsage.getWriteAttempts().values()));
+	}
+
+	private String getSystemWriteNumberString(MachineUsage machineUsage) {
+		return concat(" ", new ArrayList<Object>(machineUsage.getWriteNumber().values()));
+	}
+
+	private String getSystemReadSectorsString(MachineUsage machineUsage) {
+		return concat(" ", new ArrayList<Object>(machineUsage.getReadSectors().values()));
+	}
+
+	private String getSystemReadNumberString(MachineUsage machineUsage) {
+		return concat(" ", new ArrayList<Object>(machineUsage.getReadNumber().values()));
+	}
+
+	private String getSystemMemory(MachineUsage machineUsage) {
+		return concat(" ", new ArrayList<Object>(machineUsage.getMemory().values()));
+	}
+
+	private String getSystemUserCPUString(MachineUsage machineUsage) {
+		return concat(" ", new ArrayList<Object>(machineUsage.getUserCPU().values()));
+	}
+
+	private String getSystemIdleCPUString(MachineUsage machineUsage) {
+		return concat(" ", new ArrayList<Object>(machineUsage.getIdleCPU().values()));
 	}
 
 	private String getCPUUsageString(HadoopMachineUsage hadoopMachineUsage) {
@@ -40,6 +75,7 @@ public class ReportWriter {
 	}
 	
 	private String getBenchmark(HadoopInformation hadoopInfo) {
+		// should have only one benchmark
 		return hadoopInfo.getBenchmarks().values().iterator().next();
 	}
 }

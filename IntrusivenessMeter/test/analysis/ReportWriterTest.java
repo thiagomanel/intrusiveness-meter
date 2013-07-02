@@ -24,6 +24,7 @@ public class ReportWriterTest {
 
 	private static final String CSV_FIELDS_SEPARATOR = ",";
 	private static final String HADOOP_RESOURCES_USAGE_SEPARATOR = " ";
+	private static final String SYSTEM_RESOURCES_USAGE_SEPARATOR = " ";
 	private static final String TEST_FILE_NAME = "result_test.csv";
 	private static final Long START_TIME_1 = 0L;
 	private static final Long END_TIME_1 = 0L;
@@ -74,7 +75,6 @@ public class ReportWriterTest {
 	private static final Double USER_CPU_3 = USER_CPU_2 + 20;
 	private static final Double USER_CPU_4 = USER_CPU_3 + 20;
 	private static final Double USER_CPU_5 = USER_CPU_4 + 20;
-	
 	
 	private static final Double HADOOP_CPU_1 = 0.0;
 	private static final Double HADOOP_CPU_2 = HADOOP_CPU_1 + 20;
@@ -186,6 +186,7 @@ public class ReportWriterTest {
 		writer.write(execution1, DISCOMFORT_1, machineUsage, hadoopMachineUsage , hadoopInfo);
 		
 		rewindFile(TEST_FILE_NAME);
+		// remove the header
 		getLineFromFile(TEST_FILE_NAME);
 		String line = getLineFromFile(TEST_FILE_NAME);
 		
@@ -197,6 +198,20 @@ public class ReportWriterTest {
 									line.split(CSV_FIELDS_SEPARATOR)[4].trim());
 		assertEquals(StringUtil.concat(HADOOP_RESOURCES_USAGE_SEPARATOR, new ArrayList<Object>(hadoopMemoryUsage.values())), 
 									line.split(CSV_FIELDS_SEPARATOR)[5].trim());
+		assertEquals(StringUtil.concat(SYSTEM_RESOURCES_USAGE_SEPARATOR, new ArrayList<Object>(machineUsage.getIdleCPU().values())), 
+									line.split(CSV_FIELDS_SEPARATOR)[6].trim());
+		assertEquals(StringUtil.concat(SYSTEM_RESOURCES_USAGE_SEPARATOR, new ArrayList<Object>(machineUsage.getUserCPU().values())), 
+									line.split(CSV_FIELDS_SEPARATOR)[7].trim());
+		assertEquals(StringUtil.concat(SYSTEM_RESOURCES_USAGE_SEPARATOR, new ArrayList<Object>(machineUsage.getMemory().values())), 
+									line.split(CSV_FIELDS_SEPARATOR)[8].trim());
+		assertEquals(StringUtil.concat(SYSTEM_RESOURCES_USAGE_SEPARATOR, new ArrayList<Object>(machineUsage.getReadNumber().values())), 
+									line.split(CSV_FIELDS_SEPARATOR)[9].trim());
+		assertEquals(StringUtil.concat(SYSTEM_RESOURCES_USAGE_SEPARATOR, new ArrayList<Object>(machineUsage.getReadSectors().values())), 
+									line.split(CSV_FIELDS_SEPARATOR)[10].trim());
+		assertEquals(StringUtil.concat(SYSTEM_RESOURCES_USAGE_SEPARATOR, new ArrayList<Object>(machineUsage.getWriteNumber().values())), 
+									line.split(CSV_FIELDS_SEPARATOR)[11].trim());
+		assertEquals(StringUtil.concat(SYSTEM_RESOURCES_USAGE_SEPARATOR, new ArrayList<Object>(machineUsage.getWriteAttempts().values())), 
+									line.split(CSV_FIELDS_SEPARATOR)[12].trim());
 	}
 
 	private void rewindFile(String testFileName) throws IOException {
