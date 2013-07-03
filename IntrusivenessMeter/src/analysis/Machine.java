@@ -3,8 +3,8 @@ package analysis;
 import static commons.Preconditions.checkNotNull;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import analysis.data.Execution;
 import analysis.data.MachineUsage;
@@ -32,7 +32,7 @@ public class Machine {
 
 	private Map<Long, Double> getLongLongMapFromFile(String filename, int indexFromMessage) throws IOException {
 		LogFile file = new LogFile(filename);
-		Map<Long, Double> map = new HashMap<Long, Double>();
+		Map<Long, Double> map = new TreeMap<Long, Double>();
 		
 		do {
 			String message = file.getMessage();
@@ -47,7 +47,7 @@ public class Machine {
 	
 	private Map<Long, Double> getLongDoubleMapFromFile(String filename, int indexFromMessage) throws IOException {
 		LogFile file = new LogFile(filename);
-		Map<Long, Double> map = new HashMap<Long, Double>();
+		Map<Long, Double> map = new TreeMap<Long, Double>();
 		
 		do {
 			String message = file.getMessage();
@@ -90,8 +90,8 @@ public class Machine {
 
 	public MachineUsage getUsage(Execution execution) {
 		checkNotNull(execution, "execution must not be null.");
-		Map<Long, Double> newWriteNumber = new HashMap<Long, Double>();
-		Map<Long, Double> newWriteAttempt = new HashMap<Long, Double>();
+		Map<Long, Double> newWriteNumber = new TreeMap<Long, Double>();
+		Map<Long, Double> newWriteAttempt = new TreeMap<Long, Double>();
 		for (Long time : usage.getWriteNumber().keySet()) {
 			if (execution.getStartTime() <= time && time <= execution.getFinishTime()) {
 				newWriteNumber.put(time, usage.getWriteNumber().get(time));
@@ -99,8 +99,8 @@ public class Machine {
 			}
 		}
 		
-		Map<Long, Double> newReadNumber = new HashMap<Long, Double>();
-		Map<Long, Double> newReadSectors = new HashMap<Long, Double>();
+		Map<Long, Double> newReadNumber = new TreeMap<Long, Double>();
+		Map<Long, Double> newReadSectors = new TreeMap<Long, Double>();
 		for (Long time : usage.getReadNumber().keySet()) {
 			if (execution.getStartTime() <= time && time <= execution.getFinishTime()) {
 				newReadNumber.put(time, usage.getReadNumber().get(time));
@@ -113,7 +113,7 @@ public class Machine {
 	}
 
 	private Map<Long, Double> getNewMemory(Execution execution) {
-		Map<Long, Double> newMemory = new HashMap<Long, Double>();
+		Map<Long, Double> newMemory = new TreeMap<Long, Double>();
 		for (Long time : usage.getMemory().keySet()) {
 			if (execution.getStartTime() <= time && time <= execution.getFinishTime()) {
 				newMemory.put(time, usage.getMemory().get(time));
@@ -123,7 +123,7 @@ public class Machine {
 	}
 
 	private Map<Long, Double> getNewUserCPU(Execution execution) {
-		Map<Long, Double> newUserCPU = new HashMap<Long, Double>();
+		Map<Long, Double> newUserCPU = new TreeMap<Long, Double>();
 		for (Long time : usage.getUserCPU().keySet()) {
 			if (execution.getStartTime() <= time && time <= execution.getFinishTime()) {
 				newUserCPU.put(time, usage.getUserCPU().get(time));
@@ -133,7 +133,7 @@ public class Machine {
 	}
 
 	private Map<Long, Double> getNewIdleCPU(Execution execution) {
-		Map<Long, Double> newIdleCPU = new HashMap<Long, Double>();
+		Map<Long, Double> newIdleCPU = new TreeMap<Long, Double>();
 		for (Long time : usage.getIdleCPU().keySet()) {
 			if (execution.getStartTime() <= time && time <= execution.getFinishTime()) {
 				newIdleCPU.put(time, usage.getIdleCPU().get(time));
