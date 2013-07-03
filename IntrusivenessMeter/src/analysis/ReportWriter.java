@@ -22,7 +22,7 @@ public class ReportWriter {
 		
 		String header = "start_time, finish_time, related_discomfort, benchmark, hadoop_cpu_usage, hadoop_memory_usage";
 		header += ", system_idle_cpu, system_user_cpu, system_memory, system_read_number, system_read_sectors";
-		header += ", system_write_number\n";
+		header += ", system_write_number, system_write_attempts\n";
 		
 		resultFileStream.printf(header);
 	}

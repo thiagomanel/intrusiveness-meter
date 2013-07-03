@@ -18,15 +18,56 @@ data <- read.csv(DATA_FILE_NAME, strip.white=TRUE)
 benchmarks <- subset(data, related_discomfort == "true", select = c(benchmark))
 
 filtered_by_hadoop_cpu_usage <- subset(data, related_discomfort == "true", select = c(hadoop_cpu_usage))$hadoop_cpu_usage
+filtered_by_hadoop_memory_usage <- subset(data, related_discomfort == "true", select = c(hadoop_memory_usage))$hadoop_memory_usage
+filtered_by_system_idle_cpu <- subset(data, related_discomfort == "true", 
+select = c(system_idle_cpu))$system_idle_cpu
 
-for (i in 1:length(filtered_by_hadoop_cpu_usage)) {
-	execution_hadoop_cpu_usage <-data.frame(as.numeric(strsplit(as.character(filtered_by_hadoop_cpu_usage[i]), " ")[[1]]))
-	execution_hadoop_cpu_usage <- data.frame(execution_hadoop_cpu_usage, c(1:nrow(execution_hadoop_cpu_usage)))
-	colnames(execution_hadoop_cpu_usage) <- c('X0', 'X1')
-
-	p <- ggplot(execution_hadoop_cpu_usage, aes(execution_hadoop_cpu_usage$X1, execution_hadoop_cpu_usage$X0))
-	image_name <- paste("hadoop_cpu_", i , ".png", sep="")
+cpu_image <- function(index) {
+	image_name <- paste("hadoop_cpu_", index , ".png", sep="")
 	png(file=image_name)
-	obj <- p + geom_line() + ggtitle(sprintf("Hadoop CPU Usage: %s", benchmarks[[1]][[i]]))
+}
+
+memory_image <- function(index) {
+	image_name <- paste("hadoop_mem_", index, ".png", sep="")
+	png(file=image_name)
+}
+
+system_idle_cpu_image <- function(index) {
+	image_name <- paste("system_idle_cpu_", index, ".png", sep="")
+	png(file=image_name)
+}
+
+print_dataframe <- function(plot, plot_name, benchmark) {
+	obj <- plot + geom_line() + ggtitle(sprintf("%s:%s", plot_name, benchmark))
 	print(obj)
 }
+
+# TODO add a division in the cpu usage data by the machines cpus
+for (i in 1:length(filtered_by_hadoop_cpu_usage)) {
+	# get a data frame with the hadoop cpu usage
+	execution_hadoop_cpu_usage <- data.frame(as.numeric(strsplit(as.character(filtered_by_hadoop_cpu_usage[i]), " ")[[1]]))
+	execution_hadoop_memory_usage <- data.frame(as.numeric(strsplit(as.character(filtered_by_hadoop_memory_usage[i]), " ")[[1]]))	
+	execution_system_idle_cpu <- data.frame(as.numeric(strsplit(as.character(filtered_by_system_idle_cpu[i]), " ")[[1]]))
+	# the generated data frame has only one column so
+	# add a index to the data frame (to plot correctly)
+	execution_hadoop_cpu_usage <- data.frame(c(1:nrow(execution_hadoop_cpu_usage)), execution_hadoop_cpu_usage)
+	execution_hadoop_memory_usage <- data.frame(c(1:nrow(execution_hadoop_memory_usage)), execution_hadoop_memory_usage)
+	execution_system_idle_cpu <- data.frame(c(1:nrow(execution_system_idle_cpu)), execution_system_idle_cpu)
+	# name the columns
+	colnames(execution_hadoop_cpu_usage) <- c('X0', 'X1')
+	colnames(execution_hadoop_memory_usage) <- c('X0', 'X1')
+	colnames(execution_system_idle_cpu) <- c('X0', 'X1')
+
+	cpu <- ggplot(execution_hadoop_cpu_usage, aes(execution_hadoop_cpu_usage$X0, execution_hadoop_cpu_usage$X1))
+	cpu_image(i)
+	print_dataframe(cpu, "Hadoop CPU Usage", benchmarks[[1]][[i]])
+	
+	memory <- ggplot(execution_hadoop_memory_usage, aes(execution_hadoop_memory_usage$X0, execution_hadoop_memory_usage$X1))
+	memory_image(i)
+	print_dataframe(memory, "Hadoop Memory Usage", benchmarks[[1]][[i]])
+
+	system_idle_cpu <- ggplot(execution_system_idle_cpu, aes(execution_system_idle_cpu$X0, execution_system_idle_cpu$X1))
+	system_idle_cpu_image(i)
+	print_dataframe(system_idle_cpu, "System Idle CPU", benchmarks[[1]][[i]])
+}
+
