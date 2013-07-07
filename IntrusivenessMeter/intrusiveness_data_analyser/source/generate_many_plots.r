@@ -16,6 +16,7 @@ library("ggplot2")
 args <- commandArgs()
 DATA_FILE_NAME <- args[4]
 machine_total_memory <- as.numeric(args[5])
+number_of_CPUs <- as.numeric(args[6])
 data <- read.csv(DATA_FILE_NAME, strip.white=TRUE)
 benchmarks <- subset(data, related_discomfort == "true", select = c(benchmark))
 
@@ -84,11 +85,11 @@ print_dataframe <- function(plot, plot_name, benchmark) {
 # TODO add a division in the cpu usage data by the machines cpus
 for (i in 1:length(filtered_by_hadoop_cpu_usage)) {
 	# get a data frame with the hadoop cpu usage
-	execution_hadoop_cpu_usage <- data.frame(as.numeric(strsplit(as.character(filtered_by_hadoop_cpu_usage[i]), " ")[[1]]))
+	execution_hadoop_cpu_usage <- data.frame(as.numeric(strsplit(as.character(filtered_by_hadoop_cpu_usage[i]), " ")[[1]]))/number_of_CPUs
 	execution_hadoop_memory_usage <- data.frame(as.numeric(strsplit(as.character(filtered_by_hadoop_memory_usage[i]), " ")[[1]]))*100/machine_total_memory	
 	execution_system_idle_cpu <- data.frame(as.numeric(strsplit(as.character(filtered_by_system_idle_cpu[i]), " ")[[1]]))
 	execution_system_user_cpu <- data.frame(as.numeric(strsplit(as.character(filtered_by_system_user_cpu[i]), " ")[[1]]))
-	execution_system_memory <- data.frame(as.numeric(strsplit(as.character(filtered_by_system_memory[i]), " ")[[1]]))*100/machine_total_memory
+	execution_system_memory <- data.frame(as.numeric(strsplit(as.character(filtered_by_system_memory[i]), " ")[[1]]))
 	execution_system_read_number <- data.frame(as.numeric(strsplit(as.character(filtered_by_system_read_number[i]), " ")[[1]]))
 	execution_system_read_sectors <- data.frame(as.numeric(strsplit(as.character(filtered_by_system_read_sectors[i]), " ")[[1]]))
 	execution_system_write_number <- data.frame(as.numeric(strsplit(as.character(filtered_by_system_write_number[i]), " ")[[1]]))

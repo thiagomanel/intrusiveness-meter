@@ -5,6 +5,7 @@ args <- commandArgs()
 DATA_FILE_NAME <- args[4]
 # in KB
 machine_total_memory <- as.numeric(args[5])
+number_of_CPUs <- as.numeric(args[6])
 data <- read.csv(DATA_FILE_NAME, strip.white=TRUE)
 
 # filter results by related_discomfort
@@ -19,7 +20,7 @@ filtered_by_system_write_number <- subset(data, related_discomfort == "true", se
 filtered_by_system_write_attempts <- subset(data, related_discomfort == "true", select = c(system_write_attempts))$system_write_attempts
 
 # gets numeric data from the read data
-execution_hadoop_cpu_usage <- data.frame(as.numeric(strsplit(as.character(filtered_by_hadoop_cpu_usage[1]), " ")[[1]]))
+execution_hadoop_cpu_usage <- data.frame(as.numeric(strsplit(as.character(filtered_by_hadoop_cpu_usage[1]), " ")[[1]]))/number_of_CPUs
 execution_hadoop_memory_usage <- data.frame(as.numeric(strsplit(as.character(filtered_by_hadoop_memory_usage[1]), " ")[[1]]))*100/machine_total_memory
 execution_system_idle_cpu <- data.frame(as.numeric(strsplit(as.character(filtered_by_system_idle_cpu[1]), " ")[[1]]))
 execution_system_user_cpu <- data.frame(as.numeric(strsplit(as.character(filtered_by_system_user_cpu[1]), " ")[[1]]))
@@ -51,7 +52,7 @@ colnames(system_write_number_final_dataframe) <- c('X0', 'X1', 'X2')
 colnames(system_write_attempts_final_dataframe) <- c('X0', 'X1', 'X2')
 
 for (i in 2:length(filtered_by_hadoop_cpu_usage)) {
-	execution_hadoop_cpu_usage <- data.frame(as.numeric(strsplit(as.character(filtered_by_hadoop_cpu_usage[i]), " ")[[1]]))
+	execution_hadoop_cpu_usage <- data.frame(as.numeric(strsplit(as.character(filtered_by_hadoop_cpu_usage[i]), " ")[[1]]))/number_of_CPUs
 	hadoop_cpu_usage_next_dataframe <- data.frame(c(1:nrow(execution_hadoop_cpu_usage)), execution_hadoop_cpu_usage, rep(as.character(i), nrow(execution_hadoop_cpu_usage)))
 	colnames(hadoop_cpu_usage_next_dataframe) <- c('X0', 'X1', 'X2')
 	hadoop_cpu_usage_final_dataframe <-rbind(hadoop_cpu_usage_final_dataframe, hadoop_cpu_usage_next_dataframe) 
