@@ -3,8 +3,11 @@ require("reshape")
 
 args <- commandArgs()
 DATA_FILE_NAME <- args[4]
+# in KB
+machine_total_memory <- as.numeric(args[5])
 data <- read.csv(DATA_FILE_NAME, strip.white=TRUE)
 
+# filter results by related_discomfort
 filtered_by_hadoop_cpu_usage <- subset(data, related_discomfort == "true", select = c(hadoop_cpu_usage))$hadoop_cpu_usage
 filtered_by_hadoop_memory_usage <- subset(data, related_discomfort == "true", select = c(hadoop_memory_usage))$hadoop_memory_usage
 filtered_by_system_idle_cpu <- subset(data, related_discomfort == "true", select = c(system_idle_cpu))$system_idle_cpu
@@ -15,8 +18,9 @@ filtered_by_system_read_sectors <- subset(data, related_discomfort == "true", se
 filtered_by_system_write_number <- subset(data, related_discomfort == "true", select = c(system_write_number))$system_write_number
 filtered_by_system_write_attempts <- subset(data, related_discomfort == "true", select = c(system_write_attempts))$system_write_attempts
 
+# gets numeric data from the read data
 execution_hadoop_cpu_usage <- data.frame(as.numeric(strsplit(as.character(filtered_by_hadoop_cpu_usage[1]), " ")[[1]]))
-execution_hadoop_memory_usage <- data.frame(as.numeric(strsplit(as.character(filtered_by_hadoop_memory_usage[1]), " ")[[1]]))
+execution_hadoop_memory_usage <- data.frame(as.numeric(strsplit(as.character(filtered_by_hadoop_memory_usage[1]), " ")[[1]]))*100/machine_total_memory
 execution_system_idle_cpu <- data.frame(as.numeric(strsplit(as.character(filtered_by_system_idle_cpu[1]), " ")[[1]]))
 execution_system_user_cpu <- data.frame(as.numeric(strsplit(as.character(filtered_by_system_user_cpu[1]), " ")[[1]]))
 execution_system_memory <- data.frame(as.numeric(strsplit(as.character(filtered_by_system_memory[1]), " ")[[1]]))
@@ -25,6 +29,7 @@ execution_system_read_sectors <- data.frame(as.numeric(strsplit(as.character(fil
 execution_system_write_number <- data.frame(as.numeric(strsplit(as.character(filtered_by_system_write_number[1]), " ")[[1]]))
 execution_system_write_attempts <- data.frame(as.numeric(strsplit(as.character(filtered_by_system_write_attempts[1]), " ")[[1]]))
 
+# creates an adequate dataframe with the data
 hadoop_cpu_usage_final_dataframe <- data.frame(c(1:nrow(execution_hadoop_cpu_usage)), execution_hadoop_cpu_usage, rep("1", nrow(execution_hadoop_cpu_usage)))
 hadoop_memory_usage_final_dataframe <- data.frame(c(1:nrow(execution_hadoop_memory_usage)), execution_hadoop_memory_usage, rep("1", nrow(execution_hadoop_memory_usage)))
 system_idle_cpu_final_dataframe <- data.frame(c(1:nrow(execution_system_idle_cpu)), execution_system_idle_cpu, rep("1", nrow(execution_system_idle_cpu)))
@@ -51,7 +56,7 @@ for (i in 2:length(filtered_by_hadoop_cpu_usage)) {
 	colnames(hadoop_cpu_usage_next_dataframe) <- c('X0', 'X1', 'X2')
 	hadoop_cpu_usage_final_dataframe <-rbind(hadoop_cpu_usage_final_dataframe, hadoop_cpu_usage_next_dataframe) 
 
-	execution_hadoop_memory_usage <- data.frame(as.numeric(strsplit(as.character(filtered_by_hadoop_memory_usage[i]), " ")[[1]]))
+	execution_hadoop_memory_usage <- data.frame(as.numeric(strsplit(as.character(filtered_by_hadoop_memory_usage[i]), " ")[[1]]))*100/machine_total_memory
 	hadoop_memory_usage_next_dataframe <- data.frame(c(1:nrow(execution_hadoop_memory_usage)), execution_hadoop_memory_usage, rep(as.character(i), nrow(execution_hadoop_memory_usage)))
 	colnames(hadoop_memory_usage_next_dataframe) <- c('X0', 'X1', 'X2')
 	hadoop_memory_usage_final_dataframe <-rbind(hadoop_memory_usage_final_dataframe, hadoop_memory_usage_next_dataframe) 
@@ -100,31 +105,31 @@ for (i in 2:length(filtered_by_hadoop_cpu_usage)) {
 png("hadoop_cpu.png", width=1000, height=1000, res=120)
 plot <- ggplot(hadoop_cpu_usage_final_dataframe, aes(x=hadoop_cpu_usage_final_dataframe$X0, y=hadoop_cpu_usage_final_dataframe$X1, colour=hadoop_cpu_usage_final_dataframe$X2)) + geom_line()
 plot <- plot + xlab("Tempo")
-plot <- plot + ylab("Consumo de CPU")
+plot <- plot + ylab("Consumo de CPU pelo Hadoop %")
 print(plot)
 
 png("hadoop_memory.png", width=1000, height=1000, res=120)
 plot <- ggplot(hadoop_memory_usage_final_dataframe, aes(x=hadoop_memory_usage_final_dataframe$X0, y=hadoop_memory_usage_final_dataframe$X1, colour=hadoop_memory_usage_final_dataframe$X2)) + geom_line()
 plot <- plot + xlab("Tempo")
-plot <- plot + ylab("Consumo de Memória")
+plot <- plot + ylab("Consumo de Memória pelo Hadoop %")
 print(plot)
 
 png("system_idle_cpu.png", width=1000, height=1000, res=120)
 plot <- ggplot(system_idle_cpu_final_dataframe, aes(x=system_idle_cpu_final_dataframe$X0, y=system_idle_cpu_final_dataframe$X1, colour=system_idle_cpu_final_dataframe$X2)) + geom_line()
 plot <- plot + xlab("Tempo")
-plot <- plot + ylab("CPU ociosa")
+plot <- plot + ylab("CPU ociosa %")
 print(plot)
 
 png("system_user_cpu.png", width=1000, height=1000, res=120)
 plot <- ggplot(system_user_cpu_final_dataframe, aes(x=system_user_cpu_final_dataframe$X0, y=system_user_cpu_final_dataframe$X1, colour=system_user_cpu_final_dataframe$X2)) + geom_line()
 plot <- plot + xlab("Tempo")
-plot <- plot + ylab("Consumo de CPU pelo usuário")
+plot <- plot + ylab("Consumo de CPU pelo usuário %")
 print(plot)
 
 png("system_memory.png", width=1000, height=1000, res=120)
 plot <- ggplot(system_memory_final_dataframe, aes(x=system_memory_final_dataframe$X0, y=system_memory_final_dataframe$X1, colour=system_memory_final_dataframe$X2)) + geom_line()
 plot <- plot + xlab("Tempo")
-plot <- plot + ylab("Consumo de Memória")
+plot <- plot + ylab("Consumo de Memória %")
 print(plot)
 
 png("system_read_number.png", width=1000, height=1000, res=120)
