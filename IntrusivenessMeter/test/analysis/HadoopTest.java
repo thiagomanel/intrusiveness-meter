@@ -1,6 +1,8 @@
 package analysis;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,8 +13,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import analysis.data.HadoopInformation;
 import analysis.data.Execution;
+import analysis.data.HadoopInformation;
 import analysis.data.HadoopMachineUsage;
 
 public class HadoopTest {
@@ -21,6 +23,7 @@ public class HadoopTest {
 	private static final String CPU_FILE_NAME = "cpu_test.txt";
 	private static final String MEMORY_FILE_NAME = "memory_test.txt";
 	private static final String CONTROLLER_LOG_FILE = "controller_test.txt";
+	private static final String HADOOP_PROCESSES_FILE_NAME = "hadoop_process_test.txt";
 	
 	private static long time0 = 999;
 	private static long time1 = time0 + 1;
@@ -78,6 +81,9 @@ public class HadoopTest {
 	private static final String TERAVALIDATE_MARK = STARTING_BENCHMARK + TERAVALIDATE;
 	private static final String TERACLEAN_MARK = STARTING_BENCHMARK + TERACLEAN;
 	
+	private static final String NO_HADOOP_PROCESS = "[]";
+	private static final String HADOOP_PROCESSES = "[111, 1111]";
+	
 	private Hadoop hadoop;
 	
 	@Before
@@ -85,10 +91,12 @@ public class HadoopTest {
 		File cpuFile = new File(CPU_FILE_NAME);
 		File memoryFile = new File(MEMORY_FILE_NAME);
 		File controllerFile = new File(CONTROLLER_LOG_FILE);
+		File hadoopProcessFile = new File(HADOOP_PROCESSES_FILE_NAME);
 		
 		cpuFile.createNewFile();
 		memoryFile.createNewFile();
 		controllerFile.createNewFile();
+		hadoopProcessFile.createNewFile();
 	}
 
 	@After
@@ -96,6 +104,7 @@ public class HadoopTest {
 		new File(CPU_FILE_NAME).delete();
 		new File(MEMORY_FILE_NAME).delete();
 		new File(CONTROLLER_LOG_FILE).delete();
+		new File(HADOOP_PROCESSES_FILE_NAME).delete();
 	}
 
 	@Test
@@ -103,8 +112,9 @@ public class HadoopTest {
 		writeBasicCPUFile();
 		writeBasicMemoryFile();
 		writeBasicHadoopBenchmarksFile();
+		writeBasicHadoopProcessesFile();
 		
-		hadoop = new Hadoop(CPU_FILE_NAME, MEMORY_FILE_NAME, CONTROLLER_LOG_FILE);
+		hadoop = new Hadoop(CPU_FILE_NAME, MEMORY_FILE_NAME, CONTROLLER_LOG_FILE, HADOOP_PROCESSES_FILE_NAME);
 		
 		HadoopMachineUsage result = hadoop.getMachineUsage(new Execution(time1, time1));
 		
@@ -160,8 +170,9 @@ public class HadoopTest {
 		writeBasicCPUFile();
 		writeBasicMemoryFile();
 		writeBasicHadoopBenchmarksFile();
+		writeBasicHadoopProcessesFile();
 		
-		hadoop = new Hadoop(CPU_FILE_NAME, MEMORY_FILE_NAME, CONTROLLER_LOG_FILE);
+		hadoop = new Hadoop(CPU_FILE_NAME, MEMORY_FILE_NAME, CONTROLLER_LOG_FILE, HADOOP_PROCESSES_FILE_NAME);
 		
 		HadoopInformation result1 = hadoop.getInformation(new Execution(time3, time4));
 		
@@ -177,8 +188,9 @@ public class HadoopTest {
 	@Test
 	public void testGetInformationDifferentTimes() throws IOException {
 		writeDifferentTimesCPUMemoryAndHadoopBenchmarksFiles();
+		writeBasicHadoopProcessesFile();
 		
-		hadoop = new Hadoop(CPU_FILE_NAME, MEMORY_FILE_NAME, CONTROLLER_LOG_FILE);
+		hadoop = new Hadoop(CPU_FILE_NAME, MEMORY_FILE_NAME, CONTROLLER_LOG_FILE, HADOOP_PROCESSES_FILE_NAME);
 		
 		HadoopInformation result1 = hadoop.getInformation(new Execution(time9, time9));
 		
@@ -211,8 +223,9 @@ public class HadoopTest {
 	@Test
 	public void testHandleIncarnationIDLog() throws IOException {
 		writeFilesWithIncarnationIDLog();
+		writeBasicHadoopProcessesFile();
 		
-		hadoop = new Hadoop(CPU_FILE_NAME, MEMORY_FILE_NAME, CONTROLLER_LOG_FILE);
+		hadoop = new Hadoop(CPU_FILE_NAME, MEMORY_FILE_NAME, CONTROLLER_LOG_FILE, HADOOP_PROCESSES_FILE_NAME);
 		
 		HadoopInformation result1 = hadoop.getInformation(new Execution(time9, time9));
 		
@@ -242,6 +255,43 @@ public class HadoopTest {
 		assertEquals(MEMORY_5, result3.getMemory().get(time15));
 	}
 	
+	@Test
+	public void testThereAreRunningTasks() throws IOException {
+		writeFilesWithIncarnationIDLog();
+		writeBasicHadoopProcessesFile();
+		
+		hadoop = new Hadoop(CPU_FILE_NAME, MEMORY_FILE_NAME, CONTROLLER_LOG_FILE, HADOOP_PROCESSES_FILE_NAME);
+		
+		assertFalse(hadoop.thereAreRunningTasks(new Execution(time1, time3)));
+		assertTrue(hadoop.thereAreRunningTasks(new Execution(time5, time6)));
+		assertFalse(hadoop.thereAreRunningTasks(new Execution(time9, time10)));
+		assertTrue(hadoop.thereAreRunningTasks(new Execution(time10, time11)));
+		assertTrue(hadoop.thereAreRunningTasks(new Execution(time7, time7)));
+		assertFalse(hadoop.thereAreRunningTasks(new Execution(time2, time2)));
+	}
+	
+	private void writeBasicHadoopProcessesFile() throws FileNotFoundException {
+		PrintStream hadoopProcessesStream = new PrintStream(HADOOP_PROCESSES_FILE_NAME);
+		
+		hadoopProcessesStream.printf("<time> %d %s\n", time1, NO_HADOOP_PROCESS);
+		hadoopProcessesStream.printf("<time> %d %s\n", time2, NO_HADOOP_PROCESS);
+		hadoopProcessesStream.printf("<time> %d %s\n", time3, NO_HADOOP_PROCESS);
+		hadoopProcessesStream.printf("<time> %d %s\n", time4, HADOOP_PROCESSES);
+		hadoopProcessesStream.printf("<time> %d %s\n", time5, HADOOP_PROCESSES);
+		hadoopProcessesStream.printf("<time> %d %s\n", time6, HADOOP_PROCESSES);
+		hadoopProcessesStream.printf("<time> %d %s\n", time7, HADOOP_PROCESSES);
+		hadoopProcessesStream.printf("<time> %d %s\n", time8, NO_HADOOP_PROCESS);
+		hadoopProcessesStream.printf("<time> %d %s\n", time9, NO_HADOOP_PROCESS);
+		hadoopProcessesStream.printf("<time> %d %s\n", time10, NO_HADOOP_PROCESS);
+		hadoopProcessesStream.printf("<time> %d %s\n", time11, HADOOP_PROCESSES);
+		hadoopProcessesStream.printf("<time> %d %s\n", time12, HADOOP_PROCESSES);
+		hadoopProcessesStream.printf("<time> %d %s\n", time13, HADOOP_PROCESSES);
+		hadoopProcessesStream.printf("<time> %d %s\n", time14, HADOOP_PROCESSES);
+		hadoopProcessesStream.printf("<time> %d %s\n", time15, NO_HADOOP_PROCESS);
+		
+		hadoopProcessesStream.close();
+	}
+
 	private void writeFilesWithIncarnationIDLog() throws FileNotFoundException {
 		PrintStream controllerLogStream = new PrintStream(CONTROLLER_LOG_FILE);
 		

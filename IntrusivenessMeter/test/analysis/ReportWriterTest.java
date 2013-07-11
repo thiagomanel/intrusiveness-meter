@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
@@ -177,7 +178,9 @@ public class ReportWriterTest {
 		hadoopMemoryUsage.put(time4, HADOOP_MEMORY_4);
 		hadoopMemoryUsage.put(time5, HADOOP_MEMORY_5);
 		
-		HadoopMachineUsage hadoopMachineUsage = new HadoopMachineUsage(hadoopCPUUsage, hadoopMemoryUsage);
+		Map<Long, List<Integer>> hadoopProcesses = new HashMap<Long, List<Integer>>();
+		
+		HadoopMachineUsage hadoopMachineUsage = new HadoopMachineUsage(hadoopCPUUsage, hadoopMemoryUsage, hadoopProcesses);
 		
 		Map<Long, String> benchmarks = new HashMap<Long, String>();
 		benchmarks.put(time1, BENCHMARK_1);

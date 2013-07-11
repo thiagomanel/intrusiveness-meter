@@ -62,7 +62,11 @@ public class MainAnalyser {
 	}
 
 	private boolean isValid(Execution execution) {
-		return !idle.idle(execution);
+		return !idle.idle(execution) && thereAreRunningTasks(execution);
+	}
+
+	private boolean thereAreRunningTasks(Execution execution) {
+		return hadoop.thereAreRunningTasks(execution);
 	}
 
 	private List<Execution> getExecutions() throws IOException {
@@ -70,16 +74,20 @@ public class MainAnalyser {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		IdleUser idle = new IdleUser("client_logs/results/user_activity.log", 100000);
+		String serverLogsDirectory = "all/ourico/08-07-2013-10-55-44";
+		String machineLogsDirectory = "all/abelhinha/07-07-2013-01-38-06";
+		
+		IdleUser idle = new IdleUser(machineLogsDirectory + "/results/user_activity.log", 100000);
 		System.out.println("idle");
-		Controller controller = new Controller("server_logs/logs/hadoop_running.log");
+		Controller controller = new Controller(serverLogsDirectory + "/logs/hadoop_running.log");
 		System.out.println("controller");
-		Discomfort discomfort = new Discomfort("client_logs/logs/discomfort.log");
+		Discomfort discomfort = new Discomfort(machineLogsDirectory + "/logs/discomfort.log");
 		System.out.println("discomfort");
-		Machine machine = new Machine("whatever", "client_logs/results/system_monitoring_system.idlecpu",  "client_logs/results/system_monitoring_system.usercpu", 
-				"client_logs/results/system_monitoring_system.mem",  "client_logs/results/system_monitoring_system.read",  "client_logs/results/system_monitoring_system.write");
+		Machine machine = new Machine("jurupoca", machineLogsDirectory + "/results/system_monitoring_system.idlecpu",  machineLogsDirectory + "/results/system_monitoring_system.usercpu", 
+				machineLogsDirectory + "/results/system_monitoring_system.mem",  machineLogsDirectory + "/results/system_monitoring_system.read",  machineLogsDirectory + "/results/system_monitoring_system.write");
 		System.out.println("machine");
-		Hadoop hadoop = new Hadoop("client_logs/logs/hadoop_resources_usage.cpu", "client_logs/logs/hadoop_resources_usage.mem", "server_logs/logs/controller.log");
+		Hadoop hadoop = new Hadoop(machineLogsDirectory + "/logs/hadoop_resources_usage.cpu", machineLogsDirectory + "/logs/hadoop_resources_usage.mem", 
+				serverLogsDirectory + "/logs/controller.log", machineLogsDirectory + "/logs/hadoop_processes.proc");
 		System.out.println("hadoop");
 		ReportWriter reportWriter = new ReportWriter("result.csv");
 		System.out.println("writer");
