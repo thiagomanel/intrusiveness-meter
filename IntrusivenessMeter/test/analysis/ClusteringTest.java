@@ -293,7 +293,7 @@ public class ClusteringTest {
 	private void setUpConfigurationNotSynchronizedTimes() {
 		List<Long> discomfortReportTimes = new LinkedList<Long>();
 		discomfortReportTimes.add(time2);
-		discomfortReportTimes.add(time16);
+		discomfortReportTimes.add(time17);
 		
 		discomfort5 = new Discomfort(discomfortReportTimes);
 		
@@ -302,8 +302,8 @@ public class ClusteringTest {
 		executions5.add(new Execution(time11, time20));
 		
 		hadoopCPUUsage5 = new HashMap<Long, Double>();
-		hadoopCPUUsage5.put(time1, 0.0);
-		hadoopCPUUsage5.put(time3, 100.0);
+		hadoopCPUUsage5.put(time1, 100.0);
+		hadoopCPUUsage5.put(time3, 0.0);
 		hadoopCPUUsage5.put(time5, 50.0);
 		hadoopCPUUsage5.put(time8, 25.0);
 		hadoopCPUUsage5.put(time10, 75.0);

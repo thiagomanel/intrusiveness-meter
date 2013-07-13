@@ -51,10 +51,8 @@ public class Clustering {
 			Long value) {
 		HadoopMachineUsage usageInRange = hadoop.getMachineUsage(range);
 		TreeMap<Long, Double> cpuInRange = new TreeMap<Long, Double>(usageInRange.getCPU());
-		long nextTime = cpuInRange.ceilingKey(value);
 		long previousTime = cpuInRange.floorKey(value);
-		long relatedTime = (nextTime - value) > (value - previousTime)? previousTime : nextTime;
-		return cpuInRange.get(relatedTime);
+		return cpuInRange.get(previousTime);
 	}
 
 	private Map<Double, Double> divideBy(Map<Double, Integer> countOccurrences,
