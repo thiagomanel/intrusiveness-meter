@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="intrusiveness-meter" default="" basedir=".">
+	
+	<!--
+		Project Properties 
+	-->
+	<property name="sysName" value="intrusiveness-meter"/>
+	<property name="jars" value="jars"/>
+	<property name="jarFile" value="${jars}/${sysName}.jar"/>
+	<property name="analyser-main-class" value="analysis.MainAnalyser"/>
+	<property name="main-class" value="lab3.cli.Main"/>
+	<property name="src" value="\${basedir}/src"/>
+	<property name="build" value="bin"/>
+	<property name="doc" value="doc"/>
+	<property name="sysLibs" value="lib"/>
+
+	<!--
+                Init Configuration
+         -->
+    	<target name="init">
+    		<echo>Start up</echo>
+    		<mkdir dir="${build}"/>
+    		<mkdir dir="${jars}"/>
+    		<mkdir dir="${doc}"/>
+    	</target>
+	
+	<!-- 
+	   	Compile Configuration
+	-->
+	<path id="compile.classpath">
+		<fileset dir="${sysLibs}">
+			<include name="*.jar"/>
+		</fileset>
+	</path>	
+			
+    <target name="compile" depends="init">
+        <echo>Compiling...</echo>
+    	<javac srcdir="src" destdir="${build}" debug="true">
+    		<classpath refid="compile.classpath" />
+    	</javac>
+    	<javac srcdir="test" destdir="${build}" debug="true">
+                <classpath refid="compile.classpath" />
+        </javac>
+    	<echo>Success on compiling.</echo>
+    </target>
+     
+     <!-- 
+    
+    	  Jar Configuration
+    	  
+     -->
+    
+    <target name="jar" depends="compile">
+        <echo>Creating project's jars.</echo>
+        <jar destfile="${jarFile}" basedir="${build}">
+    		   <manifest>
+    		       <attribute name="Main-Class" value="${analyser-main-class}" />
+    		   </manifest>
+        </jar>
+    </target>
+    
+    <!--
+	   Clean Configuration
+    -->
+    <target name="clean">
+        <echo>Cleaning ........</echo>
+    	<delete dir="${jars}"/>
+    	<delete dir="${build}"/>
+    	<delete dir="${doc}"/>
+    	<delete file="${sysName}.jar"/>
+		<delete includeemptydirs="true">							<fileset dir="${basedir}" >
+			    <include name="**/*.orig"/>
+			</fileset>
+		</delete>
+    	<echo>Success on clean up.</echo>
+    </target>
+</project>
