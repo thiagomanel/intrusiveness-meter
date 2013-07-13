@@ -27,6 +27,11 @@ public class Discomfort {
 		} while (!discomfortFile.reachedEnd());
 	}
 
+	public Discomfort(List<Long> discomfortReportTimes) {
+		checkNotNull(discomfortReportTimes, "discomfortReportTimes must not be null.");
+		this.discomfortReportsTimes = discomfortReportTimes;
+	}
+
 	private void advanceFile() {
 		try {
 			discomfortFile.advance();
@@ -42,5 +47,17 @@ public class Discomfort {
 			}
 		}
 		return false;
+	}
+
+	public List<Long> getDiscomfortTimes(Execution execution) {
+		List<Long> discomfortTimes = new LinkedList<Long>();
+		
+		for (Long discomfortTime : discomfortReportsTimes) {
+			if (execution.getStartTime() <= discomfortTime && execution.getFinishTime() >= discomfortTime) {
+				discomfortTimes.add(discomfortTime);
+			}
+		}
+		
+		return discomfortTimes;
 	}
 }

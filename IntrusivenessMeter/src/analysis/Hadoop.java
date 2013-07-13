@@ -34,6 +34,14 @@ public class Hadoop {
 		info = new HadoopInformation(readInformation(controllerFileName));
 	}
 
+	public Hadoop(HadoopMachineUsage hadoopMachineUsage, HadoopInformation hadoopInfo) {
+		checkNotNull(hadoopMachineUsage, "hadoopMachineUsage must not be null.");
+		checkNotNull(hadoopInfo, "hadoopInfo must not be null.");
+		
+		this.usage = hadoopMachineUsage;
+		this.info = hadoopInfo;
+	}
+
 	private Map<Long, List<Integer>> getHadoopProcesses(String hadoopProcessesFileName) throws IOException {
 		LogFile file = new LogFile(hadoopProcessesFileName);
 		Map<Long, List<Integer>> information = new HashMap<Long, List<Integer>>();
