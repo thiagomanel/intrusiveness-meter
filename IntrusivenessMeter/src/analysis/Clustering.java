@@ -1,5 +1,7 @@
 package analysis;
 
+import static commons.Preconditions.checkNotNull;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +17,9 @@ public class Clustering {
 	private List<Execution> executions;
 	
 	public Clustering(Hadoop hadoop, Discomfort discomfort, List<Execution> executions) {
+		checkNotNull(hadoop, "hadoop must not be null.");
+		checkNotNull(discomfort, "discomfort must not be null.");
+		checkNotNull(executions, "executions must not be null.");
 		this.hadoop = hadoop;
 		this.discomfort = discomfort;
 		this.executions = executions;
@@ -28,11 +33,47 @@ public class Clustering {
 		
 		for (Execution execution : executions) {
 			Double cpuUsage = getFirstDiscomfortReportCPUUsage(execution);
-			count(countOccurrences, cpuUsage);		
+			if (cpuUsage != -1) {
+				count(countOccurrences, cpuUsage);						
+			}
 		}
 		probabilities = divideBy(countOccurrences, executions.size());
 		
 		return probabilities;
+	}
+	
+	public Map<Double, Double> getMemoryUsageDiscomfortProbability() {
+		Map<Double, Integer> countOccurrences = new HashMap<Double, Integer>();
+		setUpCount(countOccurrences);
+		
+		Map<Double, Double> probabilities = null;
+		
+		for (Execution execution : executions) {
+			Double memoryUsage = getFirstDiscomfortReportMemoryUsage(execution);
+			if (memoryUsage != -1) {
+				count(countOccurrences, memoryUsage);
+			}
+		}
+		probabilities = divideBy(countOccurrences, executions.size());
+		
+		return probabilities;
+	}
+
+	private Double getFirstDiscomfortReportMemoryUsage(Execution execution) {
+		List<Long> executionDiscomfortTimes = discomfort.getDiscomfortTimes(execution);
+		if (executionDiscomfortTimes.isEmpty()) {
+			return -1.0;
+		}
+		Long firstDiscomfortTime = executionDiscomfortTimes.get(0);
+		return getNearestMemoryValue(execution, firstDiscomfortTime);
+	}
+
+	private Double getNearestMemoryValue(Execution range,
+			Long value) {
+		HadoopMachineUsage usageInRange = hadoop.getMachineUsage(range);
+		TreeMap<Long, Double> memoryInRange = new TreeMap<Long, Double>(usageInRange.getMemory());
+		long previousTime = memoryInRange.floorKey(value);
+		return memoryInRange.get(previousTime);
 	}
 
 	private void setUpCount(Map<Double, Integer> countOccurrences) {
@@ -43,6 +84,9 @@ public class Clustering {
 
 	private Double getFirstDiscomfortReportCPUUsage(Execution execution) {
 		List<Long> executionDiscomfortTimes = discomfort.getDiscomfortTimes(execution);
+		if (executionDiscomfortTimes.isEmpty()) {
+			return -1.0;
+		}
 		Long firstDiscomfortTime = executionDiscomfortTimes.get(0);
 		return getNearestCPUValue(execution, firstDiscomfortTime); 
 	}
@@ -64,9 +108,9 @@ public class Clustering {
 		return result;
 	}
 
-	private void count(Map<Double, Integer> countOccurrences, Double cpuUsage) {
+	private void count(Map<Double, Integer> countOccurrences, Double value) {
 		for (Double key : countOccurrences.keySet()) {
-			if (key >= cpuUsage) {
+			if (key >= value) {
 				countOccurrences.put(key, countOccurrences.get(key) + 1);
 			}
 		}

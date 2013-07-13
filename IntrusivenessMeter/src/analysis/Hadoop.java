@@ -48,9 +48,11 @@ public class Hadoop {
 		
 		do {
 			String message = file.getMessage();
-			String[] processesStrings = message.replaceAll(REGEX_BETWEEN_SQUARE_BRACKETS,"").split(",");
-			List<Integer> processes = getProcesses(processesStrings);
-			information.put(file.getLineTime(), processes);
+			if (checkNotIncarnationIDLog(message)) {
+				String[] processesStrings = message.replaceAll(REGEX_BETWEEN_SQUARE_BRACKETS,"").split(",");
+				List<Integer> processes = getProcesses(processesStrings);
+				information.put(file.getLineTime(), processes);				
+			}
 			file.advance();
 		} while (!file.reachedEnd());
 		return information;
@@ -61,6 +63,7 @@ public class Hadoop {
 		
 		for (String processString : processesStrings) {
 			processString = processString.trim();
+			processString = processString.replaceAll("'", "");
 			if (!processString.isEmpty()) {
 				processes.add(Integer.parseInt(processString));				
 			}

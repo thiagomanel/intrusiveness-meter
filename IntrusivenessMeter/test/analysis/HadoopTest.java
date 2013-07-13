@@ -82,7 +82,7 @@ public class HadoopTest {
 	private static final String TERACLEAN_MARK = STARTING_BENCHMARK + TERACLEAN;
 	
 	private static final String NO_HADOOP_PROCESS = "[]";
-	private static final String HADOOP_PROCESSES = "[111, 1111]";
+	private static final String HADOOP_PROCESSES = "['111', '1111']";
 	
 	private Hadoop hadoop;
 	
