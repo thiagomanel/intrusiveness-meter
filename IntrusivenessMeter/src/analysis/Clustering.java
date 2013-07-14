@@ -1,6 +1,7 @@
 package analysis;
 
 import static commons.Preconditions.checkNotNull;
+import static commons.Preconditions.check;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,14 +16,20 @@ public class Clustering {
 	private Hadoop hadoop;
 	private Discomfort discomfort;
 	private List<Execution> executions;
+	private long totalMemory;
+	private int numberOfCPUs;
 	
-	public Clustering(Hadoop hadoop, Discomfort discomfort, List<Execution> executions) {
+	public Clustering(Hadoop hadoop, Discomfort discomfort, List<Execution> executions, long totalMemory, int numberOfCPUs) {
 		checkNotNull(hadoop, "hadoop must not be null.");
 		checkNotNull(discomfort, "discomfort must not be null.");
 		checkNotNull(executions, "executions must not be null.");
+		check(totalMemory > 0, "totalMemory must be positive.");
+		check(numberOfCPUs > 0, "numberOfCPUs must be positive.");
 		this.hadoop = hadoop;
 		this.discomfort = discomfort;
 		this.executions = executions;
+		this.totalMemory = totalMemory;
+		this.numberOfCPUs = numberOfCPUs;
 	}
 
 	public Map<Double, Double> getHadoopCPUUsageDiscomfortProbability() {
@@ -73,7 +80,8 @@ public class Clustering {
 		HadoopMachineUsage usageInRange = hadoop.getMachineUsage(range);
 		TreeMap<Long, Double> memoryInRange = new TreeMap<Long, Double>(usageInRange.getMemory());
 		long previousTime = memoryInRange.floorKey(value);
-		return memoryInRange.get(previousTime);
+		double memoryUsed = memoryInRange.get(previousTime); 
+		return memoryUsed*100/totalMemory;
 	}
 
 	private void setUpCount(Map<Double, Integer> countOccurrences) {
@@ -96,7 +104,8 @@ public class Clustering {
 		HadoopMachineUsage usageInRange = hadoop.getMachineUsage(range);
 		TreeMap<Long, Double> cpuInRange = new TreeMap<Long, Double>(usageInRange.getCPU());
 		long previousTime = cpuInRange.floorKey(value);
-		return cpuInRange.get(previousTime);
+		double cpuUsed = cpuInRange.get(previousTime); 
+		return cpuUsed/numberOfCPUs;
 	}
 
 	private Map<Double, Double> divideBy(Map<Double, Integer> countOccurrences,

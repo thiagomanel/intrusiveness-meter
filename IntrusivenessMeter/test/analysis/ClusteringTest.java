@@ -22,12 +22,14 @@ public class ClusteringTest {
 	private Discomfort discomfort3;
 	private Discomfort discomfort4;
 	private Discomfort discomfort5;
+	private Discomfort discomfort6;
 	
 	private Hadoop hadoop1;
 	private Hadoop hadoop2;
 	private Hadoop hadoop3;
 	private Hadoop hadoop4;
 	private Hadoop hadoop5;
+	private Hadoop hadoop6;
 	
 	private Clustering clustering;
 	
@@ -36,42 +38,49 @@ public class ClusteringTest {
 	private Map<Long, List<Integer>> hadoopProcesses3;
 	private Map<Long, List<Integer>> hadoopProcesses4;
 	private Map<Long, List<Integer>> hadoopProcesses5;
+	private Map<Long, List<Integer>> hadoopProcesses6;
 	
 	private HadoopMachineUsage hadoopMachineUsage1;
 	private HadoopMachineUsage hadoopMachineUsage2;
 	private HadoopMachineUsage hadoopMachineUsage3;
 	private HadoopMachineUsage hadoopMachineUsage4;
 	private HadoopMachineUsage hadoopMachineUsage5;
+	private HadoopMachineUsage hadoopMachineUsage6;
 	
 	private HadoopInformation hadoopInfo1;
 	private HadoopInformation hadoopInfo2;
 	private HadoopInformation hadoopInfo3;
 	private HadoopInformation hadoopInfo4;
 	private HadoopInformation hadoopInfo5;
+	private HadoopInformation hadoopInfo6;
 	
 	private List<Execution> executions1;
 	private List<Execution> executions2;
 	private List<Execution> executions3;
 	private List<Execution> executions4;
 	private List<Execution> executions5;
+	private List<Execution> executions6;
 	
 	private Map<Long, Double> hadoopCPUUsage1;
 	private Map<Long, Double> hadoopCPUUsage2;
 	private Map<Long, Double> hadoopCPUUsage3;
 	private Map<Long, Double> hadoopCPUUsage4;
 	private Map<Long, Double> hadoopCPUUsage5;
+	private Map<Long, Double> hadoopCPUUsage6;
 	
 	private Map<Long, Double> hadoopMemoryUsage1;
 	private Map<Long, Double> hadoopMemoryUsage2;
 	private Map<Long, Double> hadoopMemoryUsage3;
 	private Map<Long, Double> hadoopMemoryUsage4;
 	private Map<Long, Double> hadoopMemoryUsage5;
+	private Map<Long, Double> hadoopMemoryUsage6;
 	
 	private Map<Long, String> benchmarks1;
 	private Map<Long, String> benchmarks2;
 	private Map<Long, String> benchmarks3;
 	private Map<Long, String> benchmarks4;
 	private Map<Long, String> benchmarks5;
+	private Map<Long, String> benchmarks6;
 	
 	private static final String BENCHMARK_1 = "mr";
 	private static final String BENCHMARK_2 = "teragen";
@@ -112,6 +121,10 @@ public class ClusteringTest {
 	private static final Double HADOOP_MEMORY_5 = HADOOP_MEMORY_4 + 10;
 	private static final Double HADOOP_MEMORY_6 = HADOOP_MEMORY_5 + 10;
 	
+	private static final Integer testNumberOfCPUs1 = 1;
+	private static final Integer testNumberOfCPUs2 = 4;
+	private static final Long testTotalMemory1 = 100L;
+	private static final Long testTotalMemory2 = 1000L;
 	@Before
 	public void setUp() throws Exception {
 		setUpConfiguration1();
@@ -119,6 +132,7 @@ public class ClusteringTest {
 		setUpConfiguration3();
 		setUpConfiguration4();
 		setUpConfigurationNotSynchronizedTimes();
+		setUpConfigurationRealValues();
 	}
 
 	private void setUpConfiguration1() {
@@ -298,6 +312,50 @@ public class ClusteringTest {
 		discomfortReportTimes.add(time2);
 		discomfortReportTimes.add(time17);
 		
+		discomfort6 = new Discomfort(discomfortReportTimes);
+		
+		executions6 = new LinkedList<Execution>();
+		executions6.add(new Execution(time1, time10));
+		executions6.add(new Execution(time11, time20));
+		
+		hadoopCPUUsage6 = new HashMap<Long, Double>();
+		hadoopCPUUsage6.put(time1, 100.0);
+		hadoopCPUUsage6.put(time3, 0.0);
+		hadoopCPUUsage6.put(time5, 50.0);
+		hadoopCPUUsage6.put(time8, 25.0);
+		hadoopCPUUsage6.put(time10, 75.0);
+		hadoopCPUUsage6.put(time11, 12.0);
+		hadoopCPUUsage6.put(time15, 24.0);
+		hadoopCPUUsage6.put(time18, 13.0);
+		hadoopCPUUsage6.put(time20, 99.0);
+		
+		hadoopMemoryUsage6 = new HashMap<Long, Double>();
+		hadoopMemoryUsage6.put(time1, 100.0);
+		hadoopMemoryUsage6.put(time3, 0.0);
+		hadoopMemoryUsage6.put(time5, 50.0);
+		hadoopMemoryUsage6.put(time8, 25.0);
+		hadoopMemoryUsage6.put(time10, 75.0);
+		hadoopMemoryUsage6.put(time11, 12.0);
+		hadoopMemoryUsage6.put(time15, 24.0);
+		hadoopMemoryUsage6.put(time18, 13.0);
+		hadoopMemoryUsage6.put(time20, 99.0);
+		
+		hadoopProcesses6 = new HashMap<Long, List<Integer>>();
+		
+		benchmarks6 = new HashMap<Long, String>();
+		benchmarks6.put(time1, BENCHMARK_1);
+		benchmarks6.put(time11, BENCHMARK_2);
+		
+		hadoopMachineUsage6 = new HadoopMachineUsage(hadoopCPUUsage6, hadoopMemoryUsage6, hadoopProcesses6);
+		hadoopInfo6 = new HadoopInformation(benchmarks6);
+		hadoop6 = new Hadoop(hadoopMachineUsage6, hadoopInfo6);
+	}
+	
+	private void setUpConfigurationRealValues() {
+		List<Long> discomfortReportTimes = new LinkedList<Long>();
+		discomfortReportTimes.add(time2);
+		discomfortReportTimes.add(time17);
+		
 		discomfort5 = new Discomfort(discomfortReportTimes);
 		
 		executions5 = new LinkedList<Execution>();
@@ -305,26 +363,26 @@ public class ClusteringTest {
 		executions5.add(new Execution(time11, time20));
 		
 		hadoopCPUUsage5 = new HashMap<Long, Double>();
-		hadoopCPUUsage5.put(time1, 100.0);
+		hadoopCPUUsage5.put(time1, 400.0);
 		hadoopCPUUsage5.put(time3, 0.0);
-		hadoopCPUUsage5.put(time5, 50.0);
-		hadoopCPUUsage5.put(time8, 25.0);
-		hadoopCPUUsage5.put(time10, 75.0);
-		hadoopCPUUsage5.put(time11, 12.0);
-		hadoopCPUUsage5.put(time15, 24.0);
-		hadoopCPUUsage5.put(time18, 13.0);
-		hadoopCPUUsage5.put(time20, 99.0);
+		hadoopCPUUsage5.put(time5, 200.0);
+		hadoopCPUUsage5.put(time8, 100.0);
+		hadoopCPUUsage5.put(time10, 150.0);
+		hadoopCPUUsage5.put(time11, 48.0);
+		hadoopCPUUsage5.put(time15, 96.0);
+		hadoopCPUUsage5.put(time18, 52.0);
+		hadoopCPUUsage5.put(time20, 396.0);
 		
 		hadoopMemoryUsage5 = new HashMap<Long, Double>();
-		hadoopMemoryUsage5.put(time1, 100.0);
+		hadoopMemoryUsage5.put(time1, 1000.0);
 		hadoopMemoryUsage5.put(time3, 0.0);
-		hadoopMemoryUsage5.put(time5, 50.0);
-		hadoopMemoryUsage5.put(time8, 25.0);
-		hadoopMemoryUsage5.put(time10, 75.0);
-		hadoopMemoryUsage5.put(time11, 12.0);
-		hadoopMemoryUsage5.put(time15, 24.0);
-		hadoopMemoryUsage5.put(time18, 13.0);
-		hadoopMemoryUsage5.put(time20, 99.0);
+		hadoopMemoryUsage5.put(time5, 500.0);
+		hadoopMemoryUsage5.put(time8, 250.0);
+		hadoopMemoryUsage5.put(time10, 750.0);
+		hadoopMemoryUsage5.put(time11, 120.0);
+		hadoopMemoryUsage5.put(time15, 240.0);
+		hadoopMemoryUsage5.put(time18, 130.0);
+		hadoopMemoryUsage5.put(time20, 990.0);
 		
 		hadoopProcesses5 = new HashMap<Long, List<Integer>>();
 		
@@ -343,7 +401,7 @@ public class ClusteringTest {
 	
 	@Test
 	public void testGetCPUUsageDiscomfortProbability() {
-		clustering = new Clustering(hadoop1, discomfort1, executions1);
+		clustering = new Clustering(hadoop1, discomfort1, executions1, testTotalMemory1, testNumberOfCPUs1);
 		Map<Double, Double> result1 = clustering.getHadoopCPUUsageDiscomfortProbability();
 		
 		assertEquals(0.0, result1.get(0.0), 0.005);
@@ -358,7 +416,7 @@ public class ClusteringTest {
 		assertEquals(1.0, result1.get(90.0), 0.005);
 		assertEquals(1.0, result1.get(100.0), 0.005);
 		
-		clustering = new Clustering(hadoop2, discomfort2, executions2);
+		clustering = new Clustering(hadoop2, discomfort2, executions2, testTotalMemory1, testNumberOfCPUs1);
 		Map<Double, Double> result2 = clustering.getHadoopCPUUsageDiscomfortProbability();
 		
 		assertEquals(0.0, result2.get(0.0), 0.005);
@@ -373,7 +431,7 @@ public class ClusteringTest {
 		assertEquals(0.0, result2.get(90.0), 0.005);
 		assertEquals(1.0, result2.get(100.0), 0.005);
 		
-		clustering = new Clustering(hadoop3, discomfort3, executions3);
+		clustering = new Clustering(hadoop3, discomfort3, executions3, testTotalMemory1, testNumberOfCPUs1);
 		Map<Double, Double> result3 = clustering.getHadoopCPUUsageDiscomfortProbability();
 		
 		assertEquals(0.0, result3.get(0.0), 0.005);
@@ -388,7 +446,7 @@ public class ClusteringTest {
 		assertEquals(0.5, result3.get(90.0), 0.005);
 		assertEquals(1.0, result3.get(100.0), 0.005);
 		
-		clustering = new Clustering(hadoop4, discomfort4, executions4);
+		clustering = new Clustering(hadoop4, discomfort4, executions4, testTotalMemory1, testNumberOfCPUs1);
 		Map<Double, Double> result4 = clustering.getHadoopCPUUsageDiscomfortProbability();
 		
 		assertEquals(0.0, result4.get(0.0), 0.005);
@@ -403,7 +461,7 @@ public class ClusteringTest {
 		assertEquals(2.0/3, result4.get(90.0), 0.005);
 		assertEquals(1.0, result4.get(100.0), 0.005);
 		
-		clustering = new Clustering(hadoop5, discomfort5, executions5);
+		clustering = new Clustering(hadoop6, discomfort6, executions6, testTotalMemory1, testNumberOfCPUs1);
 		Map<Double, Double> result5 = clustering.getHadoopCPUUsageDiscomfortProbability();
 		
 		assertEquals(0.0, result5.get(0.0), 0.005);
@@ -417,11 +475,26 @@ public class ClusteringTest {
 		assertEquals(0.5, result5.get(80.0), 0.005);
 		assertEquals(0.5, result5.get(90.0), 0.005);
 		assertEquals(1.0, result5.get(100.0), 0.005);
+		
+		clustering = new Clustering(hadoop5, discomfort5, executions5, testTotalMemory2, testNumberOfCPUs2);
+		Map<Double, Double> result6 = clustering.getHadoopCPUUsageDiscomfortProbability();
+		
+		assertEquals(0.0, result6.get(0.0), 0.005);
+		assertEquals(0.0, result6.get(10.0), 0.005);
+		assertEquals(0.0, result6.get(20.0), 0.005);
+		assertEquals(0.5, result6.get(30.0), 0.005);
+		assertEquals(0.5, result6.get(40.0), 0.005);
+		assertEquals(0.5, result6.get(50.0), 0.005);
+		assertEquals(0.5, result6.get(60.0), 0.005);
+		assertEquals(0.5, result6.get(70.0), 0.005);
+		assertEquals(0.5, result6.get(80.0), 0.005);
+		assertEquals(0.5, result6.get(90.0), 0.005);
+		assertEquals(1.0, result6.get(100.0), 0.005);
 	}
 	
 	@Test
 	public void testGetMemoryUsageDiscomfortProbability() {
-		clustering = new Clustering(hadoop1, discomfort1, executions1);
+		clustering = new Clustering(hadoop1, discomfort1, executions1, testTotalMemory1, testNumberOfCPUs1);
 		Map<Double, Double> result1 = clustering.getMemoryUsageDiscomfortProbability();
 		
 		assertEquals(0.0, result1.get(0.0), 0.005);
@@ -436,7 +509,7 @@ public class ClusteringTest {
 		assertEquals(1.0, result1.get(90.0), 0.005);
 		assertEquals(1.0, result1.get(100.0), 0.005);
 		
-		clustering = new Clustering(hadoop2, discomfort2, executions2);
+		clustering = new Clustering(hadoop2, discomfort2, executions2, testTotalMemory1, testNumberOfCPUs1);
 		Map<Double, Double> result2 = clustering.getMemoryUsageDiscomfortProbability();
 		
 		assertEquals(0.0, result2.get(0.0), 0.005);
@@ -451,7 +524,7 @@ public class ClusteringTest {
 		assertEquals(0.0, result2.get(90.0), 0.005);
 		assertEquals(1.0, result2.get(100.0), 0.005);
 		
-		clustering = new Clustering(hadoop3, discomfort3, executions3);
+		clustering = new Clustering(hadoop3, discomfort3, executions3, testTotalMemory1, testNumberOfCPUs1);
 		Map<Double, Double> result3 = clustering.getMemoryUsageDiscomfortProbability();
 		
 		assertEquals(0.0, result3.get(0.0), 0.005);
@@ -466,7 +539,7 @@ public class ClusteringTest {
 		assertEquals(0.5, result3.get(90.0), 0.005);
 		assertEquals(1.0, result3.get(100.0), 0.005);
 		
-		clustering = new Clustering(hadoop4, discomfort4, executions4);
+		clustering = new Clustering(hadoop4, discomfort4, executions4, testTotalMemory1, testNumberOfCPUs1);
 		Map<Double, Double> result4 = clustering.getMemoryUsageDiscomfortProbability();
 		
 		assertEquals(0.0, result4.get(0.0), 0.005);
@@ -481,7 +554,7 @@ public class ClusteringTest {
 		assertEquals(2.0/3, result4.get(90.0), 0.005);
 		assertEquals(1.0, result4.get(100.0), 0.005);
 		
-		clustering = new Clustering(hadoop5, discomfort5, executions5);
+		clustering = new Clustering(hadoop6, discomfort6, executions6, testTotalMemory1, testNumberOfCPUs1);
 		Map<Double, Double> result5 = clustering.getMemoryUsageDiscomfortProbability();
 		
 		assertEquals(0.0, result5.get(0.0), 0.005);
@@ -495,5 +568,20 @@ public class ClusteringTest {
 		assertEquals(0.5, result5.get(80.0), 0.005);
 		assertEquals(0.5, result5.get(90.0), 0.005);
 		assertEquals(1.0, result5.get(100.0), 0.005);
+		
+		clustering = new Clustering(hadoop5, discomfort5, executions5, testTotalMemory2, testNumberOfCPUs2);
+		Map<Double, Double> result6 = clustering.getMemoryUsageDiscomfortProbability();
+		
+		assertEquals(0.0, result6.get(0.0), 0.005);
+		assertEquals(0.0, result6.get(10.0), 0.005);
+		assertEquals(0.0, result6.get(20.0), 0.005);
+		assertEquals(0.5, result6.get(30.0), 0.005);
+		assertEquals(0.5, result6.get(40.0), 0.005);
+		assertEquals(0.5, result6.get(50.0), 0.005);
+		assertEquals(0.5, result6.get(60.0), 0.005);
+		assertEquals(0.5, result6.get(70.0), 0.005);
+		assertEquals(0.5, result6.get(80.0), 0.005);
+		assertEquals(0.5, result6.get(90.0), 0.005);
+		assertEquals(1.0, result6.get(100.0), 0.005);
 	}
 }
