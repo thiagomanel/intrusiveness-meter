@@ -6,6 +6,7 @@ import static commons.util.StringUtil.concat;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Map;
 
 import analysis.data.Execution;
 import analysis.data.HadoopInformation;
@@ -77,5 +78,13 @@ public class ReportWriter {
 	private String getBenchmark(HadoopInformation hadoopInfo) {
 		// should have only one benchmark
 		return hadoopInfo.getBenchmarks().values().iterator().next();
+	}
+
+	public <K extends Object, V extends Object>void write(Map<K, V> map, String fileName) throws FileNotFoundException {
+		PrintStream stream = new PrintStream(fileName);
+		for (K key : map.keySet()) {
+			stream.printf("%s, %s\n", key.toString(), map.get(key).toString());
+		}	
+		stream.close();
 	}
 }
