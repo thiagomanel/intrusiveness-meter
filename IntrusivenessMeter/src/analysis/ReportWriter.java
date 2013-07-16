@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.TreeMap;
 
 import analysis.data.Execution;
 import analysis.data.HadoopInformation;
@@ -80,9 +81,10 @@ public class ReportWriter {
 		return hadoopInfo.getBenchmarks().values().iterator().next();
 	}
 
-	public <K extends Object, V extends Object>void write(Map<K, V> map, String fileName) throws FileNotFoundException {
+	public <K extends Object, V extends Object> void write(Map<K, V> map, String fileName) throws FileNotFoundException {
+		TreeMap<K, V> newMap = new TreeMap<K, V>(map);
 		PrintStream stream = new PrintStream(fileName);
-		for (K key : map.keySet()) {
+		for (K key : newMap.keySet()) {
 			stream.printf("%s, %s\n", key.toString(), map.get(key).toString());
 		}	
 		stream.close();

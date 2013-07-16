@@ -1,0 +1,4 @@
+Number of executions: 1260
+Number of discomfort reports: 4
+Number of valid executions on machine: 38
+Number of discomforts caused by Hadoop: 3

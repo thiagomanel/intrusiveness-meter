@@ -14,6 +14,10 @@ public class IdleUser {
 	private Map<Long, Long> idleTimes;
 	private long activityThreshold;
 	
+	public IdleUser(Map<Long, Long> idleTimes) {
+		this.idleTimes = idleTimes;
+	}
+	
 	public IdleUser(String idleTimeLogFileName, long activityThreshold) throws IOException {
 		idleTimeLogFile = new LogFile(idleTimeLogFileName);
 		idleTimes = new TreeMap<Long, Long>();

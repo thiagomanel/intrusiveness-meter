@@ -7,7 +7,9 @@
 	<property name="sysName" value="intrusiveness-meter"/>
 	<property name="jars" value="jars"/>
 	<property name="jarFile" value="${jars}/${sysName}.jar"/>
+	<property name="fastsummary-jar-file" value="${jars}/fast-summary.jar"/>
 	<property name="analyser-main-class" value="analysis.MainAnalyser"/>
+	<property name="analyser-fast-summary" value="analysis.FastSummary"/>
 	<property name="main-class" value="lab3.cli.Main"/>
 	<property name="src" value="\${basedir}/src"/>
 	<property name="build" value="bin"/>
@@ -57,6 +59,12 @@
     		       <attribute name="Main-Class" value="${analyser-main-class}" />
     		   </manifest>
         </jar>
+
+	<jar destfile="${fastsummary-jar-file}" basedir="${build}">
+		<manifest>
+			<attribute name="Main-Class" value="${analyser-fast-summary}" />
+		</manifest>
+	</jar>
     </target>
     
     <!--
