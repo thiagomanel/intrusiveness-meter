@@ -3,6 +3,7 @@ package analysis.data;
 import static commons.Preconditions.checkNotNull;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 public class HadoopInformation {
 	private Map<Long, String> benchmark;
@@ -26,5 +27,9 @@ public class HadoopInformation {
 		builder.append(conf);
 		builder.append("]");
 		return builder.toString();
+	}
+
+	public String getFirstBenchmark() {
+		return new TreeMap<Long, String>(benchmark).firstEntry().getValue();
 	}
 }

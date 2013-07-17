@@ -3,6 +3,8 @@ package analysis;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import analysis.data.Execution;
 
@@ -28,13 +30,45 @@ public class FastSummary {
 		PrintStream generalSummaryFile = new PrintStream("general_summary.txt");
 		
 		List<Execution> executions = controller.getExecutions();
+		List<Long> discomfortTimes = discomfort.getDiscomfortTimes(new Execution(Long.MIN_VALUE, Long.MAX_VALUE));
+		
 		generalSummaryFile.printf("Number of executions: %d\n", executions.size());
-		generalSummaryFile.printf("Number of discomfort reports: %d\n", discomfort.getDiscomfortTimes(new Execution(Long.MIN_VALUE, 
-												Long.MAX_VALUE)).size());
+		generalSummaryFile.printf("Number of discomfort reports: %d\n", discomfortTimes.size());
 		generalSummaryFile.printf("Number of valid executions on machine: %d\n", countValidExecutions(executions));
 		generalSummaryFile.printf("Number of discomforts caused by Hadoop: %d\n", countHadoopDiscomforts());
+		writeBenchmarksReport(generalSummaryFile, discomfortTimes);
 		
 		generalSummaryFile.close();
+	}
+	
+	private void writeBenchmarksReport(PrintStream generalSummaryFile,
+			List<Long> discomfortTimes) {
+		Map<String, Integer> discomfortsPerBenchmark = getDiscomfortPerBenchmark(discomfortTimes);
+		
+		generalSummaryFile.printf("------------------------\n");
+		generalSummaryFile.printf("Discomfort per benchmark\n");
+		generalSummaryFile.printf("------------------------\n");
+		
+		for (String benchmark : discomfortsPerBenchmark.keySet()) {
+			generalSummaryFile.printf("%s : %d\n", benchmark, discomfortsPerBenchmark.get(benchmark));
+		}
+	}
+
+	private Map<String, Integer> getDiscomfortPerBenchmark(List<Long> discomfortTimes) {
+		Map<String, Integer> discomfortsPerBenchmark = new TreeMap<String, Integer>();
+		
+		for (long discomfortTime : discomfortTimes) {
+			String runningBenchmark = hadoop.getInformation(new Execution(discomfortTime - 5000000000L, 
+										discomfortTime + 5000000000L)).getFirstBenchmark();
+			
+			if (discomfortsPerBenchmark.get(runningBenchmark) == null) {
+				discomfortsPerBenchmark.put(runningBenchmark, 0);
+			}
+			
+			discomfortsPerBenchmark.put(runningBenchmark, discomfortsPerBenchmark.get(runningBenchmark) + 1);
+		}
+		
+		return discomfortsPerBenchmark;
 	}
 	
 	private int countHadoopDiscomforts() {
