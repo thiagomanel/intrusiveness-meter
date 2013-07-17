@@ -34,13 +34,15 @@ public class FastSummary {
 		
 		generalSummaryFile.printf("Number of executions: %d\n", executions.size());
 		generalSummaryFile.printf("Number of discomfort reports: %d\n", discomfortTimes.size());
+		generalSummaryFile.printf("Number of executions on machine: %d\n", countExecutionsOnMachine(executions));
 		generalSummaryFile.printf("Number of valid executions on machine: %d\n", countValidExecutions(executions));
+		generalSummaryFile.printf("Number of executions that caused discomfort: %d\n", countExecutionsThatCausedDiscomfort(executions));
 		generalSummaryFile.printf("Number of discomforts caused by Hadoop: %d\n", countHadoopDiscomforts());
 		writeBenchmarksReport(generalSummaryFile, discomfortTimes);
 		
 		generalSummaryFile.close();
 	}
-	
+
 	private void writeBenchmarksReport(PrintStream generalSummaryFile,
 			List<Long> discomfortTimes) {
 		Map<String, Integer> discomfortsPerBenchmark = getDiscomfortPerBenchmark(discomfortTimes);
@@ -73,7 +75,7 @@ public class FastSummary {
 	
 	private int countHadoopDiscomforts() {
 		int hadoopDiscomforts = 0;
-		
+	
 		for (long time : discomfort.getDiscomfortTimes(new Execution(Long.MIN_VALUE, Long.MAX_VALUE))) {
 			// the delta 5000000000L is used because the attempt to get the tasks of a given time
 			// may fail, so I try to get in a given interval.
@@ -97,6 +99,31 @@ public class FastSummary {
 		return validExecutions;
 	}
 
+	private int countExecutionsOnMachine(List<Execution> executions) {
+		int executionsOnMachine = 0;
+		
+		for (Execution execution : executions) {		
+			if (thereAreRunningTasks(execution)) {
+				executionsOnMachine++;
+			}
+		}
+		
+		return executionsOnMachine;
+	}
+
+	private int countExecutionsThatCausedDiscomfort(
+			List<Execution> executions) {
+		int executionsThatCausedDiscomfort = 0;
+		
+		for (Execution execution : executions) {
+			if (discomfort.reportedDiscomfort(execution)) {
+				executionsThatCausedDiscomfort++;
+			}
+		}
+		
+		return executionsThatCausedDiscomfort;
+	}
+	
 	private boolean isValid(Execution execution) {
 		return !idle.idle(execution) && thereAreRunningTasks(execution);
 	}
