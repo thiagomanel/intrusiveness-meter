@@ -12,15 +12,14 @@ public class WriteDataToR {
 	
 	private static final int SERVER_LOGS_DIRECTORY_INDEX = 1;
 	private static final int MACHINE_LOGS_DIRECTORY_INDEX = 2;
-	private static final int EXPECTED_ARGS_LENGTH = 5;
+	private static final int EXPECTED_ARGS_LENGTH = 6;
 	private static final int TOTAL_MEMORY_INDEX = 4;
 	private static final int CPU_NUMBER_INDEX = 3;
+	private static final int INTERVAL_SIZE_INDEX = 5;
 	private static final String CPU_DATA_FILENAME = "cpu_discomfort.csv";
 	private static final String MEMORY_DATA_FILENAME = "memory_discomfort.csv";
 	private static final String SEPARATOR = " ";
-	
-	private static final long INTERVAL_GET_DISCOMFORT_DATA = 10 * 1000000000L;
-	
+
 	public class Pair<T1, T2> {
 		private T1 t1;
 		private T2 t2;
@@ -63,13 +62,13 @@ public class WriteDataToR {
 	}
 
 	// output : [timestamp] [cpu] [discomfort] 
-	public void getDataToR() throws IOException {
+	public void getDataToR(int intervalSize) throws IOException {
 		Map<Long, Pair<Boolean, Double>> resultCPU = new TreeMap<Long, Pair<Boolean,Double>>();
 		Map<Long, Pair<Boolean, Double>> resultMemory = new TreeMap<Long, Pair<Boolean,Double>>();
 		
 		for (long discomfortTime : discomfort.getDiscomfortTimes(new Execution(Long.MIN_VALUE, Long.MAX_VALUE))) {
-			double cpuUsageAtDiscomfortTime = getCPUUsage(discomfortTime);
-			double memoryUsageAtDiscomfortTime = getMemoryUsage(discomfortTime);
+			double cpuUsageAtDiscomfortTime = getCPUUsage(discomfortTime, intervalSize);
+			double memoryUsageAtDiscomfortTime = getMemoryUsage(discomfortTime, intervalSize);
 			
 			resultCPU.put(discomfortTime, new Pair<Boolean, Double>(true, cpuUsageAtDiscomfortTime));
 			resultMemory.put(discomfortTime, new Pair<Boolean, Double>(true, memoryUsageAtDiscomfortTime));
@@ -79,12 +78,12 @@ public class WriteDataToR {
 		dataMemory = resultMemory;
 	}
 	
-	private double getMemoryUsage(long discomfortTime) {
-		return hadoop.getNearestMemoryUsage(discomfortTime, INTERVAL_GET_DISCOMFORT_DATA);
+	private double getMemoryUsage(long discomfortTime, int intervalSize) {
+		return hadoop.getNearestMemoryUsage(discomfortTime, intervalSize * 1000000000L);
 	}
 
-	private double getCPUUsage(long discomfortTime) {
-		return hadoop.getNearestCPUUsage(discomfortTime, INTERVAL_GET_DISCOMFORT_DATA);
+	private double getCPUUsage(long discomfortTime, int intervalSize) {
+		return hadoop.getNearestCPUUsage(discomfortTime, intervalSize * 1000000000L);
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -92,6 +91,7 @@ public class WriteDataToR {
 		String machineLogsDirectory = getMachineLogsDirectory(args);
 		long machineTotalMemory = getMachineTotalMemory(args);
 		int numberOfCPUs = getNumberOfCPUs(args);
+		int intervalSize = getIntervalSize(args);
 		
 		System.out.println("Reading discomfort information...");
 		Discomfort discomfort = new Discomfort(machineLogsDirectory + "/logs/discomfort.log");
@@ -106,14 +106,14 @@ public class WriteDataToR {
 		System.out.println("Created WriteDataToR...");
 		
 		System.out.println("Reading data...");
-		r.getDataToR();
+		r.getDataToR(intervalSize);
 		System.out.println("Finished data reading.");
 		
 		System.out.println("Writing result files...");
 		r.writeResultFiles();
 		System.out.println("Finished results files writing.");
 	}
-	
+
 	private void writeResultFiles() throws FileNotFoundException {
 		PrintStream cpuDataFile = new PrintStream(CPU_DATA_FILENAME);
 		PrintStream memoryDataFile = new PrintStream(MEMORY_DATA_FILENAME);
@@ -163,6 +163,14 @@ public class WriteDataToR {
 			throw new IOException("Invalid number of arguments.");
 		}
 		return Long.parseLong(args[TOTAL_MEMORY_INDEX]);
+	}
+
+	private static int getIntervalSize(String[] args) throws IOException {
+		if (args.length != EXPECTED_ARGS_LENGTH) {
+			printCorrectUsage();
+			throw new IOException("Invalid number of arguments.");
+		}
+		return Integer.parseInt(args[INTERVAL_SIZE_INDEX]);
 	}
 	
 	private static void printCorrectUsage() {
