@@ -8,8 +8,10 @@
 	<property name="jars" value="jars"/>
 	<property name="jarFile" value="${jars}/${sysName}.jar"/>
 	<property name="fastsummary-jar-file" value="${jars}/fast-summary.jar"/>
+	<property name="writedatator-jar-file" value="${jars}/write-data-to-r.jar"/>
 	<property name="analyser-main-class" value="analysis.MainAnalyser"/>
 	<property name="analyser-fast-summary" value="analysis.FastSummary"/>
+	<property name="analyser-writedatator" value="analysis.WriteDataToR"/>
 	<property name="main-class" value="lab3.cli.Main"/>
 	<property name="src" value="\${basedir}/src"/>
 	<property name="build" value="bin"/>
@@ -60,11 +62,18 @@
     		   </manifest>
         </jar>
 
-	<jar destfile="${fastsummary-jar-file}" basedir="${build}">
-		<manifest>
-			<attribute name="Main-Class" value="${analyser-fast-summary}" />
-		</manifest>
-	</jar>
+		<jar destfile="${fastsummary-jar-file}" basedir="${build}">
+			<manifest>
+				<attribute name="Main-Class" value="${analyser-fast-summary}" />
+			</manifest>
+		</jar>
+    	
+    	<jar destfile="${writedatator-jar-file}" basedir="${build}">
+    		<manifest>
+    			<attribute name="Main-Class" value="${analyser-writedatator}" />
+    		</manifest>
+    	</jar>
+    	<echo>Created the project jars.</echo>
     </target>
     
     <!--

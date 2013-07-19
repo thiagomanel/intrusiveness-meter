@@ -60,8 +60,8 @@ public class FastSummary {
 		Map<String, Integer> discomfortsPerBenchmark = new TreeMap<String, Integer>();
 		
 		for (long discomfortTime : discomfortTimes) {
-			String runningBenchmark = hadoop.getInformation(new Execution(discomfortTime - 5000000000L, 
-										discomfortTime + 5000000000L)).getFirstBenchmark();
+			String runningBenchmark = hadoop.getInformation(new Execution(discomfortTime, 
+										discomfortTime)).getFirstBenchmark();
 			
 			if (discomfortsPerBenchmark.get(runningBenchmark) == null) {
 				discomfortsPerBenchmark.put(runningBenchmark, 0);

@@ -2,8 +2,10 @@ package analysis.data;
 
 import static commons.Preconditions.checkNotNull;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class HadoopMachineUsage {
 	private Map<Long, Double> cpuUsage;
@@ -40,5 +42,50 @@ public class HadoopMachineUsage {
 		builder.append(memoryUsage);
 		builder.append("]");
 		return builder.toString();
+	}
+
+	public double getNearestCPUUsage(long time, long intervalSize) {
+		TreeMap<Long, Double> newMap = new TreeMap<Long, Double>(cpuUsage);
+		List<Long> relatedKeys = getRelatedKeys(newMap, time, intervalSize);
+		System.out.println(relatedKeys);
+		double maxCPU = Double.MIN_VALUE;
+		
+		for (Long currentTime : relatedKeys) {
+			if (newMap.get(currentTime) > maxCPU) {
+				maxCPU = newMap.get(currentTime);
+			}
+		}
+	/*	
+		Long nearestLowerKey = newMap.floorKey(time);
+		return newMap.get(nearestLowerKey);
+	*/
+		return maxCPU;
+	}
+
+	private List<Long> getRelatedKeys(TreeMap<Long, Double> newMap, long time,
+			long intervalSize) {
+		List<Long> relatedKeys = new LinkedList<Long>();
+		
+		for (Long key : newMap.keySet()) {
+			if (time - intervalSize <= key && key <= time) {
+				relatedKeys.add(key);
+			}
+		}
+		
+		return relatedKeys;
+	}
+
+	public double getNearestMemoryUsage(long discomfortTime, long intervalSize) {
+		TreeMap<Long, Double> newMap = new TreeMap<Long, Double>(memoryUsage);
+		List<Long> relatedKeys = getRelatedKeys(newMap, discomfortTime, intervalSize);
+		double maxMemory = Double.MIN_VALUE;
+		
+		for (Long currentTime : relatedKeys) {
+			if (newMap.get(currentTime) > maxMemory) {
+				maxMemory = newMap.get(currentTime);
+			}
+		}
+		
+		return maxMemory;
 	}
 }
