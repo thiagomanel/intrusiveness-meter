@@ -49,7 +49,7 @@ public class MainAnalyser {
 			}
 			
 		}
-		Clustering clustering = new Clustering(hadoop, discomfort, executions, idle, totalMemory, numberOfCPUs);
+		Clustering clustering = new Clustering(hadoop, discomfort, executions, idle, totalMemory, numberOfCPUs, 0);
 		Map<Double, Double> map1 = clustering.getHadoopCPUUsageDiscomfortProbability();
 		Map<Double, Double> map2 = clustering.getMemoryUsageDiscomfortProbability();
 		reportWriter.write(map1, "cpu_usage_discomfort_probability.csv");

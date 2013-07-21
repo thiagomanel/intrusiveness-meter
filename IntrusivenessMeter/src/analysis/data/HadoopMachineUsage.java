@@ -47,7 +47,6 @@ public class HadoopMachineUsage {
 	public double getNearestCPUUsage(long time, long intervalSize) {
 		TreeMap<Long, Double> newMap = new TreeMap<Long, Double>(cpuUsage);
 		List<Long> relatedKeys = getRelatedKeys(newMap, time, intervalSize);
-		System.out.println(relatedKeys);
 		double maxCPU = Double.MIN_VALUE;
 		
 		for (Long currentTime : relatedKeys) {
@@ -55,10 +54,7 @@ public class HadoopMachineUsage {
 				maxCPU = newMap.get(currentTime);
 			}
 		}
-	/*	
-		Long nearestLowerKey = newMap.floorKey(time);
-		return newMap.get(nearestLowerKey);
-	*/
+		
 		return maxCPU;
 	}
 

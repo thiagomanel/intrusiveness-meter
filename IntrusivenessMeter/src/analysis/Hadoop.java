@@ -196,24 +196,4 @@ public class Hadoop {
 	public double getNearestMemoryUsage(long discomfortTime, long intervalSize) {
 		return usage.getNearestMemoryUsage(discomfortTime, intervalSize);
 	}
-
-	/*public HadoopInformation getInformationOnExecution(Execution execution) {
-		checkNotNull(execution, "execution must not be null.");
-		Map<Long, String> newBenchmarks = new HashMap<Long, String>();
-		
-		TreeSet<Long> times = new TreeSet<Long>(info.getBenchmarks().keySet());
-		Iterator<Long> timesIterator = times.descendingIterator();
-		
-		long time = 0;
-		while (timesIterator.hasNext()) {
-			time = timesIterator.next();
-			// finds the first benchmark before the execution time
-			if (time < execution.getStartTime()) {
-				break;
-			}
-		}
-		
-		newBenchmarks.put(time, info.getBenchmarks().get(time));
-		return new HadoopInformation(newBenchmarks);
-	}*/
 }
