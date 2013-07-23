@@ -81,9 +81,10 @@ public class ReportWriter {
 		return hadoopInfo.getBenchmarks().values().iterator().next();
 	}
 
-	public <K extends Object, V extends Object> void write(Map<K, V> map, String fileName) throws FileNotFoundException {
+	public <K extends Object, V extends Object> void write(Map<K, V> map, String fileName, String header) throws FileNotFoundException {
 		TreeMap<K, V> newMap = new TreeMap<K, V>(map);
 		PrintStream stream = new PrintStream(fileName);
+		stream.printf("%s\n", header);
 		for (K key : newMap.keySet()) {
 			stream.printf("%s, %s\n", key.toString(), map.get(key).toString());
 		}	

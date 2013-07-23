@@ -10,11 +10,12 @@ import analysis.data.HadoopMachineUsage;
 import analysis.data.MachineUsage;
 
 public class MainAnalyser {
-	private static final int EXPECTED_ARGS_LENGTH = 5;
+	private static final int EXPECTED_ARGS_LENGTH = 6;
 	private static final int SERVER_LOGS_DIRECTORY_INDEX = 1;
 	private static final int MACHINE_LOGS_DIRECTORY_INDEX = 2;
 	private static final int TOTAL_MEMORY_INDEX = 4;
 	private static final int CPU_NUMBER_INDEX = 3;
+	private static final int INTERVAL_SIZE_INDEX = 5;
 	private Discomfort discomfort;
 	private IdleUser idle;
 	private Hadoop hadoop;
@@ -23,9 +24,11 @@ public class MainAnalyser {
 	private ReportWriter reportWriter;
 	private long totalMemory;
 	private int numberOfCPUs;
+	private long intervalSize;
 	
 	public MainAnalyser(Discomfort discomfort, IdleUser idle, Hadoop hadoop,
-			Controller controller, Machine machine, ReportWriter reportWriter, long totalMemory, int numberOfCPUs) {
+			Controller controller, Machine machine, ReportWriter reportWriter, long totalMemory, int numberOfCPUs, 
+			long intervalSize) {
 		this.discomfort = discomfort;
 		this.idle = idle;
 		this.hadoop = hadoop;
@@ -34,6 +37,7 @@ public class MainAnalyser {
 		this.reportWriter = reportWriter;
 		this.totalMemory = totalMemory;
 		this.numberOfCPUs = numberOfCPUs;
+		this.intervalSize = intervalSize;
 	}
 
 	public void writeReport() throws IOException {
@@ -46,14 +50,13 @@ public class MainAnalyser {
 				HadoopInformation hadoopInfo = getHadoopInformation(execution);
 				
 				writeExecutionReport(execution, relatedDiscomfort, machineUsage, hadoopMachineUsage, hadoopInfo);
-			}
-			
+			}	
 		}
-		Clustering clustering = new Clustering(hadoop, discomfort, executions, idle, totalMemory, numberOfCPUs, 0);
+		Clustering clustering = new Clustering(hadoop, discomfort, executions, idle, totalMemory, numberOfCPUs, intervalSize);
 		Map<Double, Double> map1 = clustering.getHadoopCPUUsageDiscomfortProbability();
 		Map<Double, Double> map2 = clustering.getMemoryUsageDiscomfortProbability();
-		reportWriter.write(map1, "cpu_usage_discomfort_probability.csv");
-		reportWriter.write(map2, "memory_usage_discomfort_probability.csv");
+		reportWriter.write(map1, "cpu_usage_discomfort_probability.csv", "cpu, probability");
+		reportWriter.write(map2, "memory_usage_discomfort_probability.csv", "memory, probability");
 	}
 
 	private HadoopMachineUsage getHadoopMachineUsage(Execution execution) {
@@ -94,6 +97,7 @@ public class MainAnalyser {
 		String machineLogsDirectory = getMachineLogsDirectory(args);
 		long machineTotalMemory = getMachineTotalMemory(args);
 		int numberOfCPUs = getNumberOfCPUs(args);
+		long intervalSize = getIntervalSize(args)*1000000000L;
 		
 		System.out.println("Reading idleness information...");
 		IdleUser idle = new IdleUser(machineLogsDirectory + "/results/user_activity.log", 100000);
@@ -118,23 +122,12 @@ public class MainAnalyser {
 		
 		System.out.println("Creating MainAnalyser...");
 		MainAnalyser analyser = new MainAnalyser(discomfort, idle, hadoop, controller, machine, reportWriter, machineTotalMemory, 
-									numberOfCPUs);
+									numberOfCPUs, intervalSize);
 		System.out.println("Created MainAnalyser.");
 		
 		System.out.println("Writing report...");
 		analyser.writeReport();
 		System.out.println("Finished report writing.");
-		/*
-		System.out.println("Creating Clustering...");
-		Clustering clustering = new Clustering(hadoop, discomfort, controller.getExecutions(), machineTotalMemory, numberOfCPUs);
-		System.out.println("Created Clustering.");
-		
-		System.out.println("Writing CPU usage Discomfort probability report...");
-		reportWriter.write(clustering.getHadoopCPUUsageDiscomfortProbability(), "cpu_usage_discomfort_probability.csv");
-		System.out.println("Finished CPU usage Discomfort probability report writing.");
-		System.out.println("Writing memory usage Discomfort probability report...");
-		reportWriter.write(clustering.getMemoryUsageDiscomfortProbability(), "memory_usage_discomfort_probability.csv");
-		System.out.println("Finished memory usage Discomfort probability report writing.");*/
 	}
 
 	private static int getNumberOfCPUs(String[] args) throws IOException {
@@ -167,6 +160,14 @@ public class MainAnalyser {
 			throw new IOException("Invalid number of arguments.");
 		}
 		return args[SERVER_LOGS_DIRECTORY_INDEX];
+	}
+	
+	private static int getIntervalSize(String[] args) throws IOException {
+		if (args.length != EXPECTED_ARGS_LENGTH) {
+			printCorrectUsage();
+			throw new IOException("Invalid number of arguments.");
+		}
+		return Integer.parseInt(args[INTERVAL_SIZE_INDEX]);
 	}
 	
 	private static void printCorrectUsage() {

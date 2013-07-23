@@ -18,10 +18,10 @@ public class Clustering {
 	private long totalMemory;
 	private int numberOfCPUs;
 	private IdleUser idle;
-	private int intervalTime;
+	private long intervalTime;
 	
 	public Clustering(Hadoop hadoop, Discomfort discomfort, List<Execution> executions, IdleUser idle, long totalMemory,
-						int numberOfCPUs, int intervalTime) {
+						int numberOfCPUs, long intervalTime) {
 		checkNotNull(hadoop, "hadoop must not be null.");
 		checkNotNull(discomfort, "discomfort must not be null.");
 		checkNotNull(executions, "executions must not be null.");
@@ -61,7 +61,7 @@ public class Clustering {
 		return probabilities;
 	}
 	
-	private double getDiscomfortReportCPUUsage(Long time, int interval) {
+	private double getDiscomfortReportCPUUsage(Long time, long interval) {
 		return hadoop.getNearestCPUUsage(time, interval)/numberOfCPUs;
 	}
 
@@ -94,7 +94,7 @@ public class Clustering {
 		countOccurrences.put(key, oldValue + 1);
 	}
 
-	private double getDiscomfortReportMemoryUsage(long discomfortTime, int intervalSize) {
+	private double getDiscomfortReportMemoryUsage(long discomfortTime, long intervalSize) {
 		return hadoop.getNearestMemoryUsage(discomfortTime, intervalSize)*100/totalMemory;
 	}
 
