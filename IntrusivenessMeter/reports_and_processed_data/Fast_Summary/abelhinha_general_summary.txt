@@ -7,8 +7,7 @@ Number of discomforts caused by Hadoop: 5
 ------------------------
 Discomfort per benchmark
 ------------------------
- dfwrite : 3
- teraclean : 2
- teragen : 4
- terasort : 2
- teravalidate : 3
+ dfwrite : 2
+ teragen : 1
+ terasort : 1
+ teravalidate : 1

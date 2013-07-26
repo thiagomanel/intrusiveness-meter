@@ -63,11 +63,13 @@ public class FastSummary {
 			String runningBenchmark = hadoop.getInformation(new Execution(discomfortTime, 
 										discomfortTime)).getFirstBenchmark();
 			
-			if (discomfortsPerBenchmark.get(runningBenchmark) == null) {
-				discomfortsPerBenchmark.put(runningBenchmark, 0);
+			if (hadoop.thereAreRunningTasks(new Execution(discomfortTime - 5000000000L, discomfortTime + 5000000000L))) {
+				if (discomfortsPerBenchmark.get(runningBenchmark) == null) {
+					discomfortsPerBenchmark.put(runningBenchmark, 0);
+				}
+				
+				discomfortsPerBenchmark.put(runningBenchmark, discomfortsPerBenchmark.get(runningBenchmark) + 1);				
 			}
-			
-			discomfortsPerBenchmark.put(runningBenchmark, discomfortsPerBenchmark.get(runningBenchmark) + 1);
 		}
 		
 		return discomfortsPerBenchmark;

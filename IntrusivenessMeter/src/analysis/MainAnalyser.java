@@ -42,6 +42,8 @@ public class MainAnalyser {
 
 	public void writeReport() throws IOException {
 		List<Execution> executions = getExecutions();
+		
+		System.out.println("Started processing executions...");
 		for (Execution execution : executions) {
 			if (isValid(execution)) {
 				boolean relatedDiscomfort = getDiscomfort(execution);
@@ -52,11 +54,33 @@ public class MainAnalyser {
 				writeExecutionReport(execution, relatedDiscomfort, machineUsage, hadoopMachineUsage, hadoopInfo);
 			}	
 		}
+		System.out.println("Wrote general report.");
+		
+		System.out.println("Clustering...");
 		Clustering clustering = new Clustering(hadoop, discomfort, executions, idle, totalMemory, numberOfCPUs, intervalSize);
 		Map<Double, Double> map1 = clustering.getHadoopCPUUsageDiscomfortProbability();
 		Map<Double, Double> map2 = clustering.getMemoryUsageDiscomfortProbability();
 		reportWriter.write(map1, "cpu_usage_discomfort_probability.csv", "cpu, probability");
 		reportWriter.write(map2, "memory_usage_discomfort_probability.csv", "memory, probability");
+		System.out.println("Wrote clustering report.");
+
+		System.out.println("Getting machine CPU discomfort probabilities...");
+		Map<Double, Double> machineCPUDiscomfortProbabilities = getMachineCPUDiscomfortProbabilities();
+		System.out.println("Got machine CPU discomfort probability.");
+		System.out.println("Getting hadoop CPU discomfort probability...");
+		Map<Double, Double> hadoopCPUDiscomfortProbabilities = getHadoopCPUDiscomfortProbabilities();
+		System.out.println("Got hadoop CPU discomfort probability.");
+		
+		reportWriter.write(machineCPUDiscomfortProbabilities, "machine_cpu_probabilities.csv", "cpu probability");
+		reportWriter.write(hadoopCPUDiscomfortProbabilities, "hadoop_cpu_probabilities.csv", "cpu probability");
+	}
+
+	private Map<Double, Double> getHadoopCPUDiscomfortProbabilities() {
+		return hadoop.getCPUDiscomfortProbabilities(discomfort, intervalSize, numberOfCPUs, idle);
+	}
+
+	private Map<Double, Double> getMachineCPUDiscomfortProbabilities() {
+		return machine.getCPUDiscomfortProbabilities(discomfort, intervalSize, idle, hadoop);
 	}
 
 	private HadoopMachineUsage getHadoopMachineUsage(Execution execution) {

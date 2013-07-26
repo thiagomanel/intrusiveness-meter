@@ -8,7 +8,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import analysis.data.Execution;
 import analysis.data.HadoopInformation;
@@ -166,6 +168,7 @@ public class Hadoop {
 		Iterator<Long> timesIterator = times.descendingIterator();
 		
 		long time = 0;
+		
 		while (timesIterator.hasNext()) {
 			time = timesIterator.next();
 			// finds the first benchmark before the execution time
@@ -195,5 +198,61 @@ public class Hadoop {
 
 	public double getNearestMemoryUsage(long discomfortTime, long intervalSize) {
 		return usage.getNearestMemoryUsage(discomfortTime, intervalSize);
+	}
+
+	public Map<Double, Double> getCPUDiscomfortProbabilities(Discomfort discomfort, long intervalSize, 
+						int numberOfCPUs, IdleUser idle) {
+		TreeMap<Double, Double> probabilities = new TreeMap<Double, Double>();
+		
+		setUpProbabilities(probabilities);
+		
+		Map<Double, Double> numberOfDiscomforts = getNumberOfDiscomforts(discomfort, intervalSize, numberOfCPUs);
+		Map<Double, Double> numberOfTimes = getNumberOfTimes(probabilities, idle, numberOfCPUs);
+		
+		for (int cpuLevel = 0; cpuLevel <= 100; cpuLevel += 10) {
+			if (numberOfTimes.get(new Double(cpuLevel)) != 0) {
+				double probability = numberOfDiscomforts.get(new Double(cpuLevel))/numberOfTimes.get(new Double(cpuLevel));
+				probabilities.put(new Double(cpuLevel), probability);
+			}
+		}
+		
+		return probabilities;
+	}
+	
+	private void setUpProbabilities(Map<Double, Double> probabilities) {
+		for (int i = 0; i <= 10; i++) {
+			probabilities.put(i*10.0, 0.0);
+		}		
+	}
+
+	private Map<Double, Double> getNumberOfTimes(TreeMap<Double, Double> probabilities, IdleUser idle, int numberOfCPUs) {
+		TreeMap<Double, Double> map = new TreeMap<Double, Double>();
+		setUpProbabilities(map);
+		
+		for (Entry<Long, Double> idleCPU : usage.getCPU().entrySet()) {
+			if (isValid(new Execution(idleCPU.getKey() - 5000000000L, idleCPU.getKey() + 5000000000L), idle)) {
+				double cpuUsage = idleCPU.getValue()/numberOfCPUs;
+				
+				map.put(map.floorKey(cpuUsage), map.get(map.floorKey(cpuUsage)) + 1);
+			}
+		}
+		
+		return map;
+	}
+
+	private boolean isValid(Execution execution, IdleUser idle) {
+		return !idle.idle(execution) && thereAreRunningTasks(execution);
+	}
+	
+	private Map<Double, Double> getNumberOfDiscomforts(Discomfort discomfort, long intervalSize, int numberOfCPUs) {
+		TreeMap<Double, Double> map = new TreeMap<Double, Double>();
+		setUpProbabilities(map);
+		
+		for (long time : discomfort.getDiscomfortTimes(new Execution(Long.MIN_VALUE, Long.MAX_VALUE))) {
+			double cpuUsage = usage.getNearestCPUUsage(time, intervalSize)/numberOfCPUs;
+			map.put(map.floorKey(cpuUsage), map.get(map.floorKey(cpuUsage)) + 1);
+		}
+		
+		return map;
 	}
 }

@@ -1,6 +1,9 @@
 package analysis.data;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class MachineUsage {
 	private Map<Long, Double> idleCPU;
@@ -70,5 +73,32 @@ public class MachineUsage {
 		builder.append(writeAttemptNumber);
 		builder.append("]");
 		return builder.toString();
+	}
+
+	public double getNearestCPUUsage(long time, long intervalSize) {
+		TreeMap<Long, Double> newMap = new TreeMap<Long, Double>(idleCPU);
+		List<Long> relatedKeys = getRelatedKeys(newMap, time, intervalSize);
+		double maxCPU = Double.NEGATIVE_INFINITY;
+		
+		for (Long currentTime : relatedKeys) {
+			if (newMap.get(currentTime) > maxCPU) {
+				maxCPU = newMap.get(currentTime);
+			}
+		}
+		
+		return 100 - maxCPU;
+	}
+	
+	private List<Long> getRelatedKeys(TreeMap<Long, Double> newMap, long time,
+			long intervalSize) {
+		List<Long> relatedKeys = new LinkedList<Long>();
+		
+		for (Long key : newMap.keySet()) {
+			if (time - intervalSize <= key && key <= time) {
+				relatedKeys.add(key);
+			}
+		}
+		
+		return relatedKeys;
 	}
 }

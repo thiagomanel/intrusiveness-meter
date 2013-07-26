@@ -8,6 +8,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.junit.After;
 import org.junit.Before;
@@ -24,6 +27,7 @@ public class HadoopTest {
 	private static final String MEMORY_FILE_NAME = "memory_test.txt";
 	private static final String CONTROLLER_LOG_FILE = "controller_test.txt";
 	private static final String HADOOP_PROCESSES_FILE_NAME = "hadoop_process_test.txt";
+	private static final String DISCOMFORT_FILE_NAME = "discomfort_test.txt";
 	
 	private static long time0 = 999;
 	private static long time1 = time0 + 1;
@@ -52,6 +56,7 @@ public class HadoopTest {
 	private static final Double CPU_3 = CPU_2 + 20;
 	private static final Double CPU_4 = CPU_3 + 20;
 	private static final Double CPU_5 = CPU_4 + 20;
+	private static final Double CPU_6 = CPU_5 + 20;
 	
 	private static final Double MEMORY_1 = 23.0;
 	private static final Double MEMORY_2 = MEMORY_1 + 20;
@@ -85,6 +90,20 @@ public class HadoopTest {
 	private static final String HADOOP_PROCESSES = "['111', '1111']";
 	
 	private Hadoop hadoop;
+	private Discomfort discomfort;
+	
+	private IdleUser idle;
+	
+	private class DummyIdleUser extends IdleUser {
+		public DummyIdleUser() {
+			super(new TreeMap<Long, Long>());
+		}
+		
+		@Override
+		public boolean idle(Execution execution) {
+			return false;
+		}
+	}
 	
 	@Before
 	public void setUp() throws Exception {
@@ -92,11 +111,15 @@ public class HadoopTest {
 		File memoryFile = new File(MEMORY_FILE_NAME);
 		File controllerFile = new File(CONTROLLER_LOG_FILE);
 		File hadoopProcessFile = new File(HADOOP_PROCESSES_FILE_NAME);
+		File discomfortFile = new File(DISCOMFORT_FILE_NAME);
 		
 		cpuFile.createNewFile();
 		memoryFile.createNewFile();
 		controllerFile.createNewFile();
 		hadoopProcessFile.createNewFile();
+		discomfortFile.createNewFile();
+		
+		idle = new DummyIdleUser();
 	}
 
 	@After
@@ -105,6 +128,7 @@ public class HadoopTest {
 		new File(MEMORY_FILE_NAME).delete();
 		new File(CONTROLLER_LOG_FILE).delete();
 		new File(HADOOP_PROCESSES_FILE_NAME).delete();
+		new File(DISCOMFORT_FILE_NAME).delete();
 	}
 
 	@Test
@@ -270,6 +294,205 @@ public class HadoopTest {
 		assertFalse(hadoop.thereAreRunningTasks(new Execution(time2, time2)));
 	}
 	
+	@Test
+	public void testGetCPUDiscomfortProbabilities1() throws IOException {
+		writeBasicCPUFile();
+		writeBasicMemoryFile();
+		writeBasicHadoopBenchmarksFile();
+		writeBasicHadoopProcessesFile();
+		
+		LinkedList<Long> discomfortTimes = new LinkedList<Long>();
+		discomfortTimes.add(time2);
+		discomfortTimes.add(time5);
+		discomfort = new Discomfort(discomfortTimes);
+		
+		hadoop = new Hadoop(CPU_FILE_NAME, MEMORY_FILE_NAME, CONTROLLER_LOG_FILE, HADOOP_PROCESSES_FILE_NAME);
+		
+		Map<Double, Double> result = hadoop.getCPUDiscomfortProbabilities(discomfort, 1, 1, idle);
+		assertEquals(new Double(0.0), result.get(0.0));
+		assertEquals(new Double(0.0), result.get(10.0));
+		assertEquals(new Double(1.0), result.get(20.0));
+		assertEquals(new Double(0.0), result.get(30.0));
+		assertEquals(new Double(0.0), result.get(40.0));
+		assertEquals(new Double(0.0), result.get(50.0));
+		assertEquals(new Double(0.0), result.get(60.0));
+		assertEquals(new Double(0.0), result.get(70.0));
+		assertEquals(new Double(1.0), result.get(80.0));
+		assertEquals(new Double(0.0), result.get(90.0));
+		assertEquals(new Double(0.0), result.get(100.0));
+	}
+	
+	@Test
+	public void testGetCPUDiscomfortProbabilities2() throws IOException {
+		writeComplexCPUFile();
+		writeBasicMemoryFile();
+		writeBasicHadoopBenchmarksFile();
+		writeBasicHadoopProcessesFile();
+		
+		LinkedList<Long> discomfortTimes = new LinkedList<Long>();
+		discomfortTimes.add(time2);
+		discomfortTimes.add(time5);
+		discomfortTimes.add(time9);
+		discomfortTimes.add(time14);
+		discomfort = new Discomfort(discomfortTimes);
+		
+		hadoop = new Hadoop(CPU_FILE_NAME, MEMORY_FILE_NAME, CONTROLLER_LOG_FILE, HADOOP_PROCESSES_FILE_NAME);
+		
+		Map<Double, Double> result1 = hadoop.getCPUDiscomfortProbabilities(discomfort, 1, 1, idle);
+		assertEquals(new Double(0.0), result1.get(0.0));
+		assertEquals(new Double(0.0), result1.get(10.0));
+		assertEquals(new Double(1/3.0), result1.get(20.0));
+		assertEquals(new Double(0.0), result1.get(30.0));
+		assertEquals(new Double(0.0), result1.get(40.0));
+		assertEquals(new Double(0.0), result1.get(50.0));
+		assertEquals(new Double(2/3.0), result1.get(60.0));
+		assertEquals(new Double(0.0), result1.get(70.0));
+		assertEquals(new Double(1/3.0), result1.get(80.0));
+		assertEquals(new Double(0.0), result1.get(90.0));
+		assertEquals(new Double(0.0), result1.get(100.0));
+		
+		LinkedList<Long> discomfortTimes2 = new LinkedList<Long>();
+		discomfortTimes2.add(time2);
+		discomfortTimes2.add(time5);
+		discomfortTimes2.add(time9);
+		discomfortTimes2.add(time14);
+		discomfortTimes2.add(time16);
+		discomfortTimes2.add(time18);
+		discomfort = new Discomfort(discomfortTimes2);
+		
+		Map<Double, Double> result2 = hadoop.getCPUDiscomfortProbabilities(discomfort, 1, 1, idle);
+		assertEquals(new Double(0.0), result2.get(0.0));
+		assertEquals(new Double(0.0), result1.get(10.0));
+		assertEquals(new Double(1/3.0), result2.get(20.0));
+		assertEquals(new Double(0.0), result1.get(30.0));
+		assertEquals(new Double(0.0), result2.get(40.0));
+		assertEquals(new Double(0.0), result1.get(50.0));
+		assertEquals(new Double(2/3.0), result2.get(60.0));
+		assertEquals(new Double(0.0), result1.get(70.0));
+		assertEquals(new Double(1/3.0), result2.get(80.0));
+		assertEquals(new Double(0.0), result1.get(90.0));
+		assertEquals(new Double(2/3.0), result2.get(100.0));
+	}
+	
+	@Test
+	public void testGetCPUDiscomfortProbabilities3() throws IOException {
+		writeCPUFileWithGaps();
+		writeBasicMemoryFile();
+		writeBasicHadoopBenchmarksFile();
+		writeBasicHadoopProcessesFile();
+		
+		LinkedList<Long> discomfortTimes = new LinkedList<Long>();
+		discomfortTimes.add(time2);
+		discomfortTimes.add(time7);
+		discomfortTimes.add(time10);
+		discomfortTimes.add(time15);
+		discomfort = new Discomfort(discomfortTimes);
+		
+		hadoop = new Hadoop(CPU_FILE_NAME, MEMORY_FILE_NAME, CONTROLLER_LOG_FILE, HADOOP_PROCESSES_FILE_NAME);
+		
+		Map<Double, Double> result1 = hadoop.getCPUDiscomfortProbabilities(discomfort, 1, 1, idle);
+		assertEquals(new Double(2/3.0), result1.get(0.0));
+		assertEquals(new Double(0.0), result1.get(10.0));
+		assertEquals(new Double(0.0), result1.get(20.0));
+		assertEquals(new Double(0.0), result1.get(30.0));
+		assertEquals(new Double(0.0), result1.get(40.0));
+		assertEquals(new Double(0.0), result1.get(50.0));
+		assertEquals(new Double(0.5), result1.get(60.0));
+		assertEquals(new Double(0.0), result1.get(70.0));
+		assertEquals(new Double(0.0), result1.get(80.0));
+		assertEquals(new Double(0.0), result1.get(90.0));
+		assertEquals(new Double(0.5), result1.get(100.0));
+	}
+	
+	@Test
+	public void testGetCPUDiscomfortProbabilities4() throws IOException {
+		writeManyCPUsFile();
+		writeBasicMemoryFile();
+		writeBasicHadoopBenchmarksFile();
+		writeBasicHadoopProcessesFile();
+		
+		LinkedList<Long> discomfortTimes = new LinkedList<Long>();
+		discomfortTimes.add(time1);
+		discomfortTimes.add(time7);
+		discomfortTimes.add(time5);
+		discomfort = new Discomfort(discomfortTimes);
+		
+		hadoop = new Hadoop(CPU_FILE_NAME, MEMORY_FILE_NAME, CONTROLLER_LOG_FILE, HADOOP_PROCESSES_FILE_NAME);
+		
+		Map<Double, Double> result1 = hadoop.getCPUDiscomfortProbabilities(discomfort, 1, 2, idle);
+	
+		assertEquals(new Double(0.0), result1.get(0.0));
+		assertEquals(new Double(0.0), result1.get(10.0));
+		assertEquals(new Double(1/3.0), result1.get(20.0));
+		assertEquals(new Double(0.0), result1.get(30.0));
+		assertEquals(new Double(0.0), result1.get(40.0));
+		assertEquals(new Double(1/3.0), result1.get(50.0));
+		assertEquals(new Double(0.0), result1.get(60.0));
+		assertEquals(new Double(0.0), result1.get(70.0));
+		assertEquals(new Double(0.0), result1.get(80.0));
+		assertEquals(new Double(0.0), result1.get(90.0));
+		assertEquals(new Double(1.0), result1.get(100.0));
+	}
+	
+	private void writeManyCPUsFile() throws FileNotFoundException {
+		PrintStream cpuStream = new PrintStream(CPU_FILE_NAME);
+
+		cpuStream.printf("<time> %d %f\n", time1, 100.0);
+		cpuStream.printf("<time> %d %f\n", time3, 50.0);
+		cpuStream.printf("<time> %d %f\n", time5, 200.0);
+		cpuStream.printf("<time> %d %f\n", time6, 50.0);
+		cpuStream.printf("<time> %d %f\n", time8, 0.0);
+		cpuStream.printf("<time> %d %f\n", time9, 100.0);
+		cpuStream.printf("<time> %d %f\n", time11, 40.0);
+		cpuStream.printf("<time> %d %f\n", time14, 100.0);
+		cpuStream.printf("<time> %d %f\n", time17, 0.0);
+		cpuStream.printf("<time> %d %f\n", time18, 20.0);
+		
+		cpuStream.close();
+	}
+
+	private void writeCPUFileWithGaps() throws FileNotFoundException {
+		PrintStream cpuStream = new PrintStream(CPU_FILE_NAME);
+
+		cpuStream.printf("<time> %d %f\n", time1, CPU_1);
+		cpuStream.printf("<time> %d %f\n", time3, CPU_3);
+		cpuStream.printf("<time> %d %f\n", time5, CPU_5);
+		cpuStream.printf("<time> %d %f\n", time6, CPU_1);
+		cpuStream.printf("<time> %d %f\n", time8, CPU_3);
+		cpuStream.printf("<time> %d %f\n", time9, CPU_4);
+		cpuStream.printf("<time> %d %f\n", time11, CPU_1);
+		cpuStream.printf("<time> %d %f\n", time14, CPU_6);
+		cpuStream.printf("<time> %d %f\n", time17, CPU_4);
+		cpuStream.printf("<time> %d %f\n", time18, CPU_6);
+		
+		cpuStream.close();
+	}
+
+	private void writeComplexCPUFile() throws FileNotFoundException {
+		PrintStream cpuStream = new PrintStream(CPU_FILE_NAME);
+
+		cpuStream.printf("<time> %d %f\n", time1, CPU_1);
+		cpuStream.printf("<time> %d %f\n", time2, CPU_2);
+		cpuStream.printf("<time> %d %f\n", time3, CPU_3);
+		cpuStream.printf("<time> %d %f\n", time4, CPU_4);
+		cpuStream.printf("<time> %d %f\n", time5, CPU_5);
+		cpuStream.printf("<time> %d %f\n", time6, CPU_1);
+		cpuStream.printf("<time> %d %f\n", time7, CPU_2);
+		cpuStream.printf("<time> %d %f\n", time8, CPU_3);
+		cpuStream.printf("<time> %d %f\n", time9, CPU_4);
+		cpuStream.printf("<time> %d %f\n", time10, CPU_5);
+		cpuStream.printf("<time> %d %f\n", time11, CPU_1);
+		cpuStream.printf("<time> %d %f\n", time12, CPU_2);
+		cpuStream.printf("<time> %d %f\n", time13, CPU_3);
+		cpuStream.printf("<time> %d %f\n", time14, CPU_4);
+		cpuStream.printf("<time> %d %f\n", time15, CPU_5);
+		cpuStream.printf("<time> %d %f\n", time16, CPU_6);
+		cpuStream.printf("<time> %d %f\n", time17, CPU_6);
+		cpuStream.printf("<time> %d %f\n", time18, CPU_6);
+		
+		cpuStream.close();
+	}
+
 	private void writeBasicHadoopProcessesFile() throws FileNotFoundException {
 		PrintStream hadoopProcessesStream = new PrintStream(HADOOP_PROCESSES_FILE_NAME);
 		

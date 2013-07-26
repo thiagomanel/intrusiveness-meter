@@ -4,6 +4,7 @@ import static commons.Preconditions.checkNotNull;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import analysis.data.Execution;
@@ -13,7 +14,7 @@ import commons.util.LogFile;
 
 public class Machine {
 	private MachineUsage usage;
-
+	
 	public Machine(String machineName, String idleCpuInfoFilename,
 			String userCpuInfoFilename, String memoryInfoFilename,
 			String readInfoFilename, String writeInfoFilename) throws IOException {
@@ -140,5 +141,65 @@ public class Machine {
 			}
 		}
 		return newIdleCPU;
+	}
+
+	public Map<Double, Double> getCPUDiscomfortProbabilities(Discomfort discomfort, long intervalSize, 
+															IdleUser idle, Hadoop hadoop) {
+		TreeMap<Double, Double> probabilities = new TreeMap<Double, Double>();
+		
+		setUpProbabilities(probabilities);
+		
+		Map<Double, Double> numberOfTimes = getNumberOfTimes(probabilities, idle, hadoop);
+		Map<Double, Double> numberOfDiscomforts = getNumberOfDiscomforts(discomfort, intervalSize);
+		
+		for (int cpuLevel = 0; cpuLevel <= 100; cpuLevel += 10) {
+			if (numberOfTimes.get(new Double(cpuLevel)) != 0) {
+				double probability = numberOfDiscomforts.get(new Double(cpuLevel))/numberOfTimes.get(new Double(cpuLevel));
+				probabilities.put(new Double(cpuLevel), probability);
+			}
+		}
+		
+		return probabilities;
+	}
+
+	private void setUpProbabilities(Map<Double, Double> probabilities) {
+		for (int i = 0; i <= 10; i++) {
+			probabilities.put(i*10.0, 0.0);
+		}		
+	}
+
+	private Map<Double, Double> getNumberOfTimes(TreeMap<Double, Double> probabilities, IdleUser idle, Hadoop hadoop) {
+		TreeMap<Double, Double> map = new TreeMap<Double, Double>();
+		setUpProbabilities(map);
+		
+		for (Entry<Long, Double> idleCPU : usage.getIdleCPU().entrySet()) {
+			if (isValid(new Execution(idleCPU.getKey() - 5000000000L, idleCPU.getKey() + 5000000000L), idle, hadoop)) {
+				double cpuUsage = 100 - idleCPU.getValue();
+				
+				map.put(map.floorKey(cpuUsage), map.get(map.floorKey(cpuUsage)) + 1);
+			}
+		}
+		
+		return map;
+	}
+	
+	private boolean isValid(Execution execution, IdleUser idle, Hadoop hadoop) {
+		return !idle.idle(execution) && thereAreRunningTasks(execution, hadoop);
+	}
+
+	private boolean thereAreRunningTasks(Execution execution, Hadoop hadoop) {
+		return hadoop.thereAreRunningTasks(execution);
+	}
+
+	private Map<Double, Double> getNumberOfDiscomforts(Discomfort discomfort, long intervalSize) {
+		TreeMap<Double, Double> map = new TreeMap<Double, Double>();
+		setUpProbabilities(map);
+		
+		for (long time : discomfort.getDiscomfortTimes(new Execution(Long.MIN_VALUE, Long.MAX_VALUE))) {
+			double cpuUsage = usage.getNearestCPUUsage(time, intervalSize);
+			map.put(map.floorKey(cpuUsage), map.get(map.floorKey(cpuUsage)) + 1);
+		}
+		
+		return map;
 	}
 }
