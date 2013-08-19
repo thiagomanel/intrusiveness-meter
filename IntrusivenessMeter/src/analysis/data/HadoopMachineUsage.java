@@ -49,6 +49,7 @@ public class HadoopMachineUsage {
 		List<Long> relatedKeys = getRelatedKeys(newMap, time, intervalSize);
 		double maxCPU = Double.NEGATIVE_INFINITY;
 		
+		System.out.println("related_keys:" + relatedKeys);
 		for (Long currentTime : relatedKeys) {
 			if (newMap.get(currentTime) > maxCPU) {
 				maxCPU = newMap.get(currentTime);

@@ -37,7 +37,7 @@ public class FastSummary {
 		generalSummaryFile.printf("Number of executions on machine: %d\n", countExecutionsOnMachine(executions));
 		generalSummaryFile.printf("Number of valid executions on machine: %d\n", countValidExecutions(executions));
 		generalSummaryFile.printf("Number of executions that caused discomfort: %d\n", countExecutionsThatCausedDiscomfort(executions));
-		generalSummaryFile.printf("Number of discomforts caused by Hadoop: %d\n", countHadoopDiscomforts());
+		generalSummaryFile.printf("Number of discomforts caused by Hadoop: %d\n", countHadoopDiscomforts(executions));
 		writeBenchmarksReport(generalSummaryFile, discomfortTimes);
 		
 		generalSummaryFile.close();
@@ -75,16 +75,23 @@ public class FastSummary {
 		return discomfortsPerBenchmark;
 	}
 	
-	private int countHadoopDiscomforts() {
+	private int countHadoopDiscomforts(List<Execution> executions) {
 		int hadoopDiscomforts = 0;
 	
-		for (long time : discomfort.getDiscomfortTimes(new Execution(Long.MIN_VALUE, Long.MAX_VALUE))) {
+		for (Execution execution : executions) {
+			List<Long> discomfortTimes = discomfort.getDiscomfortTimes(execution);
+			
+			if (hadoop.thereAreRunningTasks(execution) && !idle.idle(execution) && !discomfortTimes.isEmpty()) {
+				hadoopDiscomforts++;
+			}
+		}
+		/*for (long time : discomfort.getDiscomfortTimes(new Execution(Long.MIN_VALUE, Long.MAX_VALUE))) {
 			// the delta 5000000000L is used because the attempt to get the tasks of a given time
 			// may fail, so I try to get in a given interval.
 			if (hadoop.thereAreRunningTasks(new Execution(time - 5000000000L, time + 5000000000L))) {
 				hadoopDiscomforts++;
 			}
-		}
+		}*/
 		
 		return hadoopDiscomforts;
 	}

@@ -150,7 +150,7 @@ public class Machine {
 		setUpProbabilities(probabilities);
 		
 		Map<Double, Double> numberOfTimes = getNumberOfTimes(probabilities, idle, hadoop);
-		Map<Double, Double> numberOfDiscomforts = getNumberOfDiscomforts(discomfort, intervalSize);
+		Map<Double, Double> numberOfDiscomforts = getNumberOfDiscomforts(discomfort, intervalSize, hadoop);
 		
 		for (int cpuLevel = 0; cpuLevel <= 100; cpuLevel += 10) {
 			if (numberOfTimes.get(new Double(cpuLevel)) != 0) {
@@ -173,11 +173,17 @@ public class Machine {
 		setUpProbabilities(map);
 		
 		for (Entry<Long, Double> idleCPU : usage.getIdleCPU().entrySet()) {
-			if (isValid(new Execution(idleCPU.getKey() - 5000000000L, idleCPU.getKey() + 5000000000L), idle, hadoop)) {
+			if (!idle.idle(new Execution(idleCPU.getKey() - 5000000000L, idleCPU.getKey() + 5000000000L)) && 
+									!thereAreRunningTasks(new Execution(idleCPU.getKey() - 5000000000L, idleCPU.getKey() + 5000000000L), hadoop)) {
 				double cpuUsage = 100 - idleCPU.getValue();
 				
 				map.put(map.floorKey(cpuUsage), map.get(map.floorKey(cpuUsage)) + 1);
 			}
+			//if (isValid(new Execution(idleCPU.getKey() - 5000000000L, idleCPU.getKey() + 5000000000L), idle, hadoop)) {
+				/*double cpuUsage = 100 - idleCPU.getValue();
+				
+				map.put(map.floorKey(cpuUsage), map.get(map.floorKey(cpuUsage)) + 1);*/
+		//	}
 		}
 		
 		return map;
@@ -191,13 +197,15 @@ public class Machine {
 		return hadoop.thereAreRunningTasks(execution);
 	}
 
-	private Map<Double, Double> getNumberOfDiscomforts(Discomfort discomfort, long intervalSize) {
+	private Map<Double, Double> getNumberOfDiscomforts(Discomfort discomfort, long intervalSize, Hadoop hadoop) {
 		TreeMap<Double, Double> map = new TreeMap<Double, Double>();
 		setUpProbabilities(map);
 		
 		for (long time : discomfort.getDiscomfortTimes(new Execution(Long.MIN_VALUE, Long.MAX_VALUE))) {
-			double cpuUsage = usage.getNearestCPUUsage(time, intervalSize);
-			map.put(map.floorKey(cpuUsage), map.get(map.floorKey(cpuUsage)) + 1);
+			if (!thereAreRunningTasks(new Execution(time - 5000000000L, time + 5000000000L), hadoop)) {
+				double cpuUsage = usage.getNearestCPUUsage(time, intervalSize);
+				map.put(map.floorKey(cpuUsage), map.get(map.floorKey(cpuUsage)) + 1);				
+			}
 		}
 		
 		return map;
