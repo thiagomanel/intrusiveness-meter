@@ -2,6 +2,7 @@ package analysis;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -32,15 +33,37 @@ public class FastSummary {
 		List<Execution> executions = controller.getExecutions();
 		List<Long> discomfortTimes = discomfort.getDiscomfortTimes(new Execution(Long.MIN_VALUE, Long.MAX_VALUE));
 		
+		// get max time between hadoop discomforts
+		// get number of discomforts filtered by the max time
+		// get number of discomforts caused by hadoop
+		
+		long maxTimeDifference = getMaxTimeDifferenceBetweenHadoopDiscomfortTimes(executions);
 		generalSummaryFile.printf("Number of executions: %d\n", executions.size());
-		generalSummaryFile.printf("Number of discomfort reports: %d\n", discomfortTimes.size());
+		generalSummaryFile.printf("Number of discomfort reports: %d\n", getNumberOfDiscomfortReports(discomfortTimes, maxTimeDifference));
 		generalSummaryFile.printf("Number of executions on machine: %d\n", countExecutionsOnMachine(executions));
 		generalSummaryFile.printf("Number of valid executions on machine: %d\n", countValidExecutions(executions));
 		generalSummaryFile.printf("Number of executions that caused discomfort: %d\n", countExecutionsThatCausedDiscomfort(executions));
+		generalSummaryFile.printf("Max Time between Hadoop Discomforts: %d\n", maxTimeDifference);
 		generalSummaryFile.printf("Number of discomforts caused by Hadoop: %d\n", countHadoopDiscomforts(executions));
 		writeBenchmarksReport(generalSummaryFile, discomfortTimes);
 		
 		generalSummaryFile.close();
+	}
+
+	public static int getNumberOfDiscomfortReports(List<Long> discomfortTimes,
+			long maxTimeDifferenceBetweenHadoopDiscomfortTimes) {
+		List<Long> removed = new LinkedList<Long>();
+		
+		for (int i = 0; i < discomfortTimes.size() - 1; i++) {
+			if (!removed.contains(discomfortTimes.get(i))) {
+				for (int j = i + 1; j < discomfortTimes.size(); j++) {
+					if (discomfortTimes.get(j) - discomfortTimes.get(i) <= maxTimeDifferenceBetweenHadoopDiscomfortTimes) {
+						removed.add(discomfortTimes.get(j));
+					}
+				}
+			}
+		}
+		return discomfortTimes.size() - removed.size();
 	}
 
 	private void writeBenchmarksReport(PrintStream generalSummaryFile,
@@ -75,6 +98,35 @@ public class FastSummary {
 		return discomfortsPerBenchmark;
 	}
 	
+	private long getMaxTimeDifferenceBetweenHadoopDiscomfortTimes(List<Execution> executions) {
+		long maxTime = Long.MIN_VALUE;
+		
+		for (Execution execution : executions) {
+			List<Long> discomfortTimes = discomfort.getDiscomfortTimes(execution);
+			
+			long maxDifference = getMaxDifference(discomfortTimes);
+			
+			if (maxDifference > maxTime) {
+				maxTime = maxDifference;
+			}
+		}
+		
+		return maxTime;
+	}
+	
+	private long getMaxDifference(List<Long> discomfortTimes) {
+		long max = 0;
+		if (discomfortTimes.size() > 1) {
+			max = Long.MIN_VALUE;
+			for (int start = 0, end = 1; end < discomfortTimes.size(); start++, end++) {
+				if (discomfortTimes.get(end) - discomfortTimes.get(start) > max) {
+					max = discomfortTimes.get(end) - discomfortTimes.get(start);
+				}
+			}
+		}
+		return max;
+	}
+
 	private int countHadoopDiscomforts(List<Execution> executions) {
 		int hadoopDiscomforts = 0;
 	
